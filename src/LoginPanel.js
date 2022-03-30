@@ -9,7 +9,7 @@ function LoginPanel() {
         <div className="LoginPanel h-50 w-100 p-0">
             <div className="row h-100 d-flex align-items-center p-0">
                 <div className="col-sm-4 d-flex align-items-center justify-content-center p-0">
-                    <img src={logo_redix} className='img-fluid w-50 h-auto'></img>
+                    <img src={logo_redix} alt="logo_redix" className="img-fluid w-50 h-auto"></img>
                 </div>
                 <div className="col-sm-4 p-0">
                     Form
