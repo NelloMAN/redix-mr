@@ -11,25 +11,37 @@ function LoginPanel() {
                 <img src={logo_redix} alt="logo_redix" className="img-fluid w-50 h-auto"></img>
             </div>
             <div className="col-sm-4">
-            <form>
-                <div class="form-group">
-                    <label for="exampleInputEmail1">Email address</label>
-                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" />
-                    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                <div className="row">
+                    <div className='offset-sm-1 col-sm-10'>
+                        <h5>Please Log On:</h5>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="exampleInputPassword1">Password</label>
-                    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" />
+                <br></br>
+                <div className='row'>
+                    <div className='offset-sm-1 col-sm-10'>
+                        <form>
+                            <div className="form-group row">
+                                <div className="col-sm-3 d-flex align-items-center">
+                                    <h6 for="exampleInputEmail1" className='m-0'>Email:</h6>
+                                </div>
+                                <div className="col-sm-9">
+                                    <input type="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" />
+                                </div>
+                            </div>
+                            <br></br>
+                            <div className="form-group row">
+                                <div className="col-sm-3 d-flex align-items-center">
+                                    <h6 for="exampleInputPassword1" className='m-0'>Password:</h6>
+                                </div>
+                                <div className="col-sm-9">
+                                    <input type="password" className="form-control" id="exampleInputPassword1" placeholder="Password" />
+                                </div>
+                            </div>
+                            <br></br>
+                            <button type="submit" className="btn btn-primary w-100">Submit</button>
+                        </form>
+                    </div>
                 </div>
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="exampleCheck1" />
-                    <label class="form-check-label" for="exampleCheck1">Check me out</label>
-                </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
-                </form>
-            </div>
-            <div className="col-sm-4">
-                EmptySpace
             </div>
         </div>
     </div>

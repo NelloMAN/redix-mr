@@ -9,3 +9,11 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+#bootstrap-overrides button {
+
+  background-color: #78B22B;
+  border-color: #78B22B;
+  color:white;
+  font-weight: bold;
+}
