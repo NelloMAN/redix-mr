@@ -17,7 +17,6 @@ class LoginPanel extends React.Component{
         }
 
         this.handleChange = this.handleChange.bind(this);
-        // this.handlePwdChange = this.handlePwdChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
