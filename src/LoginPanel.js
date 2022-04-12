@@ -13,7 +13,8 @@ class LoginPanel extends React.Component{
         this.state = {
 
             email: "",
-            password: ""
+            password: "",
+            showModal: false
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -29,7 +30,15 @@ class LoginPanel extends React.Component{
     handleSubmit(event) {
         alert('email: '+this.state.email+' - pwd: '+this.state.password);
         event.preventDefault();
-      }
+    }
+    
+    handleHideModal(){
+      this.setState({this.state.showModal: false});
+    }
+    
+    handleShowModal(){
+      this.setState({view: {showModal: true}})
+    }
 
     render(){
 
