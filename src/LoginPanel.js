@@ -1,7 +1,7 @@
 /*import logo from './logo.svg';
 import './App.css';*/
 import React from 'react';
-import ReactDOM  from 'react';
+import { Modal } from 'bootstrap';
 import './LoginPanel.css';
 import DialogBox from './component/DialogBox';
 import logo_redix from './img/logo_redix.svg';
@@ -14,9 +14,10 @@ class LoginPanel extends React.Component{
         this.state = {
 
             email: "",
-            password: "",
-            showModal: false
+            password: ""
         }
+        
+        this.refDialog = React.createRef();
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -30,17 +31,17 @@ class LoginPanel extends React.Component{
 
     handleSubmit(event) {
 
-        alert('email: '+this.state.email+' - pwd: '+this.state.password);
-        this.handleShowModal();
+        //alert('email: '+this.state.email+' - pwd: '+this.state.password);
+        this.refDialog.current.toggleDialogVisibility();
         event.preventDefault();
     }
     
     handleHideModal(){
-      this.setState({showModal: false});
+      this.setState({showModal: ""});
     }
     
     handleShowModal(){
-      this.setState({showModal: true});
+      this.setState({showModal: "show"});
     }
 
     render(){
@@ -85,7 +86,7 @@ class LoginPanel extends React.Component{
                         </div>
                     </div>
                 </div>
-            <DialogBox handleHideModal={this.handleHideModal}/>
+            <DialogBox ref={this.refDialog}/>
             </div>
           );
     }

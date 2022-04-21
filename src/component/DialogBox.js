@@ -3,13 +3,26 @@ import ReactDOM from 'react-dom';
 import $ from 'jquery';
 import PropTypes from 'prop-types';
 import './DialogBox.css';
+import { Modal } from 'bootstrap';
 
 class DialogBox extends React.Component{
+
+    constructor(props){
+
+        super(props);
+        this.state = {
+            showModal: false
+        }
+    }
+
+    toggleDialogVisibility () {
+        this.setState({showModal : !this.state.showModal});
+    }
 
     render(){
 
         return (
-            <div className="modal fade">
+            <Modal show={this.state.showModal} className="modal fade">
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
@@ -25,13 +38,9 @@ class DialogBox extends React.Component{
                         </div>
                     </div>
                 </div>
-            </div>
+            </Modal>
           );
     }
-}
-
-DialogBox.propTypes = {
-    handleHideModal: PropTypes.func.isRequired
 }
 
 export default DialogBox;
