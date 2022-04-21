@@ -1,12 +1,10 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
+import $ from 'jquery';
+import PropTypes from 'prop-types';
 import './DialogBox.css';
 
 class DialogBox extends React.Component{
-
-    componentDidMount() {
-        $(this.getDOMNode()).modal('show');
-        $(this.getDOMNode()).on('hidden.bs.modal', this.props.handleHideModal);
-    }
 
     render(){
 
@@ -33,7 +31,7 @@ class DialogBox extends React.Component{
 }
 
 DialogBox.propTypes = {
-    handleHideModal: React.PropTypes.func.isRequired
+    handleHideModal: PropTypes.func.isRequired
 }
 
 export default DialogBox;

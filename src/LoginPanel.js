@@ -3,6 +3,7 @@ import './App.css';*/
 import React from 'react';
 import ReactDOM  from 'react';
 import './LoginPanel.css';
+import DialogBox from './component/DialogBox';
 import logo_redix from './img/logo_redix.svg';
 
 class LoginPanel extends React.Component{
@@ -28,16 +29,18 @@ class LoginPanel extends React.Component{
     }
 
     handleSubmit(event) {
+
         alert('email: '+this.state.email+' - pwd: '+this.state.password);
+        this.handleShowModal();
         event.preventDefault();
     }
     
     handleHideModal(){
-      this.setState({this.state.showModal: false});
+      this.setState({showModal: false});
     }
     
     handleShowModal(){
-      this.setState({view: {showModal: true}})
+      this.setState({showModal: true});
     }
 
     render(){
@@ -82,6 +85,7 @@ class LoginPanel extends React.Component{
                         </div>
                     </div>
                 </div>
+            <DialogBox handleHideModal={this.handleHideModal}/>
             </div>
           );
     }
