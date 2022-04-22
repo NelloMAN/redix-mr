@@ -25,7 +25,7 @@ class DialogBox extends React.Component{
     render(){
 
         return (
-            <Modal show={this.state.showModal} onHide={this.handleClose}>
+            <Modal show={this.state.showModal} onHide={this.handleClose} centered>
                 <Modal.Header closeButton>
                     <Modal.Title>Attenzione</Modal.Title>
                 </Modal.Header>

@@ -35,13 +35,11 @@ class LoginPanel extends React.Component{
         this.refDialog.current.toggleDialogVisibility();
         event.preventDefault();
     }
-    
-    handleHideModal(){
-      this.setState({showModal: ""});
-    }
-    
-    handleShowModal(){
-      this.setState({showModal: "show"});
+
+    fetchUsr() {
+
+        fetch('').
+        then().catch();
     }
 
     render(){
