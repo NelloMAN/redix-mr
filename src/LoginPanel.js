@@ -32,14 +32,25 @@ class LoginPanel extends React.Component{
     handleSubmit(event) {
 
         //alert('email: '+this.state.email+' - pwd: '+this.state.password);
-        this.refDialog.current.toggleDialogVisibility();
+        //this.refDialog.current.toggleDialogVisibility();
+        this.fetchUsr();
         event.preventDefault();
     }
 
     fetchUsr() {
 
-        fetch('').
-        then().catch();
+        fetch('http://localhost:3001/checkUsr/'+this.state.email+'/'+this.state.password).
+        then(
+            response => {
+
+                console.log(response);
+                return response.json();
+            }
+        ).
+        then(
+            (data) => {console.log(data.results);}
+        ).
+        catch();
     }
 
     render(){
