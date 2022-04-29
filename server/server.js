@@ -17,12 +17,10 @@ app.use(morgan('combined'));
 
 const connection = mysql.createConnection({
   host: 'localhost',
-  user: 'dbuser',
-  password: 's3kreee7',
-  database: 'my_db'
+  user: 'root',
+  password: 'redixmr2022!_',
+  database: 'redix_mr'
 })
-
-connection.connect()
 
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
@@ -32,13 +30,13 @@ app.get('/checkUsr/:email/:pwd', (req, res) => {
 
   console.log('email: '+req.params.email+' - pwd: '+req.params.pwd);
 
-  connection.query('SELECT 1 + 1 AS solution', (err, rows, fields) => {
-    if (err) throw err
-  
-    //console.log('The solution is: ', rows[0].solution)
+  await connection.connect(function(err) {
+    if (err) throw err;
+    connection.query("SELECT * FROM usr where usrEmail = '"+req.params.email+"' and usrPwd = '"+req.params.pwd+"'", function (err, result, fields) {
+      if (err) throw err;
+      console.log(result);
+    });
   });
 
-  res.send('da qui chiami il db');
+  connection.end();
 });
-
-connection.end();

@@ -5,6 +5,7 @@ import { Modal } from 'bootstrap';
 import './LoginPanel.css';
 import DialogBox from './component/DialogBox';
 import logo_redix from './img/logo_redix.svg';
+import { sha256 } from 'js-sha256';
 
 class LoginPanel extends React.Component{
 
@@ -31,15 +32,13 @@ class LoginPanel extends React.Component{
 
     handleSubmit(event) {
 
-        //alert('email: '+this.state.email+' - pwd: '+this.state.password);
-        //this.refDialog.current.toggleDialogVisibility();
         this.fetchUsr();
         event.preventDefault();
     }
 
     fetchUsr() {
 
-        fetch('http://localhost:3001/checkUsr/'+this.state.email+'/'+this.state.password).
+        fetch('http://localhost:3001/checkUsr/'+this.state.email+'/'+sha256(this.state.password)).
         then(
             response => {
 
