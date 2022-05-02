@@ -15,7 +15,7 @@ app.use(bodyParser.json());
 
 app.use(morgan('combined'));
 
-const connection = mysql.createConnection({
+const connection = mysql.createPool({
   host: 'localhost',
   user: 'root',
   password: 'redixmr2022!_',
@@ -30,13 +30,21 @@ app.get('/checkUsr/:email/:pwd', (req, res) => {
 
   console.log('email: '+req.params.email+' - pwd: '+req.params.pwd);
 
-  await connection.connect(function(err) {
-    if (err) throw err;
-    connection.query("SELECT * FROM usr where usrEmail = '"+req.params.email+"' and usrPwd = '"+req.params.pwd+"'", function (err, result, fields) {
-      if (err) throw err;
-      console.log(result);
-    });
-  });
+  const result = CheckUsr(req.params.email, req.params.pwd);
 
-  connection.end();
+  console.log('result: '+result);
+  res.status(200).json({elements: result});
 });
+
+
+
+CheckUsr = (email, pwd) =>{
+  return new Promise((resolve, reject)=>{
+      connection.query("SELECT * FROM usr where usrEmail = '"+email+"' and usrPwd = '"+pwd+"'",  (error, elements)=>{
+          if(error){
+              return reject(error);
+          }
+          return resolve(elements);
+      });
+  });
+};
