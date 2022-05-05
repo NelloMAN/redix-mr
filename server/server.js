@@ -1,7 +1,5 @@
 const express = require('express')
-const bodyParser = require('body-parser');
 const cors = require('cors');
-const morgan = require('morgan');
 const mysql = require('mysql');
 
 const PORT = process.env.PORT || 3001;
@@ -10,41 +8,52 @@ const app = express();
 
 app.use(cors());
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(express.json());
 
-app.use(morgan('combined'));
-
-const connection = mysql.createPool({
+const connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: 'redixmr2022!_',
-  database: 'redix_mr'
+  password: 'redixrm2022!_',
+  database: 'redix_rm'
 })
 
 app.listen(PORT, () => {
-  console.log(`Server listening on ${PORT}`);
+  console.log('Server listening on '+PORT);
 });
 
 app.get('/checkUsr/:email/:pwd', (req, res) => {
 
-  console.log('email: '+req.params.email+' - pwd: '+req.params.pwd);
-
-  const result = CheckUsr(req.params.email, req.params.pwd);
-
-  console.log('result: '+result);
-  res.status(200).json({elements: result});
+  connection.query("SELECT * FROM usr where usrEmail = '"+req.params.email+"' and usrPwd = '"+req.params.pwd+"'", (err, result) => {
+    if (err) {
+      console.log("ERROR CHECKUSR: "+err);
+    } else {
+      console.log(result);
+      res.send(result);
+    }
+  })
 });
 
+// function CheckUsr(email, pwd){
+  
+//   await connection.query("SELECT * FROM usr where usrEmail = '"+email+"' and usrPwd = '"+pwd+"'",(err, data) => {
+//     if(err) {
+//         console.error(err);
+//         return;
+//     }
+//     // rows fetch
+//     console.log(JSON.stringify(data));
+//     return JSON.stringify(data);
+//   });
+// }
 
 
-CheckUsr = (email, pwd) =>{
-  return new Promise((resolve, reject)=>{
-      connection.query("SELECT * FROM usr where usrEmail = '"+email+"' and usrPwd = '"+pwd+"'",  (error, elements)=>{
-          if(error){
-              return reject(error);
-          }
-          return resolve(elements);
-      });
-  });
-};
+// CheckUsr = (email, pwd) =>{
+//   return new Promise((resolve, reject)=>{
+//       connection.query("SELECT * FROM usr where usrEmail = '"+email+"' and usrPwd = '"+pwd+"'",  (error, elements, fields)=>{
+//           if(error){
+//               return reject(error);
+//           }
+//           return elements;
+//       });
+//   });
+// };

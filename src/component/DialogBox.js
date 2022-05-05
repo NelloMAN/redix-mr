@@ -8,14 +8,22 @@ class DialogBox extends React.Component{
 
         super(props);
         this.state = {
-            showModal: false
+            showModal: false,
+            title: '',
+            body: ''
         }
 
         this.handleClose = this.handleClose.bind(this);
     }
 
-    toggleDialogVisibility () {
-        this.setState({showModal : !this.state.showModal});
+    handleShow (t, b) {
+        this.setState(
+            {
+                showModal : true,
+                title: t,
+                body: b
+            }
+        );
     }
 
     handleClose () {
@@ -27,9 +35,9 @@ class DialogBox extends React.Component{
         return (
             <Modal show={this.state.showModal} onHide={this.handleClose} centered>
                 <Modal.Header closeButton>
-                    <Modal.Title>Attenzione</Modal.Title>
+                    <Modal.Title>{this.state.title}</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>Email o password non corretta</Modal.Body>
+                <Modal.Body>{this.state.body}</Modal.Body>
                 <Modal.Footer>
                     <Button variant="primary" onClick={this.handleClose}>
                         Close

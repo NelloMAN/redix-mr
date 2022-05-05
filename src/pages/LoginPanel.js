@@ -1,11 +1,9 @@
-/*import logo from './logo.svg';
-import './App.css';*/
 import React from 'react';
-import { Modal } from 'bootstrap';
 import './LoginPanel.css';
-import DialogBox from './component/DialogBox';
-import logo_redix from './img/logo_redix.svg';
+import DialogBox from '../component/DialogBox';
+import logo_redix from '../img/logo_redix.svg';
 import { sha256 } from 'js-sha256';
+import {Route} from 'react-router-dom';
 
 class LoginPanel extends React.Component{
 
@@ -38,18 +36,14 @@ class LoginPanel extends React.Component{
 
     fetchUsr() {
 
-        fetch('http://localhost:3001/checkUsr/'+this.state.email+'/'+sha256(this.state.password)).
-        then(
-            response => {
-
-                console.log(response);
-                return response.json();
-            }
-        ).
-        then(
-            (data) => {console.log(data.results);}
-        ).
-        catch();
+        fetch('http://localhost:3001/checkUsr/'+this.state.email+'/'+sha256(this.state.password))
+        .then(response => response.json())
+        .then (response => {
+            
+            console.log(response);
+            this.refDialog.current.handleShow('Benvenuto','Bentornato '+response[0]['usrName']);
+        })
+        .catch();
     }
 
     render(){
@@ -96,9 +90,8 @@ class LoginPanel extends React.Component{
                 </div>
             <DialogBox ref={this.refDialog}/>
             </div>
-          );
+        );
     }
-
 }
 
 export default LoginPanel;
