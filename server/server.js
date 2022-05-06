@@ -14,7 +14,7 @@ const connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
   password: 'redixmr2022!_',
-  database: 'redix_rm'
+  database: 'redix_mr'
 })
 
 app.listen(PORT, () => {
