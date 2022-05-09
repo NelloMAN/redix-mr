@@ -33,6 +33,30 @@ app.get('/checkUsr/:email/:pwd', (req, res) => {
   })
 });
 
+app.get('/setTimeName', (req, res) => {
+
+  connection.query("SET lc_time_names = 'it_IT'", (err, result) => {
+    if (err) {
+      console.log("ERROR setTimeName: "+err);
+    } else {
+      console.log(result);
+      res.send(result);
+    }
+  })
+});
+
+app.get('/getMonths/:usrID', (req, res) => {
+
+  connection.query("select distinct monthname(wrkdDay) as monthName from work_day where wrkdUsrID = "+req.params.usrID+"", (err, result) => {
+    if (err) {
+      console.log("ERROR getMonths: "+err);
+    } else {
+      console.log(result);
+      res.send(result);
+    }
+  })
+});
+
 // function CheckUsr(email, pwd){
   
 //   await connection.query("SELECT * FROM usr where usrEmail = '"+email+"' and usrPwd = '"+pwd+"'",(err, data) => {

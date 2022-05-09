@@ -1,0 +1,30 @@
+.rmr_select {
+    background-color: #EFF8FE;
+    border-color: #0963ad69;
+    color:#0963AD;
+    font-weight: bold;
+}
+
+.rmr_select:hover {
+
+    background-color: #0963AD;
+    border-color: #0963AD;
+    color:#EFF8FE;
+    font-weight: bold;
+}
+
+.rmr_select:active {
+
+    background-color: #0963AD;
+    border-color: #0963AD;
+    color:#EFF8FE;
+    font-weight: bold;
+}
+
+.rmr_select:focus {
+
+    background-color: #0963AD;
+    border-color: #0963AD;
+    color:#EFF8FE;
+    font-weight: bold;
+}

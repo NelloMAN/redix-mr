@@ -13,34 +13,3 @@ header {
     font-weight: bold;
     color: #073860;
 }
-
-.rmr_dropdown {
-    background-color: #EFF8FE;
-    border-color: #0963ad69;
-    color:#0963AD;
-    font-weight: bold;
-}
-
-.rmr_dropdown:hover {
-
-    background-color: #0963AD;
-    border-color: #0963AD;
-    color:#EFF8FE;
-    font-weight: bold;
-}
-
-.rmr_dropdown:active {
-
-    background-color: #0963AD;
-    border-color: #0963AD;
-    color:#EFF8FE;
-    font-weight: bold;
-}
-
-.rmr_dropdown:focus {
-
-    background-color: #0963AD;
-    border-color: #0963AD;
-    color:#EFF8FE;
-    font-weight: bold;
-}

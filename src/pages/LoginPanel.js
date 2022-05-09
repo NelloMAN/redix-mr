@@ -13,7 +13,8 @@ class LoginPanel extends React.Component{
         this.state = {
 
             email: "",
-            password: ""
+            password: "",
+            usrID: 0
         }
         
         this.refDialog = React.createRef();
@@ -41,6 +42,7 @@ class LoginPanel extends React.Component{
         .then (response => {
             
             console.log(response);
+            this.setState({usrID: response[0]['usrID']});
             this.refDialog.current.handleShow('Benvenuto','Bentornato '+response[0]['usrName']);
         })
         .catch();

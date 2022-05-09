@@ -6,11 +6,19 @@ import { sha256 } from 'js-sha256';
 import { Route } from 'react-router-dom';
 import Hamburger from 'hamburger-react'
 import MaterialTable from 'material-table';
+import MonthComboBox from '../component/MonthComboBox';
 
 class DashboardPanel extends React.Component {
 
-    render() {
+    constructor(props){
 
+        super(props);
+        this.state = {
+        }
+    }
+
+    render() {
+        
         return (
             <div>
                 <header className=''>
@@ -38,11 +46,10 @@ class DashboardPanel extends React.Component {
                     <div className='container-fluid'>
                         <div className='row'>
                             <div className='col-sm-4'>
-                                <button class="btn btn-secondary dropdown-toggle rmr_dropdown w-50" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Maggio 2022
-                                </button>
+                                <MonthComboBox usrID='1'/> {/* qua ci andrà il props usrID della dashboard */}
                             </div>
                         </div>
+                        <br></br>
                         <div className='row'>
                             <div className='col-sm-8'>
                                 <MaterialTable
@@ -54,7 +61,7 @@ class DashboardPanel extends React.Component {
                                     ]}
                                     data={[{ name: 'Mehmet', surname: 'Baran', birthYear: 1987, birthCity: 63 }]}
                                     title="Demo Title"
-                                />
+                                /> 
                             </div>
                             <div className='col-sm-4'>
                                 {/* resume table */}
