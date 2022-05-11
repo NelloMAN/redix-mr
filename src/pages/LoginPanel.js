@@ -3,7 +3,7 @@ import './LoginPanel.css';
 import DialogBox from '../component/DialogBox';
 import logo_redix from '../img/logo_redix.svg';
 import { sha256 } from 'js-sha256';
-import {Route} from 'react-router-dom';
+import {Navigate, Route, useNavigate} from 'react-router-dom';
 
 class LoginPanel extends React.Component{
 
@@ -13,6 +13,7 @@ class LoginPanel extends React.Component{
         this.state = {
 
             email: "",
+            name: "",
             password: "",
             usrID: 0
         }
@@ -42,13 +43,24 @@ class LoginPanel extends React.Component{
         .then (response => {
             
             console.log(response);
-            this.setState({usrID: response[0]['usrID']});
-            this.refDialog.current.handleShow('Benvenuto','Bentornato '+response[0]['usrName']);
+            this.setState({
+                email: response[0]['usrEmail'],
+                name: response[0]['usrName'],
+                usrID: response[0]['usrID']
+            });
         })
         .catch();
     }
 
     render(){
+
+        let toDashboard;
+
+        if (this.state.usrID != 0)
+            toDashboard = <Navigate to='/dashboard' replace={true} state={{usrID : this.state.usrID, usrName: this.state.name, usrEmail: this.state.email}}/>
+        else 
+            toDashboard = '';
+        
 
         return (
             <div className="container-fluid d-flex align-items-center justify-content-center w-100 p-0" style={{"height":"100vh"}}>
@@ -90,7 +102,8 @@ class LoginPanel extends React.Component{
                         </div>
                     </div>
                 </div>
-            <DialogBox ref={this.refDialog}/>
+            <DialogBox ref={this.refDialog} />
+            {toDashboard}
             </div>
         );
     }
