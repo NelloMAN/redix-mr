@@ -56,28 +56,3 @@ app.get('/getMonths/:usrID', (req, res) => {
     }
   })
 });
-
-// function CheckUsr(email, pwd){
-  
-//   await connection.query("SELECT * FROM usr where usrEmail = '"+email+"' and usrPwd = '"+pwd+"'",(err, data) => {
-//     if(err) {
-//         console.error(err);
-//         return;
-//     }
-//     // rows fetch
-//     console.log(JSON.stringify(data));
-//     return JSON.stringify(data);
-//   });
-// }
-
-
-// CheckUsr = (email, pwd) =>{
-//   return new Promise((resolve, reject)=>{
-//       connection.query("SELECT * FROM usr where usrEmail = '"+email+"' and usrPwd = '"+pwd+"'",  (error, elements, fields)=>{
-//           if(error){
-//               return reject(error);
-//           }
-//           return elements;
-//       });
-//   });
-// };
