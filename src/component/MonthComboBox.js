@@ -17,9 +17,9 @@ class MonthComboBox extends React.Component {
         this.fetchMonths();
     }
 
-    setTimeName() {
+    async setTimeName() {
 
-        fetch('http://localhost:3001/setTimeName')
+        await fetch('http://localhost:3001/setTimeName')
         .then(response => response.json())
         .then (response => {
             
@@ -28,9 +28,9 @@ class MonthComboBox extends React.Component {
         .catch();
     }
 
-    fetchMonths() {
+    async fetchMonths() {
 
-        fetch('http://localhost:3001/getMonths/'+this.props.usrID)
+        await fetch('http://localhost:3001/getMonths/'+this.props.usrID)
         .then(response => response.json())
         .then (response => {
             
