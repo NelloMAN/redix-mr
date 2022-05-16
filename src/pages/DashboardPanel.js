@@ -5,6 +5,7 @@ import Hamburger from 'hamburger-react'
 import MaterialTable from 'material-table';
 import MonthComboBox from '../component/MonthComboBox';
 import {useLocation} from 'react-router-dom';
+import WorkTable from '../component/data-table/WorkTable';
 
 
 function DashboardPanel() {
@@ -38,13 +39,13 @@ function DashboardPanel() {
                 <div className='container-fluid'>
                     <div className='row'>
                         <div className='col-sm-4'>
-                            <MonthComboBox usrID={location.state.usrID}/> 
+                            <MonthComboBox usrID={location.state.usrID} /> 
                         </div>
                     </div>
                     <br></br>
                     <div className='row'>
                         <div className='col-sm-8'>
-                            <MaterialTable
+                            {/* <MaterialTable
                                 columns={[
                                     { title: 'Adı', field: 'name' },
                                     { title: 'Soyadı', field: 'surname' },
@@ -53,7 +54,8 @@ function DashboardPanel() {
                                 ]}
                                 data={[{ name: 'Mehmet', surname: 'Baran', birthYear: 1987, birthCity: 63 }]}
                                 title="Demo Title"
-                            /> 
+                            />  */}
+                            <WorkTable usrID={location.state.usrID} month=''/>
                         </div>
                         <div className='col-sm-4'>
                             {/* resume table */}
