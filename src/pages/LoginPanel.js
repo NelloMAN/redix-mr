@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './LoginPanel.css';
 import DialogBox from '../component/DialogBox';
 import logo_redix from '../img/logo_redix.svg';
@@ -14,6 +14,8 @@ function LoginPanel() {
     const [password, setPassword] = useState('');
     const [usrID, setUsrID] = useState(0);
 
+    const refDialog = useRef(null);
+
     function handleChange(event) {
 
         const name = event.target.name
@@ -27,6 +29,7 @@ function LoginPanel() {
 
     function handleSubmit(event) {
 
+        console.log(event);
         event.preventDefault();
         fetchUsr();
     }
@@ -70,13 +73,13 @@ function LoginPanel() {
                         <br></br>
                         <div className='row'>
                             <div className='offset-sm-1 col-sm-10'>
-                                <form onSubmit={(event) => handleSubmit(event)}>
+                                <form onSubmit={(event) => { handleSubmit({ event }) }}>
                                     <div className="form-group row">
                                         <div className="col-sm-3 d-flex align-items-center">
                                             <h6 for="exampleInputEmail1" className='m-0'>Email:</h6>
                                         </div>
                                         <div className="col-sm-9">
-                                            <input type="email" name="email" value={email} onChange={handleChange()} className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" />
+                                            <input type="email" name="email" value={email} onChange={(email) => { setEmail({ email }) }} className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" />
                                         </div>
                                     </div>
                                     <br></br>
@@ -85,7 +88,7 @@ function LoginPanel() {
                                             <h6 for="exampleInputPassword1" className='m-0'>Password:</h6>
                                         </div>
                                         <div className="col-sm-9">
-                                            <input type="password" name="password" value={password} onChange={handleChange()} className="form-control" id="exampleInputPassword1" placeholder="Password" />
+                                            <input type="password" name="password" value={password} onChange={(password) => { setPassword({ password }) }} className="form-control" id="exampleInputPassword1" placeholder="Password" />
                                         </div>
                                     </div>
                                     <br></br>
@@ -95,7 +98,7 @@ function LoginPanel() {
                         </div>
                     </div>
                 </div>
-            <DialogBox ref={this.refDialog} />
+            <DialogBox ref={refDialog} />
             {toDashboard}
             </div>
         
