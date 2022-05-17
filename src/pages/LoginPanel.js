@@ -1,68 +1,61 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './LoginPanel.css';
 import DialogBox from '../component/DialogBox';
 import logo_redix from '../img/logo_redix.svg';
 import { sha256 } from 'js-sha256';
 import {Navigate, Route, useNavigate} from 'react-router-dom';
 
-class LoginPanel extends React.Component{
+function LoginPanel() {
 
-    constructor(props){
+    let toDashboard;
 
-        super(props);
-        this.state = {
+    const [email, setEmail] = useState('');
+    const [name, setName] = useState('');
+    const [password, setPassword] = useState('');
+    const [usrID, setUsrID] = useState(0);
 
-            email: "",
-            name: "",
-            password: "",
-            usrID: 0
-        }
-        
-        this.refDialog = React.createRef();
-
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-    }
-
-    handleChange(event) {
+    function handleChange(event) {
 
         const name = event.target.name
-        this.setState({[name]: event.target.value});
+        if (name === 'email') {
+            setEmail(event.target.value);
+        } else if (name === 'password') {
+            setPassword(event.target.value);
+        }
+        
     }
 
-    handleSubmit(event) {
+    function handleSubmit(event) {
 
-        this.fetchUsr();
         event.preventDefault();
+        fetchUsr();
     }
 
-    fetchUsr() {
+    function fetchUsr(){
 
-        fetch('http://localhost:3001/checkUsr/'+this.state.email+'/'+sha256(this.state.password))
+        fetch('http://localhost:3001/checkUsr/'+email+'/'+sha256(password))
         .then(response => response.json())
         .then (response => {
             
             console.log(response);
-            this.setState({
-                email: response[0]['usrEmail'],
-                name: response[0]['usrName'],
-                usrID: response[0]['usrID']
-            });
+
+            setEmail(response[0]['usrEmail']);
+            setName(response[0]['usrName']);
+            setUsrID(response[0]['usrID']);
         })
         .catch();
     }
 
-    render(){
+    useEffect(() => {
 
-        let toDashboard;
-
-        if (this.state.usrID != 0)
-            toDashboard = <Navigate to='/dashboard' replace={true} state={{usrID : this.state.usrID, usrName: this.state.name, usrEmail: this.state.email}}/>
+        if (usrID != 0)
+            toDashboard = <Navigate to='/dashboard' replace={true} state={{usrID : usrID, usrName: name, usrEmail: email}}/>
         else 
             toDashboard = '';
-        
+    });
 
-        return (
+    return (
+        
             <div className="container-fluid d-flex align-items-center justify-content-center w-100 p-0" style={{"height":"100vh"}}>
                 <div className="LoginPanel row d-flex align-items-center h-50 w-100">
                     <div className="col-sm-4 d-flex align-items-center justify-content-center">
@@ -77,13 +70,13 @@ class LoginPanel extends React.Component{
                         <br></br>
                         <div className='row'>
                             <div className='offset-sm-1 col-sm-10'>
-                                <form onSubmit={this.handleSubmit}>
+                                <form onSubmit={(event) => handleSubmit(event)}>
                                     <div className="form-group row">
                                         <div className="col-sm-3 d-flex align-items-center">
                                             <h6 for="exampleInputEmail1" className='m-0'>Email:</h6>
                                         </div>
                                         <div className="col-sm-9">
-                                            <input type="email" name="email" value={this.state.email} onChange={this.handleChange} className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" />
+                                            <input type="email" name="email" value={email} onChange={handleChange()} className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" />
                                         </div>
                                     </div>
                                     <br></br>
@@ -92,7 +85,7 @@ class LoginPanel extends React.Component{
                                             <h6 for="exampleInputPassword1" className='m-0'>Password:</h6>
                                         </div>
                                         <div className="col-sm-9">
-                                            <input type="password" name="password" value={this.state.password} onChange={this.handleChange} className="form-control" id="exampleInputPassword1" placeholder="Password" />
+                                            <input type="password" name="password" value={password} onChange={handleChange()} className="form-control" id="exampleInputPassword1" placeholder="Password" />
                                         </div>
                                     </div>
                                     <br></br>
@@ -105,8 +98,8 @@ class LoginPanel extends React.Component{
             <DialogBox ref={this.refDialog} />
             {toDashboard}
             </div>
-        );
-    }
+        
+    );
 }
 
 export default LoginPanel;
