@@ -7,11 +7,11 @@ import {Navigate, Route, useNavigate} from 'react-router-dom';
 
 function LoginPanel() {
 
-    let toDashboard;
+    let navigate = useNavigate();
 
-    const [email, setEmail] = useState('');
-    const [name, setName] = useState('');
-    const [password, setPassword] = useState('');
+    const [usrEmail, setEmail] = useState('');
+    const [usrName, setName] = useState('');
+    const [usrPassword, setPassword] = useState('');
     const [usrID, setUsrID] = useState(0);
 
     const refDialog = useRef(null);
@@ -19,6 +19,7 @@ function LoginPanel() {
     function handleChange(event) {
 
         const name = event.target.name
+
         if (name === 'email') {
             setEmail(event.target.value);
         } else if (name === 'password') {
@@ -28,79 +29,71 @@ function LoginPanel() {
     }
 
     function handleSubmit(event) {
-
-        console.log(event);
-        event.preventDefault();
         fetchUsr();
+        event.preventDefault();
     }
 
-    function fetchUsr(){
+     async function fetchUsr(){
 
-        fetch('http://localhost:3001/checkUsr/'+email+'/'+sha256(password))
+        fetch('http://localhost:3001/checkUsr/'+usrEmail+'/'+sha256(usrPassword))
         .then(response => response.json())
         .then (response => {
-            
-            console.log(response);
 
             setEmail(response[0]['usrEmail']);
             setName(response[0]['usrName']);
             setUsrID(response[0]['usrID']);
+
+            console.log(response[0]);
+            console.log('state: '+usrID+' - '+usrName+' - '+usrEmail);
+
+            navigate("/dashboard", {replace: true, state:{usrID : usrID, usrName: usrName, usrEmail: usrEmail}});
         })
         .catch();
     }
 
-    useEffect(() => {
-
-        if (usrID != 0)
-            toDashboard = <Navigate to='/dashboard' replace={true} state={{usrID : usrID, usrName: name, usrEmail: email}}/>
-        else 
-            toDashboard = '';
-    });
-
     return (
         
-            <div className="container-fluid d-flex align-items-center justify-content-center w-100 p-0" style={{"height":"100vh"}}>
-                <div className="LoginPanel row d-flex align-items-center h-50 w-100">
-                    <div className="col-sm-4 d-flex align-items-center justify-content-center">
-                        <img src={logo_redix} alt="logo_redix" className="img-fluid w-50 h-auto"></img>
-                    </div>
-                    <div className="col-sm-4">
-                        <div className="row">
-                            <div className='offset-sm-1 col-sm-10'>
-                                <h5>Please Log On:</h5>
-                            </div>
+        <div className="container-fluid d-flex align-items-center justify-content-center w-100 p-0" style={{"height":"100vh"}}>
+            <div className="LoginPanel row d-flex align-items-center h-50 w-100">
+                <div className="col-sm-4 d-flex align-items-center justify-content-center">
+                    <img src={logo_redix} alt="logo_redix" className="img-fluid w-50 h-auto"></img>
+                </div>
+                <div className="col-sm-4">
+                    <div className="row">
+                        <div className='offset-sm-1 col-sm-10'>
+                            <h5>Please Log On:</h5>
                         </div>
-                        <br></br>
-                        <div className='row'>
-                            <div className='offset-sm-1 col-sm-10'>
-                                <form onSubmit={(event) => { handleSubmit({ event }) }}>
-                                    <div className="form-group row">
-                                        <div className="col-sm-3 d-flex align-items-center">
-                                            <h6 for="exampleInputEmail1" className='m-0'>Email:</h6>
-                                        </div>
-                                        <div className="col-sm-9">
-                                            <input type="email" name="email" value={email} onChange={(email) => { setEmail({ email }) }} className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" />
-                                        </div>
+                    </div>
+                    <br></br>
+                    <div className='row'>
+                        <div className='offset-sm-1 col-sm-10'>
+                            <form onSubmit={handleSubmit}>
+                                <div className="form-group row">
+                                    <div className="col-sm-3 d-flex align-items-center">
+                                        <h6 for="exampleInputEmail1" className='m-0'>Email:</h6>
                                     </div>
-                                    <br></br>
-                                    <div className="form-group row">
-                                        <div className="col-sm-3 d-flex align-items-center">
-                                            <h6 for="exampleInputPassword1" className='m-0'>Password:</h6>
-                                        </div>
-                                        <div className="col-sm-9">
-                                            <input type="password" name="password" value={password} onChange={(password) => { setPassword({ password }) }} className="form-control" id="exampleInputPassword1" placeholder="Password" />
-                                        </div>
+                                    <div className="col-sm-9">
+                                        <input type="email" name="email" value={usrEmail} onChange={(event) => {handleChange(event)}} className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" />
                                     </div>
-                                    <br></br>
-                                    <button type="submit" className="btn btn-primary w-100">Submit</button>
-                                </form>
-                            </div>
+                                </div>
+                                <br></br>
+                                <div className="form-group row">
+                                    <div className="col-sm-3 d-flex align-items-center">
+                                        <h6 for="exampleInputPassword1" className='m-0'>Password:</h6>
+                                    </div>
+                                    <div className="col-sm-9">
+                                        <input type="password" name="password" value={usrPassword} onChange={(event) => {handleChange(event) }} className="form-control" id="exampleInputPassword1" placeholder="Password" />
+                                    </div>
+                                </div>
+                                <br></br>
+                                <button type="submit" className="btn btn-primary w-100">Submit</button>
+                            </form>
                         </div>
                     </div>
                 </div>
-            <DialogBox ref={refDialog} />
-            {toDashboard}
             </div>
+        <DialogBox ref={refDialog} />
+        </div>
         
     );
 }

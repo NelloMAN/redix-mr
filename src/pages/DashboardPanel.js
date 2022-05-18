@@ -11,6 +11,7 @@ import WorkTable from '../component/data-table/WorkTable';
 function DashboardPanel() {
 
     const location = useLocation();
+    console.log(location.state);
 
     return (
         <div>
