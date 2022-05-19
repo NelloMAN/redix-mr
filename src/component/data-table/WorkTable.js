@@ -4,13 +4,13 @@ function WorkTable(props) {
 
 	const [workDays, setWorkDays] = useState([]);
 
-	console.log(props.usrID + " - " +props.month);
-
     useEffect(() => {
 		fetchWorkDay();
     }, []);
 
     async function fetchWorkDay(){
+
+		console.log(props.usrID + " - " +props.month);
 
         await fetch('http://localhost:3001/getUsrWrkDay/'+props.usrID+'/'+props.month)
         .then(response => response.json())

@@ -20,6 +20,8 @@ function DashboardPanel() {
     // const [usrName, setName] = useState('');
     // const [selectedMonth, setSelectedMonth] = useState(0);
 
+    //https://stackoverflow.com/questions/63281536/react-hooks-how-to-wait-for-the-data-to-be-fetched-before-rendering
+
     useEffect(() => {
 
         fetch('http://localhost:3001/getUsrMonth/'+location.state.usrID)
