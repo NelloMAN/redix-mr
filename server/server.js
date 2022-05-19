@@ -23,11 +23,23 @@ app.listen(PORT, () => {
 
 app.get('/checkUsr/:email/:pwd', (req, res) => {
 
-  connection.query("SELECT * FROM usr where usrEmail = '"+req.params.email+"' and usrPwd = '"+req.params.pwd+"'", (err, result) => {
+  connection.query("SELECT usrID FROM usr where usrEmail = '"+req.params.email+"' and usrPwd = '"+req.params.pwd+"'", (err, result) => {
     if (err) {
       console.log("ERROR CHECKUSR: "+err);
     } else {
-      console.log(result);
+      //console.log(result);
+      res.send(result);
+    }
+  })
+});
+
+app.get('/getUsrMonth/:usrID', (req, res) => {
+
+  connection.query("select usrID, usrEmail, usrName, max(month(wrkdDay)) as lastMonth from usr u left join work_day wd on wd.wrkdUsrID = u.usrID where usrID = "+req.params.usrID+" group by usrID", (err, result) => {
+    if (err) {
+      console.log("ERROR CHECKUSR: "+err);
+    } else {
+      //console.log(result);
       res.send(result);
     }
   })
@@ -39,7 +51,7 @@ app.get('/setTimeName', (req, res) => {
     if (err) {
       console.log("ERROR setTimeName: "+err);
     } else {
-      console.log(result);
+      //console.log(result);
       res.send(result);
     }
   })
@@ -51,8 +63,22 @@ app.get('/getMonths/:usrID', (req, res) => {
     if (err) {
       console.log("ERROR getMonths: "+err);
     } else {
-      console.log(result);
+      //console.log(result);
       res.send(result);
     }
   })
+
+
+  app.get('/getUsrWrkDay/:usrID/:month', (req, res) => {
+
+    connection.query("select * from work_day where wrkdUsrID = "+req.params.usrID+" and month(wrkdDay) = "+req.params.month, (err, result) => {
+      if (err) {
+        console.log("ERROR getMonths: "+err);
+      } else {
+        console.log(result);
+        res.send(result);
+      }
+    })
+  })
+
 });

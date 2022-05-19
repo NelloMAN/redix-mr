@@ -1,23 +1,23 @@
-import React from "react";
-import { useLocation } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
 
-function WorkTable() {
-	const location = useLocation();
+function WorkTable(props) {
 
-    function fetchWorkDay(){
+	const [workDays, setWorkDays] = useState([]);
 
-        // fetch('http://localhost:3001/getWorkDay/'+this.state.email+'/'+sha256(this.state.password))
-        // .then(response => response.json())
-        // .then (response => {
-            
-        //     console.log(response);
-        //     this.setState({
-        //         email: response[0]['usrEmail'],
-        //         name: response[0]['usrName'],
-        //         usrID: response[0]['usrID']
-        //     });
-        // })
-        // .catch();
+	console.log(props.usrID + " - " +props.month);
+
+    useEffect(() => {
+		fetchWorkDay();
+    }, []);
+
+    async function fetchWorkDay(){
+
+        await fetch('http://localhost:3001/getUsrWrkDay/'+props.usrID+'/'+props.month)
+        .then(response => response.json())
+        .then (response => {
+			console.log(response);
+        })
+        .catch();
     }
 
 	return (
@@ -49,7 +49,7 @@ function WorkTable() {
 				</tr>
 				<tr>
 					<th scope="row">3</th>
-					<td colspan="2">Larry the Bird</td>
+					<td colSpan="2">Larry the Bird</td>
 					<td>@twitter</td>
 				</tr>
 			</tbody>

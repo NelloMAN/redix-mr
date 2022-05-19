@@ -1,58 +1,54 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './MonthComboBox.css';
 
-class MonthComboBox extends React.Component {
+function MonthComboBox(props) {
 
-    constructor(props) {
+    const [selectedMonth, setSelectedMonth] = useState(1)
+    const [months, setMonths] = useState([]);
 
-        super(props);
-        this.state = {
-            months:[]
-        }
-    }
+    useEffect(() => {
 
-    componentDidMount() {
+        setTimeName();
+        fetchMonths();
+    }, []);
 
-        this.setTimeName();
-        this.fetchMonths();
-    }
 
-    async setTimeName() {
+    async function setTimeName() {
 
         await fetch('http://localhost:3001/setTimeName')
         .then(response => response.json())
         .then (response => {
-            
-            console.log(response[0]);
         })
         .catch();
     }
 
-    async fetchMonths() {
+    async function fetchMonths() {
 
-        await fetch('http://localhost:3001/getMonths/'+this.props.usrID)
+        await fetch('http://localhost:3001/getMonths/'+props.usrID)
         .then(response => response.json())
         .then (response => {
-            
-            console.log(response);
-            this.setState({months: response});
-            console.log(this.state.months);
+            setMonths(response);
         })
         .catch();
     }
 
-    render() {
+    function changeHandler(event) {
 
-        return (
-            <select className="form-select rmr_select w-50" aria-label="Default select example">
-                {
-                    this.state.months.map((m, i) =>
-                        <option value={i}>{m.monthName}</option>
-                    )
-                }
-            </select>
-        );
+        // const value = event.value
+        // setSelectedMonth(value)
     }
+
+    return (
+
+        <select className="form-select rmr_select w-50" aria-label="Default select example" onChange={changeHandler()}>
+            {
+                months.map((m, i) =>
+                    <option value={i}>{m.monthName}</option>
+                )
+            }
+        </select>
+        
+    )
 }
 
 export default MonthComboBox;

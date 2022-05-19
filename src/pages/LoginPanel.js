@@ -39,14 +39,9 @@ function LoginPanel() {
         .then(response => response.json())
         .then (response => {
 
-            setEmail(response[0]['usrEmail']);
-            setName(response[0]['usrName']);
-            setUsrID(response[0]['usrID']);
-
-            console.log(response[0]);
-            console.log('state: '+usrID+' - '+usrName+' - '+usrEmail);
-
-            navigate("/dashboard", {replace: true, state:{usrID : usrID, usrName: usrName, usrEmail: usrEmail}});
+            if (Object.keys(response).length > 0) {
+                navigate("/dashboard", {replace: true, state:{usrID : response[0].usrID}});
+            }
         })
         .catch();
     }

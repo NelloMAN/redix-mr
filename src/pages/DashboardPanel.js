@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './DashboardPanel.css';
 import logo_redix from '../img/logo_redix.svg';
 import Hamburger from 'hamburger-react'
-import MaterialTable from 'material-table';
 import MonthComboBox from '../component/MonthComboBox';
 import {useLocation} from 'react-router-dom';
 import WorkTable from '../component/data-table/WorkTable';
@@ -11,7 +10,30 @@ import WorkTable from '../component/data-table/WorkTable';
 function DashboardPanel() {
 
     const location = useLocation();
-    console.log(location.state);
+
+    const [usrData, setUsrData] = useState({
+        usrEmail:"",
+        usrName:"",
+        selectedMonth: 0
+    });
+    // const [usrEmail, setEmail] = useState('');
+    // const [usrName, setName] = useState('');
+    // const [selectedMonth, setSelectedMonth] = useState(0);
+
+    useEffect(() => {
+
+        fetch('http://localhost:3001/getUsrMonth/'+location.state.usrID)
+        .then(response => response.json())
+        .then (response => {
+
+            setUsrData({
+                usrEmail: response[0].usrEmail,
+                usrName:  response[0].usrName,
+                selectedMonth: response[0].lastMonth
+            });
+        })
+        .catch();
+    }, []);
 
     return (
         <div>
@@ -27,7 +49,7 @@ function DashboardPanel() {
                     </div>
                     <div className='row header-name'>
                         <div className='col-sm-3 ps-3 pt-1 pb-1'>
-                            <p className='m-0'>Bentornato {location.state.usrName} ({location.state.usrEmail})</p>
+                            <p className='m-0'>Bentornato {usrData.usrName} ({usrData.usrEmail})</p>
                         </div>
                         <div className='offset-sm-8 col-sm-1 ps-3 pt-1 pb-1'>
                             <p className='m-0'> versione 1.0</p>
@@ -56,7 +78,7 @@ function DashboardPanel() {
                                 data={[{ name: 'Mehmet', surname: 'Baran', birthYear: 1987, birthCity: 63 }]}
                                 title="Demo Title"
                             />  */}
-                            <WorkTable usrID={location.state.usrID} month=''/>
+                            <WorkTable usrID={location.state.usrID} month={usrData.selectedMonth}/>
                         </div>
                         <div className='col-sm-4'>
                             {/* resume table */}
