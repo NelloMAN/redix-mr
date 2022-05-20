@@ -20,8 +20,6 @@ function DashboardPanel() {
     // const [usrName, setName] = useState('');
     // const [selectedMonth, setSelectedMonth] = useState(0);
 
-    //https://stackoverflow.com/questions/63281536/react-hooks-how-to-wait-for-the-data-to-be-fetched-before-rendering
-
     useEffect(() => {
 
         fetch('http://localhost:3001/getUsrMonth/'+location.state.usrID)
@@ -35,7 +33,11 @@ function DashboardPanel() {
             });
         })
         .catch();
-    }, []);
+    });
+
+    if (usrData.usrEmail === "") {
+        return <p>Loading</p>
+    }
 
     return (
         <div>
@@ -50,11 +52,11 @@ function DashboardPanel() {
                         </div>
                     </div>
                     <div className='row header-name'>
-                        <div className='col-sm-3 ps-3 pt-1 pb-1'>
+                        <div className='col-sm-4 ps-3 pt-1 pb-1'>
                             <p className='m-0'>Bentornato {usrData.usrName} ({usrData.usrEmail})</p>
                         </div>
-                        <div className='offset-sm-8 col-sm-1 ps-3 pt-1 pb-1'>
-                            <p className='m-0'> versione 1.0</p>
+                        <div className='offset-sm-6 col-sm-2 ps-3 pt-1 pb-1'>
+                            <p className='m-0 text-end'> versione 1.0</p>
                         </div>
                     </div>
                 </div>

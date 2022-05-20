@@ -43,7 +43,7 @@ function MonthComboBox(props) {
         <select className="form-select rmr_select w-50" aria-label="Default select example" onChange={changeHandler()}>
             {
                 months.map((m, i) =>
-                    <option value={i}>{m.monthName}</option>
+                    <option value={i} key={i}>{m.monthName}</option>
                 )
             }
         </select>

@@ -71,11 +71,13 @@ app.get('/getMonths/:usrID', (req, res) => {
 
   app.get('/getUsrWrkDay/:usrID/:month', (req, res) => {
 
-    connection.query("select * from work_day where wrkdUsrID = "+req.params.usrID+" and month(wrkdDay) = "+req.params.month, (err, result) => {
+    console.log('getUsrWrkDay --> select date_format(wrkdDay, "%d-%m-%Y") as wrkdDay, wrkdSpecsID, wrkdUsrID, wrkdActivity, wrkdActivityType, wrkdActivityHour, wrkdSqdID, wrkdCdc from work_day where wrkdUsrID = '+req.params.usrID+' and month(wrkdDay) = '+req.params.month);
+
+    connection.query('select date_format(wrkdDay, "%d-%m-%Y") as wrkdDay, wrkdSpecsID, wrkdUsrID, wrkdActivity, wrkdActivityType, wrkdActivityHour, wrkdSqdID, wrkdCdc from work_day where wrkdUsrID = '+req.params.usrID+' and month(wrkdDay) = '+req.params.month, (err, result) => {
       if (err) {
         console.log("ERROR getMonths: "+err);
       } else {
-        console.log(result);
+        //console.log(result);
         res.send(result);
       }
     })
