@@ -33,7 +33,7 @@ function DashboardPanel() {
             });
         })
         .catch();
-    });
+    }, []);
 
     if (usrData.usrEmail === "") {
         return <p>Loading</p>

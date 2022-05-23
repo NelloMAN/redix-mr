@@ -1,3 +1,11 @@
 .work-row {
     font-size: 0.8rem;;
 }
+
+.specs-inactive {
+    color:darkgrey;
+}
+
+.specs-active {
+    color:tomato;
+}

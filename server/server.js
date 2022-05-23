@@ -71,14 +71,40 @@ app.get('/getMonths/:usrID', (req, res) => {
 
   app.get('/getUsrWrkDay/:usrID/:month', (req, res) => {
 
-    console.log('getUsrWrkDay --> select date_format(wrkdDay, "%d-%m-%Y") as wrkdDay, wrkdSpecsID, wrkdUsrID, wrkdActivity, wrkdActivityType, wrkdActivityHour, wrkdSqdID, wrkdCdc from work_day where wrkdUsrID = '+req.params.usrID+' and month(wrkdDay) = '+req.params.month);
+    let query = 'select date_format(wrkdDay, "%d-%m-%Y") as wrkdDay, wrkdSpecsID, wrkdUsrID, wrkdActivity, wrkdActivityType, wrkdActivityHour, sqdName, wrkdCdc \
+                from work_day w \
+                inner join squad s on s.sqdID = w.wrkdSqdID \
+                where wrkdUsrID = '+req.params.usrID+' and month(wrkdDay) = '+req.params.month+' \
+                order by wrkdDay asc';
 
-    connection.query('select date_format(wrkdDay, "%d-%m-%Y") as wrkdDay, wrkdSpecsID, wrkdUsrID, wrkdActivity, wrkdActivityType, wrkdActivityHour, wrkdSqdID, wrkdCdc from work_day where wrkdUsrID = '+req.params.usrID+' and month(wrkdDay) = '+req.params.month, (err, result) => {
+                console.log('getUsrWrkDay --> '+query);                
+
+    connection.query(query, (err, result) => {
       if (err) {
         console.log("ERROR getMonths: "+err);
       } else {
         //console.log(result);
-        res.send(result);
+
+        let processedDate = new Map();
+
+        result.forEach(row => {
+
+          if (!processedDate.has(row['wrkdDay'])) {
+
+            let dayTable = [];
+            dayTable.push(row);
+
+            processedDate.set(row['wrkdDay'], dayTable);
+          } else {
+
+            let tempArray = processedDate.get(row['wrkdDay']);
+            tempArray.push(row);
+            processedDate.set(row['wrkdDay'], tempArray);
+          }
+
+        });
+
+        res.send(processedDate);
       }
     })
   })
