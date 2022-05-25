@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import './WorkRow.css';
 import {GiPalmTree} from 'react-icons/gi';
 import {BiPlusMedical} from 'react-icons/bi';
@@ -7,7 +7,13 @@ import {VscRemoteExplorer} from 'react-icons/vsc';
 
 function WorkRow(props) {
 
+	useEffect(() => {
+		console.log(props)
+	}, [])
+
 	function setSpecification() {
+
+		console.log(props.workDetails);
 
 		switch (props.workDetails.wrkdSpecsID) {
 			case 5:
@@ -26,6 +32,7 @@ function WorkRow(props) {
 	}
 
 	return (
+		
 		<tr key={props.index} className="work-row">
 			<td>{props.workDetails.wrkdDay}</td>
 			{setSpecification()}
