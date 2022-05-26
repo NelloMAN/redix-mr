@@ -29,16 +29,6 @@ function WorkTable(props) {
 
 	function fillTable() {
 
-		// Object.keys(workDays).map((key) => {
-			
-		// 	var wday = workDays[key];
-
-		// 	return (
-		// 		wday[1].map((w, i) => (
-		// 			<WorkRow workDetails={w} index={w.wrkdID} />
-		// 		))
-		// 	);
-		// })
 		workDays.map((wd, i) => {
 			return (
 				wd[1].map((w,i)=>{
@@ -64,9 +54,17 @@ function WorkTable(props) {
 				</tr>
 			</thead>
 			<tbody>				
-				{
-					fillTable()
-				} 
+				{workDays.map((subArray, index) => {
+					return (
+						<React.Fragment>
+							{
+								subArray[1].map((w, i) => {
+									return (<WorkRow workDetails={w} index={w.wrkdID} showDet={ i === 0 ? true : false}/>);
+								}
+							)}
+						</React.Fragment>
+					);
+				})}
 			</tbody>
 		</table>
 	);
