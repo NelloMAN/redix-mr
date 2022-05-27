@@ -8,8 +8,8 @@ function MonthComboBox(props) {
 
     useEffect(() => {
 
+        setSelectedMonth(props.month);
         setTimeName();
-        fetchMonths();
     }, []);
 
 
@@ -18,6 +18,7 @@ function MonthComboBox(props) {
         await fetch('http://localhost:3001/setTimeName')
         .then(response => response.json())
         .then (response => {
+            fetchMonths();
         })
         .catch();
     }
@@ -32,18 +33,20 @@ function MonthComboBox(props) {
         .catch();
     }
 
-    function changeHandler(event) {
+    //Gestione cambio mese: chiamo funzione DashboardPanel che chiamerà funzione WorkTable per aggiornare i dati
+    function changeHandler(e) {
 
-        // const value = event.value
-        // setSelectedMonth(value)
+        setSelectedMonth(e.target.value);
+        console.log(e.target.value);
+        props.OnMonthChange(e.target.value);
     }
 
     return (
 
-        <select className="form-select rmr_select w-50" aria-label="Default select example" onChange={changeHandler()}>
+        <select className="form-select rmr_select w-50" value={selectedMonth} aria-label="Default select example" onChange={(event) => {changeHandler(event) }}>
             {
                 months.map((m, i) =>
-                    <option value={i} key={i}>{m.monthName}</option>
+                    <option value={m.monthNumb} key={m.monthNumb}>{m.monthName}</option>
                 )
             }
         </select>

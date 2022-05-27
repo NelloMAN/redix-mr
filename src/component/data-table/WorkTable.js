@@ -1,43 +1,36 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useImperativeHandle } from "react";
 import axios from "axios";
 import WorkRow from "./WorkRow";
 import "./WorkTable.css";
 
-function WorkTable(props) {
+const WorkTable = React.forwardRef((props, ref) => {
 	
 	const [workDays, setWorkDays] = useState([]);
+	const [selectedMonth, setMonth] = useState(0);
+	
 
-	useEffect(function effectFunction() {
+	useImperativeHandle(ref, () => ({
+		wtMonthChange(newM) {
+			setMonth(newM);
+		},
+	}))
+
+	useEffect(() => {
 
 		console.log('fetching');
 
-		axios.get('http://localhost:3001/getUsrWrkDay/' +props.usrID +'/' +props.month)
+		let qMonth = selectedMonth === 0 ? props.month : selectedMonth;
+
+		axios.get('http://localhost:3001/getUsrWrkDay/' +props.usrID +'/' + qMonth)
 		.then(res => {
 		  setWorkDays(res.data);
 		})
 
-		// fetch('http://localhost:3001/getUsrWrkDay/' +props.usrID +'/' +props.month)
-		// 	.then(response => response.json())
-		// 	.then((aaa) => {
-		// 		setWorkDays(aaa);
-		// 	});
-	}, []);
+	}, [selectedMonth]);
 
 	if (workDays.length === 0) {
         return <p>Loading</p>
     }
-
-	function fillTable() {
-
-		workDays.map((wd, i) => {
-			return (
-				wd[1].map((w,i)=>{
-					return <WorkRow workDetails={w} index={w.wrkdID} />
-				})
-			)
-		})
-
-	}
  
 	return (
 
@@ -68,6 +61,6 @@ function WorkTable(props) {
 			</tbody>
 		</table>
 	);
-}
+})
 
 export default WorkTable;

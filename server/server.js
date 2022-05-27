@@ -59,7 +59,7 @@ app.get('/setTimeName', (req, res) => {
 
 app.get('/getMonths/:usrID', (req, res) => {
 
-  connection.query("select distinct monthname(wrkdDay) as monthName from work_day where wrkdUsrID = "+req.params.usrID+"", (err, result) => {
+  connection.query("select distinct month(wrkdDay) as monthNumb, monthname(wrkdDay) as monthName from work_day where wrkdUsrID = "+req.params.usrID+"", (err, result) => {
     if (err) {
       console.log("ERROR getMonths: "+err);
     } else {

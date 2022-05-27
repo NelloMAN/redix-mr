@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import './DashboardPanel.css';
 import logo_redix from '../img/logo_redix.svg';
 import Hamburger from 'hamburger-react'
@@ -10,15 +10,13 @@ import WorkTable from '../component/data-table/WorkTable';
 function DashboardPanel() {
 
     const location = useLocation();
+    const wtRef = useRef(null)
 
     const [usrData, setUsrData] = useState({
         usrEmail:"",
         usrName:"",
         selectedMonth: 0
     });
-    // const [usrEmail, setEmail] = useState('');
-    // const [usrName, setName] = useState('');
-    // const [selectedMonth, setSelectedMonth] = useState(0);
 
     useEffect(() => {
 
@@ -33,10 +31,20 @@ function DashboardPanel() {
             });
         })
         .catch();
-    }, []);
+    },[]);
 
     if (usrData.usrEmail === "") {
         return <p>Loading</p>
+    }
+
+    //Funzione callback di MonthComboBox: quando viene cambiato il mese viene aggiornata anche la WorkTable
+    function monthChange(m) {
+
+        if (wtRef.current) {
+
+            //Funzione per cambiare i dati della WorkTable
+            wtRef.current.wtMonthChange(m);
+        }
     }
 
     return (
@@ -66,13 +74,13 @@ function DashboardPanel() {
                 <div className='container-fluid'>
                     <div className='row'>
                         <div className='col-sm-4'>
-                            <MonthComboBox usrID={location.state.usrID} /> 
+                            <MonthComboBox usrID={location.state.usrID} month={usrData.selectedMonth} OnMonthChange= {(m) => {monthChange(m)}}/> 
                         </div>
                     </div>
                     <br></br>
                     <div className='row'>
                         <div className='col-sm-8'>
-                            <WorkTable usrID={location.state.usrID} month={usrData.selectedMonth}/>
+                            <WorkTable usrID={location.state.usrID} month={usrData.selectedMonth} ref={wtRef} />
                         </div>
                         <div className='col-sm-4'>
                             {/* resume table */}
