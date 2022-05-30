@@ -5,6 +5,7 @@ import Hamburger from 'hamburger-react'
 import MonthComboBox from '../component/MonthComboBox';
 import {useLocation} from 'react-router-dom';
 import WorkTable from '../component/data-table/WorkTable';
+import SumTable from '../component/data-table/SumTable';
 
 
 function DashboardPanel() {
@@ -83,7 +84,7 @@ function DashboardPanel() {
                             <WorkTable usrID={location.state.usrID} month={usrData.selectedMonth} ref={wtRef} />
                         </div>
                         <div className='col-sm-4'>
-                            {/* resume table */}
+                            {<SumTable/>}
                         </div>
                     </div>
                 </div>

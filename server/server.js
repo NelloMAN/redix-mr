@@ -79,7 +79,6 @@ app.get('/getMonths/:usrID', (req, res) => {
       if (err) {
         console.log("ERROR getMonths: "+err);
       } else {
-        console.log(result);
 
         let processedDate = new Map();
 
