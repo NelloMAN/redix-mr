@@ -5,7 +5,7 @@ import {ImAirplane} from 'react-icons/im';
 import {VscRemoteExplorer} from 'react-icons/vsc';
 import {BsClockHistory} from 'react-icons/bs';
 import $ from 'jquery';
-import './SpecificationCell.css';
+import './css/SpecificationCell.css';
 
 function SpecificationCell(props) {
 

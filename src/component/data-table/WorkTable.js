@@ -8,6 +8,7 @@ const WorkTable = React.forwardRef((props, ref) => {
 	const [newWorkDays, addNewWorkDays] = useState([]);
 	const [workDays, setWorkDays] = useState([]);
 	const [selectedMonth, setMonth] = useState(0);
+	const [squadArray, setSquad] = useState([]);
 	
 
 	useImperativeHandle(ref, () => ({
@@ -21,16 +22,23 @@ const WorkTable = React.forwardRef((props, ref) => {
 
 	useEffect(() => {
 
+		axios.get('http://localhost:3001/getSquad')
+		.then(res => {
+		   setSquad(res.data);
+		});
+
 		let qMonth = selectedMonth === 0 ? props.month : selectedMonth;
 
 		axios.get('http://localhost:3001/getUsrWrkDay/' +props.usrID +'/' + qMonth)
 		.then(res => {
 		  setWorkDays(res.data);
-		})
+		});
+
+		console.log(newWorkDays);
 
 	}, [selectedMonth, newWorkDays]);
 
-	if (workDays.length === 0) {
+	if (workDays.length === 0 && squadArray.length === 0) {
         return <p>Loading</p>
     }
  
@@ -52,7 +60,7 @@ const WorkTable = React.forwardRef((props, ref) => {
 				<React.Fragment>
 					{
 						newWorkDays.map((nr, i) => {
-							return (<WorkRow workDetails={nr} index="0" showDet="true" state="new"/>);
+							return (<WorkRow workDetails={nr} index="0" showDet="true" state="new" squadArray={squadArray}/>);
 						})
 					}
 				</React.Fragment>		
@@ -62,7 +70,7 @@ const WorkTable = React.forwardRef((props, ref) => {
 							<React.Fragment>
 								{
 									subArray[1].map((w, i) => {
-										return (<WorkRow workDetails={w} index={w.wrkdID} showDet={ i === 0 ? true : false} state="existed"/>);
+										return (<WorkRow workDetails={w} index={w.wrkdID} showDet={ i === 0 ? true : false} state="existed" squadArray={squadArray}/>);
 									}
 								)}
 							</React.Fragment>

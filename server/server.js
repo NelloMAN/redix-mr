@@ -21,6 +21,8 @@ app.listen(PORT, () => {
   console.log('Server listening on '+PORT);
 });
 
+
+// checkUsr: verifica dell'esistenza dell'utente
 app.get('/checkUsr/:email/:pwd', (req, res) => {
 
   connection.query("SELECT usrID FROM usr where usrEmail = '"+req.params.email+"' and usrPwd = '"+req.params.pwd+"'", (err, result) => {
@@ -33,6 +35,7 @@ app.get('/checkUsr/:email/:pwd', (req, res) => {
   })
 });
 
+// getUsrMonth: recupero i mesi in cui l'utente ha registrato delle attività
 app.get('/getUsrMonth/:usrID', (req, res) => {
 
   connection.query("select usrID, usrEmail, usrName, max(month(wrkdDay)) as lastMonth from usr u left join work_day wd on wd.wrkdUsrID = u.usrID where usrID = "+req.params.usrID+" group by usrID", (err, result) => {
@@ -45,6 +48,7 @@ app.get('/getUsrMonth/:usrID', (req, res) => {
   })
 });
 
+// setTimeName: setto le impostazioni delle date del db in italiano (per avere il nome del mese)
 app.get('/setTimeName', (req, res) => {
 
   connection.query("SET lc_time_names = 'it_IT'", (err, result) => {
@@ -57,6 +61,7 @@ app.get('/setTimeName', (req, res) => {
   })
 });
 
+// getMonth: recupero i mesi in cui l'utente ha registrato delle attività per il componente MonthComboBox
 app.get('/getMonths/:usrID', (req, res) => {
 
   connection.query("select distinct month(wrkdDay) as monthNumb, monthname(wrkdDay) as monthName from work_day where wrkdUsrID = "+req.params.usrID+"", (err, result) => {
@@ -66,12 +71,14 @@ app.get('/getMonths/:usrID', (req, res) => {
       //console.log(result);
       res.send(result);
     }
-  })
+  }
+)
+});
 
+// getUsrWrkDay: recupero le attività dell'utente per il mese selezionato nel componente MonthComboBox
+app.get('/getUsrWrkDay/:usrID/:month', (req, res) => {
 
-  app.get('/getUsrWrkDay/:usrID/:month', (req, res) => {
-
-    let query = 'select wrkdID, date_format(wrkdDay, "%d-%m-%Y") as wrkdDay, wrkdSpecsID, wrkdUsrID, wrkdActivity, wrkdActivityType, wrkdActivityHour, sqdName, wrkdCdc from work_day w inner join squad s on s.sqdID = w.wrkdSqdID where wrkdUsrID = '+req.params.usrID+' and month(wrkdDay) = '+req.params.month+' order by wrkdDay asc';
+    let query = 'select wrkdID, date_format(wrkdDay, "%d-%m-%Y") as wrkdDay, wrkdSpecsID, wrkdUsrID, wrkdActivity, wrkdActivityType, wrkdActivityHour, sqdID, wrkdCdc from work_day w inner join squad s on s.sqdID = w.wrkdSqdID where wrkdUsrID = '+req.params.usrID+' and month(wrkdDay) = '+req.params.month+' order by wrkdDay asc';
 
     console.log('getUsrWrkDay --> '+query);                
 
@@ -104,6 +111,21 @@ app.get('/getMonths/:usrID', (req, res) => {
         res.send(jsonData);
       }
     })
-  })
+  }
+);
 
+// getSquad: recupero tutte le squad per il componente SquadCell
+app.get('/getSquad', (req, res) => {
+
+  connection.query("select sqdID, sqdName from squad", (err, result) => {
+    if (err) {
+      console.log("ERROR getSquad: "+err);
+    } else {
+      //console.log(result);
+      res.send(result);
+    }
+  }
+)
 });
+
+

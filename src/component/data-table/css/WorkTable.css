@@ -24,3 +24,9 @@ table tr:last-child td:last-child {
 .work-table tbody {
     background-color: #EAEEF4;
 }
+
+.table td, 
+.table th {
+    white-space: nowrap;
+    width: 1%;
+}

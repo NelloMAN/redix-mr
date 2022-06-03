@@ -12,9 +12,7 @@ function LoginPanel() {
     let navigate = useNavigate();
 
     const [usrEmail, setEmail] = useState('');
-    const [usrName, setName] = useState('');
     const [usrPassword, setPassword] = useState('');
-    const [usrID, setUsrID] = useState(0);
 
     const refDialog = useRef(null);
 

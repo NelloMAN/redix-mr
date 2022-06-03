@@ -1,0 +1,15 @@
+.specs-cell {
+    letter-spacing: 5px;
+}
+
+.info-icon {
+    cursor: pointer;
+}
+
+/* .specs-inactive {
+    color:darkgrey;
+} */
+
+.specs-active {
+    color:#8aaf3b;
+}
