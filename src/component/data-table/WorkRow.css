@@ -2,10 +2,28 @@
     font-size: 0.8rem;;
 }
 
-.specs-inactive {
-    color:darkgrey;
+input {
+    border-top-style: hidden;
+    border-right-style: hidden;
+    border-left-style: hidden;
+    border-bottom-style: hidden;
+    background-color: #EAEEF4;
 }
 
-.specs-active {
-    color:tomato;
+input:focus,
+input:active {
+  border-color: transparent;
+  background-color: white;
+}
+
+.work-row-new {
+  background-color: #89af3c87;
+}
+
+.work-row-new input {
+  border-top-style: hidden;
+  border-right-style: hidden;
+  border-left-style: hidden;
+  border-bottom-style: hidden;
+  background-color: transparent;
 }

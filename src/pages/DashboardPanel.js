@@ -6,6 +6,7 @@ import MonthComboBox from '../component/MonthComboBox';
 import {useLocation} from 'react-router-dom';
 import WorkTable from '../component/data-table/WorkTable';
 import SumTable from '../component/data-table/SumTable';
+import AddWDButton from '../component/AddWDButton';
 
 
 function DashboardPanel() {
@@ -42,9 +43,18 @@ function DashboardPanel() {
     function monthChange(m) {
 
         if (wtRef.current) {
-
             //Funzione per cambiare i dati della WorkTable
             wtRef.current.wtMonthChange(m);
+        }
+    }
+
+    function wtAddNewRow(newRow) {
+
+        if (wtRef.current) {
+            //Funzione per cambiare i dati della WorkTable
+            console.log("DashboardPanel");
+            console.log(newRow);
+            wtRef.current.wtAddNewRow(newRow);
         }
     }
 
@@ -74,18 +84,32 @@ function DashboardPanel() {
             <section>
                 <div className='container-fluid'>
                     <div className='row'>
-                        <div className='col-sm-4'>
-                            <MonthComboBox usrID={location.state.usrID} month={usrData.selectedMonth} OnMonthChange= {(m) => {monthChange(m)}}/> 
-                        </div>
-                    </div>
-                    <br></br>
-                    <div className='row'>
                         <div className='col-sm-8'>
-                            <WorkTable usrID={location.state.usrID} month={usrData.selectedMonth} ref={wtRef} />
+                            <div className='row'>
+                                <div className='col-sm-4'>
+                                    <MonthComboBox usrID={location.state.usrID} month={usrData.selectedMonth} OnMonthChange= {(m) => {monthChange(m)}}/> 
+                                </div>
+                                <div className='offset-sm-6 col-sm-1 d-flex justify-content-end'>
+                                    <AddWDButton OnSingleAWDClick = {(newRow)=>{wtAddNewRow(newRow)}}type='s'/>
+                                </div>
+                                <div className='col-sm-1'>
+                                    <AddWDButton type='m'/>
+                                </div>
+                            </div>
+                            <br></br>
+                            <div className='row'>
+                                <div className='col-sm-12'>
+                                    <WorkTable usrID={location.state.usrID} month={usrData.selectedMonth} ref={wtRef} />
+                                </div>
+                            </div>
                         </div>
                         <div className='col-sm-4'>
                             {<SumTable/>}
                         </div>
+                    </div>
+                    <br></br>
+                    <div className='row'>
+
                     </div>
                 </div>
             </section>

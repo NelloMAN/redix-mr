@@ -5,6 +5,7 @@ import "./WorkTable.css";
 
 const WorkTable = React.forwardRef((props, ref) => {
 	
+	const [newWorkDays, addNewWorkDays] = useState([]);
 	const [workDays, setWorkDays] = useState([]);
 	const [selectedMonth, setMonth] = useState(0);
 	
@@ -13,11 +14,14 @@ const WorkTable = React.forwardRef((props, ref) => {
 		wtMonthChange(newM) {
 			setMonth(newM);
 		},
+		wtAddNewRow(newRow) {
+			console.log("WorkTable");
+			console.log(newRow);
+			addNewWorkDays( nwd => [...nwd, newRow]);
+		}
 	}))
 
 	useEffect(() => {
-
-		console.log('fetching');
 
 		let qMonth = selectedMonth === 0 ? props.month : selectedMonth;
 
@@ -26,7 +30,7 @@ const WorkTable = React.forwardRef((props, ref) => {
 		  setWorkDays(res.data);
 		})
 
-	}, [selectedMonth]);
+	}, [selectedMonth, newWorkDays]);
 
 	if (workDays.length === 0) {
         return <p>Loading</p>
@@ -46,18 +50,28 @@ const WorkTable = React.forwardRef((props, ref) => {
 					<th scope="col">CDC</th>
 				</tr>
 			</thead>
-			<tbody>				
-				{workDays.map((subArray, index) => {
-					return (
-						<React.Fragment>
-							{
-								subArray[1].map((w, i) => {
-									return (<WorkRow workDetails={w} index={w.wrkdID} showDet={ i === 0 ? true : false}/>);
-								}
-							)}
-						</React.Fragment>
-					);
-				})}
+			<tbody>	
+				<React.Fragment>
+					{
+						newWorkDays.map((nr, i) => {
+							return (<WorkRow workDetails={nr} index={w.wrkdID} showDet={ i === 0 ? true : false} state="new"/>);
+						})
+					}
+				</React.Fragment>		
+				{
+					workDays.map((subArray, index) => {
+						return (
+							<React.Fragment>
+								{
+									subArray[1].map((w, i) => {
+										return (<WorkRow workDetails={w} index={w.wrkdID} showDet={ i === 0 ? true : false} state="existed"/>);
+									}
+								)}
+							</React.Fragment>
+						);
+					})				
+				}
+
 			</tbody>
 		</table>
 	);

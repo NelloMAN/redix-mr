@@ -4,17 +4,12 @@ import SpecificationCell from "./cell/SpecificationCell";
 
 function WorkRow(props) {
 
-	useEffect(() => {
-		console.log(props)
-	}, [])
-
-
 	function showDet() {
 		
 		if (props.showDet) {
 			return (
 				<React.Fragment>
-					<td>{props.workDetails.wrkdDay}</td>
+					<td><input type="date" value={props.workDetails.wrkdDay}/></td>
 					<SpecificationCell details={props.workDetails.wrkdSpecsID}/>
 				</React.Fragment>
 			);
@@ -31,13 +26,13 @@ function WorkRow(props) {
 
 	return (
 		
-		<tr key={props.index} className="work-row">
+		<tr key={props.index} className={"work-row"+(props.state === "new" ? " work-row-new":"")}>
 			{showDet()}
-			<td>{props.workDetails.wrkdActivity}</td>
-			<td>{props.workDetails.wrkdActivityHour}</td>
-			<td>{props.workDetails.sqdName}</td> 
-			<td>{props.workDetails.wrkdActivityType}</td>
-			<td>{props.workDetails.wrkdCdc}</td>
+			<td><input type="text" value={props.workDetails.wrkdActivity}/></td>
+			<td><input type="number" value={props.workDetails.wrkdActivityHour}/></td>
+			<td><input type="text" value={props.workDetails.sqdName}/></td> 
+			<td><input type="text" value={props.workDetails.wrkdActivityType}/></td>
+			<td><input type="text" value={props.workDetails.wrkdCdc}/></td>
 		</tr>
 	);
 }
