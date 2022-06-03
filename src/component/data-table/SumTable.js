@@ -6,7 +6,7 @@ import {ImAirplane} from 'react-icons/im';
 import {VscRemoteExplorer} from 'react-icons/vsc';
 import {MdWorkOutline} from 'react-icons/md';
 import {BsClockHistory} from 'react-icons/bs';
-import "./WorkTable.css";
+import "./css/WorkTable.css";
 
 const SumTable = React.forwardRef((props, ref) => {
 	

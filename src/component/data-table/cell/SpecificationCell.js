@@ -11,8 +11,13 @@ function SpecificationCell(props) {
 
 	function handleInfoClick(event) {
 
+		let isActive = $(event.currentTarget).hasClass('specs-active');
+
 		$(event.currentTarget).parent().children().removeClass('specs-active');
-		$(event.currentTarget).toggleClass('specs-active');
+
+		if (!isActive)  {
+			$(event.currentTarget).toggleClass('specs-active');
+		}
 	}
 
 	return (

@@ -7,7 +7,8 @@ import {useLocation} from 'react-router-dom';
 import WorkTable from '../component/data-table/WorkTable';
 import SumTable from '../component/data-table/SumTable';
 import AddWDButton from '../component/AddWDButton';
-
+import SaveWDButton from '../component/SaveWDButton';
+import ExportWDButton from '../component/ExportWDButton';
 
 function DashboardPanel() {
 
@@ -52,8 +53,6 @@ function DashboardPanel() {
 
         if (wtRef.current) {
             //Funzione per cambiare i dati della WorkTable
-            console.log("DashboardPanel");
-            console.log(newRow);
             wtRef.current.wtAddNewRow(newRow);
         }
     }
@@ -84,16 +83,22 @@ function DashboardPanel() {
             <section>
                 <div className='container-fluid'>
                     <div className='row'>
-                        <div className='col-sm-8'>
+                        <div className='col-sm-10'>
                             <div className='row'>
                                 <div className='col-sm-4'>
                                     <MonthComboBox usrID={location.state.usrID} month={usrData.selectedMonth} OnMonthChange= {(m) => {monthChange(m)}}/> 
                                 </div>
-                                <div className='offset-sm-6 col-sm-1 d-flex justify-content-end'>
+                                <div className='offset-sm-4 col-sm-1 d-flex justify-content-end'>
                                     <AddWDButton OnSingleAWDClick = {(newRow)=>{wtAddNewRow(newRow)}}type='s'/>
                                 </div>
-                                <div className='col-sm-1'>
+                                <div className='col-sm-1 d-flex justify-content-end'>
                                     <AddWDButton type='m'/>
+                                </div>
+                                <div className='col-sm-1 d-flex justify-content-end'>
+                                    <SaveWDButton/>
+                                </div>
+                                <div className='col-sm-1 d-flex justify-content-end'>
+                                    <ExportWDButton/>
                                 </div>
                             </div>
                             <br></br>
@@ -103,7 +108,7 @@ function DashboardPanel() {
                                 </div>
                             </div>
                         </div>
-                        <div className='col-sm-4'>
+                        <div className='col-sm-2'>
                             {<SumTable/>}
                         </div>
                     </div>

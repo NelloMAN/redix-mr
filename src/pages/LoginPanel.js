@@ -1,9 +1,11 @@
+import '../global-css/_color.scss';
 import React, { useEffect, useRef, useState } from 'react';
-import './LoginPanel.css';
+import './LoginPanel.scss';
 import DialogBox from '../component/DialogBox';
 import logo_redix from '../img/logo_redix.svg';
 import { sha256 } from 'js-sha256';
 import {Navigate, Route, useNavigate} from 'react-router-dom';
+import {IoMdLogIn} from 'react-icons/io';
 
 function LoginPanel() {
 
@@ -29,6 +31,7 @@ function LoginPanel() {
     }
 
     function handleSubmit(event) {
+
         fetchUsr();
         event.preventDefault();
     }
@@ -41,6 +44,8 @@ function LoginPanel() {
 
             if (Object.keys(response).length > 0) {
                 navigate("/dashboard", {replace: true, state:{usrID : response[0].usrID}});
+            }else {
+                refDialog.current.handleShow('Attenzione','Email o password errati');
             }
         })
         .catch();
@@ -81,7 +86,7 @@ function LoginPanel() {
                                     </div>
                                 </div>
                                 <br></br>
-                                <button type="submit" className="btn btn-primary w-100">Submit</button>
+                                <button type="submit" className="btn rdx-btn w-100"><IoMdLogIn/>   Submit</button>
                             </form>
                         </div>
                     </div>

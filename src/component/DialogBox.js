@@ -1,5 +1,6 @@
+import '../global-css/_color.scss';
 import React from 'react';
-import './DialogBox.css';
+import './css/DialogBox.css';
 import { Modal, Button } from 'react-bootstrap';
 
 class DialogBox extends React.Component{
@@ -39,9 +40,9 @@ class DialogBox extends React.Component{
                 </Modal.Header>
                 <Modal.Body>{this.state.body}</Modal.Body>
                 <Modal.Footer>
-                    <Button variant="primary" onClick={this.handleClose}>
-                        Close
-                    </Button>
+                    <button className="btn rdx-btn" onClick={this.handleClose}>
+                        Chiudi
+                    </button>
                 </Modal.Footer>
             </Modal>
           );

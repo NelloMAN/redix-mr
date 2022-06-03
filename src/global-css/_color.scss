@@ -1,0 +1,14 @@
+$button-bg-color: #89af3c;
+$button-txt-color: #ffffff;
+
+.rdx-btn {
+    background-color: $button-bg-color;
+    color:#ffffff;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.rdx-btn:hover {
+    color:#ffffff;
+    font-weight: bold;
+    box-shadow: 1px 0px 15px $button-bg-color;
+}

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import './MonthComboBox.css';
+import './css/MonthComboBox.css';
 
 function MonthComboBox(props) {
 
@@ -37,7 +37,6 @@ function MonthComboBox(props) {
     function changeHandler(e) {
 
         setSelectedMonth(e.target.value);
-        console.log(e.target.value);
         props.OnMonthChange(e.target.value);
     }
 

@@ -1,8 +1,8 @@
-import { PinDropRounded } from '@material-ui/icons';
+import '../global-css/_color.scss';
 import React, { useEffect, useState } from 'react';
 import {MdAddBox} from 'react-icons/md';
 import {MdLibraryAdd} from 'react-icons/md';
-import './AddWDButton.css';
+import './css/AddWDButton.css';
 
 function AddWDButton(props) {
 
@@ -18,8 +18,6 @@ function AddWDButton(props) {
             wrkdCdc: ''
         };
 
-        console.log("AddWDButton");
-        console.log(newRow);
         props.OnSingleAWDClick(newRow);
     }
 
@@ -29,11 +27,11 @@ function AddWDButton(props) {
 
     if (props.type === 's') {
         return (
-            <button type="button" className='wd-button btn btn-circle' onClick={() => addSingleRowClicked()}> <MdAddBox className='wd-button-icon'/></button>
+            <button type="button" className='btn rdx-btn btn-circle' onClick={() => addSingleRowClicked()} data-bs-toggle="tooltip" data-bs-placement="top" title="Add one row"> <MdAddBox className='wd-button-icon'/></button>
         )
     } else {
         return (
-            <button type="button" className='wd-button btn btn-circle' onClick={() => addMultipleRowClicked()}> <MdLibraryAdd className='wd-button-icon'/></button>
+            <button type="button" className='btn rdx-btn btn-circle' onClick={() => addMultipleRowClicked()} data-bs-toggle="tooltip" data-bs-placement="top" title="Add multiple rows"> <MdLibraryAdd className='wd-button-icon'/></button>
         )
     }
 }

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useImperativeHandle } from "react";
 import axios from "axios";
 import WorkRow from "./WorkRow";
-import "./WorkTable.css";
+import "./css/WorkTable.css";
 
 const WorkTable = React.forwardRef((props, ref) => {
 	
@@ -15,8 +15,6 @@ const WorkTable = React.forwardRef((props, ref) => {
 			setMonth(newM);
 		},
 		wtAddNewRow(newRow) {
-			console.log("WorkTable");
-			console.log(newRow);
 			addNewWorkDays( nwd => [...nwd, newRow]);
 		}
 	}))
@@ -54,7 +52,7 @@ const WorkTable = React.forwardRef((props, ref) => {
 				<React.Fragment>
 					{
 						newWorkDays.map((nr, i) => {
-							return (<WorkRow workDetails={nr} index={w.wrkdID} showDet={ i === 0 ? true : false} state="new"/>);
+							return (<WorkRow workDetails={nr} index="0" showDet="true" state="new"/>);
 						})
 					}
 				</React.Fragment>		
