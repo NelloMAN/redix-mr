@@ -5,7 +5,7 @@ import "./css/WorkTable.css";
 
 const WorkTable = React.forwardRef((props, ref) => {
 	
-	const [newWorkDays, addNewWorkDays] = useState([]);
+	const [newWorkDays, setNewWorkDays] = useState([]);
 	const [workDays, setWorkDays] = useState([]);
 	const [selectedMonth, setMonth] = useState(0);
 	const [squadArray, setSquad] = useState([]);
@@ -16,7 +16,7 @@ const WorkTable = React.forwardRef((props, ref) => {
 			setMonth(newM);
 		},
 		wtAddNewRow(newRow) {
-			addNewWorkDays( nwd => [...nwd, newRow]);
+			setNewWorkDays( nwd => [...nwd, newRow]);
 		}
 	}))
 
@@ -31,16 +31,46 @@ const WorkTable = React.forwardRef((props, ref) => {
 
 		axios.get('http://localhost:3001/getUsrWrkDay/' +props.usrID +'/' + qMonth)
 		.then(res => {
-		  setWorkDays(res.data);
+			setWorkDays(res.data);
 		});
-
-		console.log(newWorkDays);
 
 	}, [selectedMonth, newWorkDays]);
 
 	if (workDays.length === 0 && squadArray.length === 0) {
         return <p>Loading</p>
     }
+
+	function wdChange(state, name, id, value) {
+
+		console.log("state: "+state+" - name: "+name+" - id: "+id+" - value: "+value );
+
+		switch(name) {
+			case "day":
+				if(state === "new") {
+					setNewWorkDays( nwd => nwd[id].wrkdDay = value);
+				} else {
+					workDays.map((subArray, index) => {
+						subArray[1].map((w, i) => {
+							if (w.wrkdID === id) {
+								setWorkDays( w => w.wrkdDay = value);
+							}
+						})
+					})
+				}
+				break;
+			case "activity":
+				break;
+			case "hour":
+				break;
+			case "activity_type":
+				break;
+			case "cdc":
+				break;
+			default:
+				break;
+		}
+
+	}
  
 	return (
 
@@ -60,7 +90,7 @@ const WorkTable = React.forwardRef((props, ref) => {
 				<React.Fragment>
 					{
 						newWorkDays.map((nr, i) => {
-							return (<WorkRow workDetails={nr} index="0" showDet="true" state="new" squadArray={squadArray}/>);
+							return (<WorkRow workDetails={nr} index={i} showDet="true" state="new" squadArray={squadArray} OnWDChange= {(state, name, id, value) => {wdChange(state, name, id, value)}}/>);
 						})
 					}
 				</React.Fragment>		
@@ -70,7 +100,7 @@ const WorkTable = React.forwardRef((props, ref) => {
 							<React.Fragment>
 								{
 									subArray[1].map((w, i) => {
-										return (<WorkRow workDetails={w} index={w.wrkdID} showDet={ i === 0 ? true : false} state="existed" squadArray={squadArray}/>);
+										return (<WorkRow workDetails={w} index={w.wrkdID} showDet={ i === 0 ? true : false} state="existed" squadArray={squadArray} OnWDChange={(state, name, id, value) => {wdChange(state, name, id, value)}}/>);
 									}
 								)}
 							</React.Fragment>

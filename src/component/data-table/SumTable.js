@@ -9,33 +9,6 @@ import {BsClockHistory} from 'react-icons/bs';
 import "./css/WorkTable.css";
 
 const SumTable = React.forwardRef((props, ref) => {
-	
-	// const [workDays, setWorkDays] = useState([]);
-	// const [selectedMonth, setMonth] = useState(0);
-	
-
-	// useImperativeHandle(ref, () => ({
-	// 	wtMonthChange(newM) {
-	// 		setMonth(newM);
-	// 	},
-	// }))
-
-	// useEffect(() => {
-
-	// 	console.log('fetching');
-
-	// 	let qMonth = selectedMonth === 0 ? props.month : selectedMonth;
-
-	// 	axios.get('http://localhost:3001/getUsrWrkDay/' +props.usrID +'/' + qMonth)
-	// 	.then(res => {
-	// 	  setWorkDays(res.data);
-	// 	})
-
-	// }, [selectedMonth]);
-
-	// if (workDays.length === 0) {
-    //     return <p>Loading</p>
-    // }
  
 	return (
 

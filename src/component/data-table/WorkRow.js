@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from 'react';
 import './css/WorkRow.css';
 import SpecificationCell from "./cell/SpecificationCell";
 import SquadCell from "./cell/SquadCell";
@@ -27,6 +27,8 @@ function WorkRow(props) {
 
 	function onWorkDayChange(e) {
 
+		const name = e.target.name
+		props.OnWDChange(props.state, name, props.index, e.target.value);
 	}
 
 
