@@ -11,13 +11,45 @@ function SpecificationCell(props) {
 
 	function handleInfoClick(event) {
 
-		let isActive = $(event.currentTarget).hasClass('specs-active');
+		let sValue = 1
+		let isActive = $(event.currentTarget).hasClass('specs-active'); //prendo la spec cliccata e verifico se è attiva o meno
 
-		$(event.currentTarget).parent().children().removeClass('specs-active');
+		$(event.currentTarget).parent().children().removeClass('specs-active'); //rimuovo lo stato di attivo da tutte le specs
 
+		//se la spec cliccata non era attiva all'ora l'attivo
 		if (!isActive)  {
+
 			$(event.currentTarget).toggleClass('specs-active');
+			
+			switch(event.currentTarget.getAttribute('name')) {
+				case "FERIE":
+					sValue = 3;
+					break;
+				case "MALATTIA":
+					sValue = 2;
+					break;
+				case "TRASFERTA":
+					sValue = 4;			
+					break;
+				case "SMARTWORKING":
+					sValue = 5;				
+					break;
+				case "PERMESSO":
+					sValue = 6;
+					break;
+			}
 		}
+
+		let sTarget = {
+			name: props.name,
+			value: sValue
+		};
+
+		let customEvent = {
+			target: sTarget
+		};
+
+		props.onChange(customEvent);
 	}
 
 	return (

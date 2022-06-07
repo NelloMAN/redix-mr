@@ -44,31 +44,51 @@ const WorkTable = React.forwardRef((props, ref) => {
 
 		console.log("state: "+state+" - name: "+name+" - id: "+id+" - value: "+value );
 
-		switch(name) {
-			case "day":
-				if(state === "new") {
-					setNewWorkDays( nwd => nwd[id].wrkdDay = value);
-				} else {
-					workDays.map((subArray, index) => {
-						subArray[1].map((w, i) => {
-							if (w.wrkdID === id) {
-								setWorkDays( w => w.wrkdDay = value);
-							}
-						})
-					})
-				}
-				break;
-			case "activity":
-				break;
-			case "hour":
-				break;
-			case "activity_type":
-				break;
-			case "cdc":
-				break;
-			default:
-				break;
+		if (state === "new") {
+
+			let nwdItem = [...newWorkDays];
+
+			switch(name) {
+				case "day":
+					nwdItem[id].wrkdDay = value;
+					break;
+				case "specs": 
+					nwdItem[id].wrkdSpecsID = value;
+					break;
+				case "activity":
+					nwdItem[id].wrkdActivity = value;
+					break;
+				case "hour":
+					nwdItem[id].wrkdActivityHour = value;
+					break;
+				case "squad": 
+					nwdItem[id].wrkdSqdID = value;
+					break;
+				case "activity_type":
+					nwdItem[id].wrkdActivityType = value;
+					break;
+				case "cdc":
+					nwdItem[id].wrkdCdc = value;
+					break;
+				default:
+					break;
+			}
+			setNewWorkDays(nwdItem);
+
+		} else {
+
+		// workDays.map((subArray, index) => {
+		// 	subArray[1].map((w, i) => {
+		// 		if (w.wrkdID === id) {
+		// 			setWorkDays( w => w.wrkdDay = value);
+		// 		}
+		// 	})
+		// })
 		}
+		
+
+	
+		console.log(newWorkDays);
 
 	}
  

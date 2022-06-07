@@ -13,7 +13,7 @@ function AddWDButton(props) {
             wrkdSpecsID:1,
             wrkdActivity: '',
             wrkdActivityHour: '',
-            sqdName: '',
+            wrkdSqdID: 1,
             wrkdActivityType: '',
             wrkdCdc: ''
         };

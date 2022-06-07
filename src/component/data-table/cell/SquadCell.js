@@ -12,6 +12,18 @@ function SquadCell(props) {
 
     function changeHandler(e) {
 
+        let sValue = e.target.value;
+
+        let sTarget = {
+			name: props.name,
+			value: sValue
+		};
+
+		let customEvent = {
+			target: sTarget
+		};
+
+        props.onChange(customEvent);
     }
 
     return (
