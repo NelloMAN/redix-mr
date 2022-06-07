@@ -17,6 +17,9 @@ const WorkTable = React.forwardRef((props, ref) => {
 		},
 		wtAddNewRow(newRow) {
 			setNewWorkDays( nwd => [...nwd, newRow]);
+		},
+		wtSaveWorkDays() {
+			saveWorkDays()
 		}
 	}))
 
@@ -86,10 +89,18 @@ const WorkTable = React.forwardRef((props, ref) => {
 		// })
 		}
 		
-
-	
 		console.log(newWorkDays);
+	}
 
+	function saveWorkDays() {
+
+		axios.post("http://localhost:3001/insertWorkDays", {
+		data: {
+			newWorkDays
+		}
+		}).then((response) => {
+				console.log(response)
+		}).catch(err => console.log(err))
 	}
  
 	return (

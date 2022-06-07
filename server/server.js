@@ -128,4 +128,10 @@ app.get('/getSquad', (req, res) => {
 )
 });
 
+app.post('', (req, res) => {
+
+  let query = 'insert into work_days (wrkdDay, wrkdSpecsID, wrkdUsrID, wrkdActivity, wrkdActivityType, wrkdActivityHour, wrkdSqdID, wrkdCdc) values ?'
+  connection.query();
+});
+
 

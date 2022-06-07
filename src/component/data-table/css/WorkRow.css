@@ -20,10 +20,13 @@ input:active {
   background-color: #89af3c87;
 }
 
-.work-row-new input {
+.work-row-new td input,
+.work-row-new td input:active,
+.work-row-new td input:focus {
   border-top-style: hidden;
   border-right-style: hidden;
   border-left-style: hidden;
   border-bottom-style: hidden;
   background-color: transparent;
+  font-weight: bold;
 }

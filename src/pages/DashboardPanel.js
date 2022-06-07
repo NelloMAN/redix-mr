@@ -52,8 +52,16 @@ function DashboardPanel() {
     function wtAddNewRow(newRow) {
 
         if (wtRef.current) {
-            //Funzione per cambiare i dati della WorkTable
+            //Funzione per aggiungere nuova riga
             wtRef.current.wtAddNewRow(newRow);
+        }
+    }
+
+    function saveWorkDays(e) {
+
+        if (wtRef.current) {
+            //Funzione per salvare il tutto
+            wtRef.current.wtSaveWorkDays();
         }
     }
 
@@ -95,7 +103,7 @@ function DashboardPanel() {
                                     <AddWDButton type='m'/>
                                 </div>
                                 <div className='col-sm-1 d-flex justify-content-end'>
-                                    <SaveWDButton/>
+                                    <SaveWDButton OnSaveClick={(e) => saveWorkDays(e)}/>
                                 </div>
                                 <div className='col-sm-1 d-flex justify-content-end'>
                                     <ExportWDButton/>
