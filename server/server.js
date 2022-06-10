@@ -1,6 +1,7 @@
 const express = require('express')
 const cors = require('cors');
 const mysql = require('mysql');
+var bodyParser = require('body-parser');
 
 const PORT = process.env.PORT || 3001;
 
@@ -9,6 +10,9 @@ const app = express();
 app.use(cors());
 
 app.use(express.json());
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json())
 
 const connection = mysql.createConnection({
   host: 'localhost',
@@ -128,10 +132,27 @@ app.get('/getSquad', (req, res) => {
 )
 });
 
-app.post('', (req, res) => {
+app.post('/insertWorkDays', (req, res) => {
 
-  let query = 'insert into work_days (wrkdDay, wrkdSpecsID, wrkdUsrID, wrkdActivity, wrkdActivityType, wrkdActivityHour, wrkdSqdID, wrkdCdc) values ?'
-  connection.query();
+  let query = 'insert into work_day (wrkdDay, wrkdSpecsID, wrkdActivity, wrkdActivityType, wrkdActivityHour, wrkdSqdID, wrkdCdc) values ?'
+  let values = [];
+  let data = req.body
+
+  console.log(data);
+
+  data.forEach( wd =>
+    values.push ([
+      wd.wrkdDay, wd.wrkdSpecsID, wd.wrkdActivity, wd.wrkdActivityType, wd.wrkdActivityHour, wd.wrkdSqdID, wd.wrkdCdc
+    ])
+  );
+
+  console.log(values);
+
+  connection.query(query, [values], function (err, result) {
+    if (err) throw err;
+    console.log("Number of records inserted: " + result.affectedRows);
+  });
+  
 });
 
 

@@ -1,3 +1,4 @@
+$page-bg-color: #fffdfa;
 $button-bg-color: #89af3c;
 $button-txt-color: #ffffff;
 
@@ -11,4 +12,8 @@ $button-txt-color: #ffffff;
     color:#ffffff;
     font-weight: bold;
     box-shadow: 1px 0px 15px $button-bg-color;
+}
+
+.page {
+    background-color: $page-bg-color;
 }
