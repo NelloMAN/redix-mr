@@ -51,6 +51,8 @@ const WorkTable = React.forwardRef((props, ref) => {
 
 			let nwdItem = [...newWorkDays];
 
+			nwdItem[id].wrkdUsrID = props.usrID;
+
 			switch(name) {
 				case "day":
 					nwdItem[id].wrkdDay = value;
@@ -76,6 +78,7 @@ const WorkTable = React.forwardRef((props, ref) => {
 				default:
 					break;
 			}
+			console.log(nwdItem);
 			setNewWorkDays(nwdItem);
 
 		} else {
@@ -88,8 +91,6 @@ const WorkTable = React.forwardRef((props, ref) => {
 		// 	})
 		// })
 		}
-		
-		console.log(newWorkDays);
 	}
 
 	function saveWorkDays() {

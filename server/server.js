@@ -84,7 +84,7 @@ app.get('/getUsrWrkDay/:usrID/:month', (req, res) => {
 
     let query = 'select wrkdID, date_format(wrkdDay, "%Y-%m-%d") as wrkdDay, wrkdSpecsID, wrkdUsrID, wrkdActivity, wrkdActivityType, wrkdActivityHour, sqdID, wrkdCdc from work_day w inner join squad s on s.sqdID = w.wrkdSqdID where wrkdUsrID = '+req.params.usrID+' and month(wrkdDay) = '+req.params.month+' order by wrkdDay asc';
 
-    console.log('getUsrWrkDay --> '+query);                
+    console.log('getUsrWrkDay --> '+query);
 
     connection.query(query, (err, result) => {
       if (err) {
@@ -132,19 +132,21 @@ app.get('/getSquad', (req, res) => {
 )
 });
 
+// insertWorkDays: inserimento nuove righe
 app.post('/insertWorkDays', (req, res) => {
 
-  let query = 'insert into work_day (wrkdDay, wrkdSpecsID, wrkdActivity, wrkdActivityType, wrkdActivityHour, wrkdSqdID, wrkdCdc) values ?'
+  let query = 'insert into work_day (wrkdUsrID, wrkdDay, wrkdSpecsID, wrkdActivity, wrkdActivityType, wrkdActivityHour, wrkdSqdID, wrkdCdc) values ?'
   let values = [];
-  let data = req.body
+  let data = req.body.data.newWorkDays
 
   console.log(data);
 
-  data.forEach( wd =>
+  Array.from(data).forEach( wd => {
+
     values.push ([
-      wd.wrkdDay, wd.wrkdSpecsID, wd.wrkdActivity, wd.wrkdActivityType, wd.wrkdActivityHour, wd.wrkdSqdID, wd.wrkdCdc
-    ])
-  );
+      wd.wrkdUsrID, wd.wrkdDay, wd.wrkdSpecsID, wd.wrkdActivity, wd.wrkdActivityType, wd.wrkdActivityHour, wd.wrkdSqdID, wd.wrkdCdc
+    ]);
+  });
 
   console.log(values);
 
@@ -152,7 +154,7 @@ app.post('/insertWorkDays', (req, res) => {
     if (err) throw err;
     console.log("Number of records inserted: " + result.affectedRows);
   });
-  
+
 });
 
 
