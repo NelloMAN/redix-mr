@@ -64,7 +64,7 @@ const WorkTable = React.forwardRef((props, ref) => {
 					nwdItem[id].wrkdActivity = value;
 					break;
 				case "hour":
-					nwdItem[id].wrkdActivityHour = value;
+					nwdItem[id].wrkdActivityHour = parseInt(value);
 					break;
 				case "squad": 
 					nwdItem[id].wrkdSqdID = value;

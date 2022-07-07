@@ -11,7 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "linq": "^4.0.0",
+    "linq": "^3.2.4",
     "mysql": "^2.18.1"
   }
 }

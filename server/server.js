@@ -2,6 +2,7 @@ const express = require('express')
 const cors = require('cors');
 const mysql = require('mysql');
 var bodyParser = require('body-parser');
+var mrUtils = require('./utils/mrUtils')
 
 const PORT = process.env.PORT || 3001;
 
@@ -139,7 +140,7 @@ app.post('/insertWorkDays', (req, res) => {
   let values = [];
   let data = req.body.data.newWorkDays
 
-  console.log(data);
+  mrUtils.checkWorkItem(data);
 
   Array.from(data).forEach( wd => {
 
@@ -150,10 +151,10 @@ app.post('/insertWorkDays', (req, res) => {
 
   console.log(values);
 
-  connection.query(query, [values], function (err, result) {
-    if (err) throw err;
-    console.log("Number of records inserted: " + result.affectedRows);
-  });
+  // connection.query(query, [values], function (err, result) {
+  //   if (err) throw err;
+  //   console.log("Number of records inserted: " + result.affectedRows);
+  // });
 
 });
 

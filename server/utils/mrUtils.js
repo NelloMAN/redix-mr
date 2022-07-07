@@ -1,17 +1,9 @@
-import Enumerable from 'linq'; 
+const Enumerable = require('linq'); 
 
 // Check di validità delle attività inserite
-export function checkWorkItem(workItems) {
+function checkWorkItem(workItems) {
 
     let err_war = [];
-
-    //verifico se è un sabato o una domenica
-    workItems.array.forEach(wi => {
-        
-        if (wi.wrkdDay.getDay() === 0 || wi.wrkdDay.getDay() === 6 ) {
-            err_war.push([wi, 'WARNING', wi.wrkdDay.getDay() === 0 ? 'Attenzione. Il giorno inserito è una domenica' : 'Attenzione. Il giorno inserito è una sabato']);
-        }
-    });
 
     var hoursPerDay = Enumerable.from(workItems).groupBy(
         "$.wrkdDay",
@@ -22,5 +14,29 @@ export function checkWorkItem(workItems) {
                 totalH: h.sum("$.wrkdActivityHour")
             }
             return result;
-        }).toArray();
+        }
+    ).toArray();
+
+    //verifico se è un sabato o una domenica
+    hoursPerDay.forEach(wi => {
+        
+        let wDate = new Date(wi[0]);
+
+        if (wDate.getDay() === 0 || wDate.getDay() === 6 ) {
+
+            err_war.push([
+                wi, 
+                'WARNING', 
+                wDate === 0 ? 'Attenzione. Il giorno inserito è una domenica' : 'Attenzione. Il giorno inserito è una sabato'
+            ]);
+        }
+    });
+
+    //verifica delle ore inserite in modo tale da inserire straordinari o ore di permesso
+
+
+    console.log(hoursPerDay);
 }
+
+
+module.exports = {checkWorkItem};
