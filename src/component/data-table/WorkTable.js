@@ -78,8 +78,8 @@ const WorkTable = React.forwardRef((props, ref) => {
 				default:
 					break;
 			}
-			console.log(nwdItem);
-			setNewWorkDays(nwdItem);
+			console.log('wdChange', nwdItem);
+			//setNewWorkDays(nwdItem);
 
 		} else {
 

@@ -25,6 +25,7 @@ function WorkRow(props) {
 		}
 	}
 
+	// evento triggerato quando una cella della riga cambia stato/valore
 	function onWorkDayChange(e) {
 
 		const name = e.target.name

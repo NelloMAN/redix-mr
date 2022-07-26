@@ -6,9 +6,16 @@ import './css/AddWDButton.css';
 
 function AddWDButton(props) {
 
+    const [lastID, setLastID] = useState(0);
+
     function addSingleRowClicked() {
 
+        //setto nuovo id per la nuova riga
+        let lid = lastID
+        setLastID(lid + 1);
+
         let newRow = {
+            wrkdID:lastID,
             wrkdDay:'',
             wrkdSpecsID:1,
             wrkdActivity: '',

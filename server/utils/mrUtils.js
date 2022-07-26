@@ -17,22 +17,38 @@ function checkWorkItem(workItems) {
         }
     ).toArray();
 
-    //verifico se è un sabato o una domenica
+   
     hoursPerDay.forEach(wi => {
         
-        let wDate = new Date(wi[0]);
+        let wDate = new Date(wi['day']);
+        let satsunWarn = '';
+        let straoWarn = '';
 
+         //verifico se è un sabato o una domenica
         if (wDate.getDay() === 0 || wDate.getDay() === 6 ) {
+            satsunWarn = wDate === 0 ? 'Attenzione. Il giorno inserito è una domenica' : 'Attenzione. Il giorno inserito è una sabato';
+        }
 
+        //verifica delle ore inserite in modo tale da inserire straordinari o ore di permesso
+        if (wi['totalH'] > 8) {
+            straoWarn = 'Attenzione. Il giorno '+wi['day']+' hai superato le 8 ore di lavoro. Verranno aggiunte come straordinari';
+        }
+        else if (wi['totalH'] < 8) {
+            straoWarn = 'Attenzione. Il giorno '+wi['day']+' non hai raggiunto le 8 ore di lavoro. Le rimanenti verranno inserite come ore di permesso'
+        }
+
+        if (satsunWarn !== '' || straoWarn !== '') {
             err_war.push([
                 wi, 
                 'WARNING', 
-                wDate === 0 ? 'Attenzione. Il giorno inserito è una domenica' : 'Attenzione. Il giorno inserito è una sabato'
+                satsunWarn,
+                straoWarn
             ]);
         }
+
     });
 
-    //verifica delle ore inserite in modo tale da inserire straordinari o ore di permesso
+    
 
 
     console.log(hoursPerDay);
