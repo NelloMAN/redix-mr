@@ -2,8 +2,11 @@ const Enumerable = require('linq');         //Libreria Linq
 var Holidays = require('date-holidays');     //Libreria per recuperare i giorni di festività
 const { Hd } = require('@material-ui/icons');
 
-var holidays = new Holidays();
-holidays.getCountries('IT');
+var holidays = new Holidays('IT');
+
+const ErrorType = {
+    MULTIPLE_INC_INFO:0
+}
 
 const WarnType = {
 
@@ -15,6 +18,7 @@ const WarnType = {
 // Check di validità delle attività inserite
 function checkWorkItem(workItems) {
 
+    //Array contenente errori e wanings
     let err_war = [];
 
     var hoursPerDay = Enumerable.from(workItems).groupBy(
@@ -29,7 +33,10 @@ function checkWorkItem(workItems) {
         }
     ).toArray();
 
+    //Distinct delle date inserite
+    var insertedDate = Enumerable.from(workItems).distinct("$.wrkdDay").select("$.wrkdDay").toArray();
    
+    //Check warning
     hoursPerDay.forEach(wi => {
         
         let wDate = new Date(wi['day']);
@@ -82,8 +89,20 @@ function checkWorkItem(workItems) {
 
     });
 
+    //Check errori
+    insertedDate.forEach(iDate => {
+
+       let info = Enumerable.from(workItems).where(i => i["wrkdDay"] == iDate).select(r => r).toArray();
+
+       if (info.length > 1) {
+            console.log(info);
+       }
+    })
+
     console.log(err_war);
 }
+
+
 
 //Metodo per la verifica dei giorni weekend e festivi
 function isWorkDay(date) {
