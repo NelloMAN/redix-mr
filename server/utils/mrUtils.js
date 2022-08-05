@@ -1,4 +1,16 @@
-const Enumerable = require('linq'); 
+const Enumerable = require('linq');         //Libreria Linq
+var Holidays = require('date-holidays');     //Libreria per recuperare i giorni di festività
+const { Hd } = require('@material-ui/icons');
+
+var holidays = new Holidays();
+holidays.getCountries('IT');
+
+const WarnType = {
+
+    WORK_HOLIDAYS:0,
+    OVERTIME_HOURS:1,
+    PERMITS_HOURS:2
+}
 
 // Check di validità delle attività inserite
 function checkWorkItem(workItems) {
@@ -21,38 +33,72 @@ function checkWorkItem(workItems) {
     hoursPerDay.forEach(wi => {
         
         let wDate = new Date(wi['day']);
-        let satsunWarn = '';
+        let iwdWarn = '';
         let straoWarn = '';
 
-         //verifico se è un sabato o una domenica
-        if (wDate.getDay() === 0 || wDate.getDay() === 6 ) {
-            satsunWarn = wDate === 0 ? 'Attenzione. Il giorno inserito è una domenica' : 'Attenzione. Il giorno inserito è una sabato';
-        }
+        //verifico se è un sabato, una domenica o un giorno festivo
+        iwdWarn = isWorkDay(wDate);
 
-        //verifica delle ore inserite in modo tale da inserire straordinari o ore di permesso
-        if (wi['totalH'] > 8) {
-            straoWarn = 'Attenzione. Il giorno '+wi['day']+' hai superato le 8 ore di lavoro. Verranno aggiunte come straordinari';
-        }
-        else if (wi['totalH'] < 8) {
-            straoWarn = 'Attenzione. Il giorno '+wi['day']+' non hai raggiunto le 8 ore di lavoro. Le rimanenti verranno inserite come ore di permesso'
-        }
+        //Se il giorno non è weekend o festivo, verifico il numero di ore salvate in modo tale da inserire straordinari o ore di permesso automaticamente
+        if (iwdWarn === '') {
+            
+            if (wi['totalH'] > 8) {
 
-        if (satsunWarn !== '' || straoWarn !== '') {
+                straoWarn = 'Attenzione. Il giorno '+wi['day']+' hai superato le 8 ore di lavoro. Verranno aggiunte come straordinari';
+                straoHours = wi['totalH'] - 8;
+
+                err_war.push([
+                    wi, 
+                    'WARNING', 
+                    WarnType.OVERTIME_HOURS,
+                    straoWarn,
+                    straoHours
+                ]);   
+            }
+            else if (wi['totalH'] < 8) {
+
+                straoWarn = 'Attenzione. Il giorno '+wi['day']+' non hai raggiunto le 8 ore di lavoro. Le rimanenti verranno inserite come ore di permesso'
+                permHours = 8 - wi['totalH'];
+
+                err_war.push([
+                    wi, 
+                    'WARNING', 
+                    WarnType.PERMITS_HOURS,
+                    straoWarn,
+                    permHours
+                ]);   
+            }
+
+        } else {
+
             err_war.push([
                 wi, 
                 'WARNING', 
-                satsunWarn,
-                straoWarn
-            ]);
+                WarnType.WORK_HOLIDAYS,
+                iwdWarn,
+                wDate
+            ]);       
         }
 
     });
 
-    
-
-
-    console.log(hoursPerDay);
+    console.log(err_war);
 }
 
+//Metodo per la verifica dei giorni weekend e festivi
+function isWorkDay(date) {
+
+    let message = '';
+
+    if (date.getDay() === 0 || date.getDay() === 6 ) {
+        message = date === 0 ? 'Attenzione. Il giorno inserito è una domenica' : 'Attenzione. Il giorno inserito è una sabato';
+    }
+
+    if (holidays.isHoliday(date)) {
+        message = 'Attenzione. Il giorno inserito è festivo. Le ore per questo giorno verranno inserite come straordinari';
+    }
+
+    return message;
+}
 
 module.exports = {checkWorkItem};

@@ -1,0 +1,3 @@
+[DONE] Verificare che i giorni di lavoro aggiunti siano lavorativi. Se ci sono sabati, domeniche o festivi segnati, segnalarlo ed eventualmente aggiungerli come straordinari.
+[DONE] Verificare che le ore siano 8; se sono di più aggiungerle come straordinari mentre se sono meno aggiungerle come permesso. Se sono sabato e domenica segnarle tutte come straordinari.
+Se per uno stesso giorno vengono segnate più attività verificare che le info siano congrue. Esempio in nello stesso giorno non ci possono essere info di smartworking e malattia.
