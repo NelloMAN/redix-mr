@@ -1,11 +1,20 @@
+/* 
+Questa classe contiene i check lato server
+ovvero vengono controllati i dati inseriti dall'utente secondo alcuni criteri 
+  - la presenza di sabati, domeniche e festività inserite
+  - la presenza di ore in piu o in meno per un determinato giorno
+  - la presenza di specifiche incogruenti (es. trasferta e malattia) 
+*/ 
+
+
 const Enumerable = require('linq');         //Libreria Linq
 var Holidays = require('date-holidays');     //Libreria per recuperare i giorni di festività
-const { Hd } = require('@material-ui/icons');
 
 var holidays = new Holidays('IT');
 
 const ErrorType = {
-    MULTIPLE_INC_INFO:0
+    MULTIPLE_INFO:0,    //numero di specifiche per un singolo giorno maggiore di 2
+    INCOMPATIBLE_INFO:1 //coppia di specifiche incompatibili
 }
 
 const WarnType = {
@@ -21,6 +30,7 @@ function checkWorkItem(workItems) {
     //Array contenente errori e wanings
     let err_war = [];
 
+    //Array con le ore totali per ogni giorno
     var hoursPerDay = Enumerable.from(workItems).groupBy(
         "$.wrkdDay",
         null,
@@ -36,12 +46,14 @@ function checkWorkItem(workItems) {
     //Distinct delle date inserite
     var insertedDate = Enumerable.from(workItems).distinct("$.wrkdDay").select("$.wrkdDay").toArray();
    
-    //Check warning
+    //#region Check warning per sabato, domenica e festivi per assegnare eventuali straordinari e permessi
     hoursPerDay.forEach(wi => {
         
         let wDate = new Date(wi['day']);
         let iwdWarn = '';
         let straoWarn = '';
+        let straoHours = 0;
+        let permHours = 0;
 
         //verifico se è un sabato, una domenica o un giorno festivo
         iwdWarn = isWorkDay(wDate);
@@ -87,21 +99,52 @@ function checkWorkItem(workItems) {
             ]);       
         }
 
+        //#region Check sulle specifiche 
+        const unique = (value, index, self) => {
+            return self.indexOf(value) === index
+        }
+        let specs = Enumerable.from(workItems).where(i => i["wrkdDay"] === wi['day']).select(r => r['wrkdSpecsID']).toArray();
+        let distinctSpec = specs.filter(unique);
+
+
+        if (distinctSpec.length > 2) {
+            
+            err_war.push([
+                wi, 
+                'ERROR', 
+                ErrorType.MULTIPLE_INFO,
+                'Attenzione, aggiunte troppe specifiche per un singolo giorno',
+                wDate
+            ]); 
+
+        } else if (distinctSpec.length === 2) {
+
+            //Check delle coppie permesse di specifiche (leggere checkList)
+            if ( 
+                (distinctSpec[0] === 1 &&  distinctSpec[1] === 6)|| 
+                (distinctSpec[0] === 6 &&  distinctSpec[1] === 1)|| 
+                (distinctSpec[0] === 4 &&  distinctSpec[1] === 6)|| 
+                (distinctSpec[0] === 6 &&  distinctSpec[1] === 4)|| 
+                (distinctSpec[0] === 5 &&  distinctSpec[1] === 6)|| 
+                (distinctSpec[0] === 6 &&  distinctSpec[1] === 5) 
+            ) {} else {
+
+                err_war.push([
+                    wi, 
+                    'ERROR', 
+                    ErrorType.INCOMPATIBLE_INFO,
+                    'Attenzione, per il giorno '+wi['day']+' sono state aggiunte delle specifiche incompatibili',
+                    wi['day']
+                ]); 
+            } 
+        }
+        //#endregion        
+
     });
 
-    //Check errori
-    insertedDate.forEach(iDate => {
-
-       let info = Enumerable.from(workItems).where(i => i["wrkdDay"] == iDate).select(r => r).toArray();
-
-       if (info.length > 1) {
-            console.log(info);
-       }
-    })
-
     console.log(err_war);
+    return err_war;
 }
-
 
 
 //Metodo per la verifica dei giorni weekend e festivi

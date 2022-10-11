@@ -37,6 +37,9 @@ function SpecificationCell(props) {
 				case "PERMESSO":
 					sValue = 6;
 					break;
+				default:
+					sValue = 1;
+					break;
 			}
 		}
 

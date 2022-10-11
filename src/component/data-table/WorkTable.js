@@ -49,37 +49,37 @@ const WorkTable = React.forwardRef((props, ref) => {
 
 		if (state === "new") {
 
-			let nwdItem = [...newWorkDays];
+			let nwdItems = [...props.nwd];
 
-			nwdItem[id].wrkdUsrID = props.usrID;
+			nwdItems[id].wrkdUsrID = props.usrID;
 
 			switch(name) {
 				case "day":
-					nwdItem[id].wrkdDay = value;
+					nwdItems[id].wrkdDay = value;
 					break;
 				case "specs": 
-					nwdItem[id].wrkdSpecsID = value;
+					nwdItems[id].wrkdSpecsID = value;
 					break;
 				case "activity":
-					nwdItem[id].wrkdActivity = value;
+					nwdItems[id].wrkdActivity = value;
 					break;
 				case "hour":
-					nwdItem[id].wrkdActivityHour = parseInt(value);
+					nwdItems[id].wrkdActivityHour = parseInt(value);
 					break;
 				case "squad": 
-					nwdItem[id].wrkdSqdID = value;
+					nwdItems[id].wrkdSqdID = value;
 					break;
 				case "activity_type":
-					nwdItem[id].wrkdActivityType = value;
+					nwdItems[id].wrkdActivityType = value;
 					break;
 				case "cdc":
-					nwdItem[id].wrkdCdc = value;
+					nwdItems[id].wrkdCdc = value;
 					break;
 				default:
 					break;
 			}
-			console.log('wdChange', nwdItem);
-			//setNewWorkDays(nwdItem);
+			
+			props.UpdateNewRecords(nwdItems)
 
 		} else {
 
@@ -100,7 +100,14 @@ const WorkTable = React.forwardRef((props, ref) => {
 			newWorkDays
 		}
 		}).then((response) => {
-				console.log(response)
+			
+			let data = response.data;
+
+			//errWar è la lista contenente errori e warnings che il check lato server trova. Se è undefined allora non ce ne sono
+			if (data.errWar !== undefined) {
+				alert(data.errWar)
+			}
+			
 		}).catch(err => console.log(err))
 	}
  
@@ -120,11 +127,16 @@ const WorkTable = React.forwardRef((props, ref) => {
 			</thead>
 			<tbody>	
 				<React.Fragment>
-					{
-						newWorkDays.map((nr, i) => {
-							return (<WorkRow workDetails={nr} index={i} showDet="true" state="new" squadArray={squadArray} OnWDChange= {(state, name, id, value) => {wdChange(state, name, id, value)}}/>);
-						})
-					}
+				{
+					// props.nwd !== 'undefined' ? 
+					// 	props.nwd.map((nr, i) => {
+					// 		return (<WorkRow workDetails={nr} index={i} showDet="true" state="new" squadArray={squadArray} OnWDChange= {(state, name, id, value) => {wdChange(state, name, id, value)}}/>);
+					// 	}) : null
+					
+					props.nwd.map((nr, i) => {
+						return (<WorkRow workDetails={nr} index={i} showDet="true" state="new" squadArray={squadArray} OnWDChange= {(state, name, id, value) => {wdChange(state, name, id, value)}}/>);
+					})
+				}
 				</React.Fragment>		
 				{
 					workDays.map((subArray, index) => {

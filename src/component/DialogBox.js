@@ -1,52 +1,52 @@
 import '../global-css/_color.scss';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './css/DialogBox.css';
-import { Modal, Button } from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
 
-class DialogBox extends React.Component{
 
-    constructor(props){
+function DialogBox(props) {
 
-        super(props);
-        this.state = {
-            showModal: false,
-            title: '',
-            body: ''
-        }
+    const [showModal, setShowModal] = useState(false);
+    const [title, setTitle] = useState('');
+    const [body, setBody] = useState('');
 
-        this.handleClose = this.handleClose.bind(this);
+    // constructor(props){
+
+    //     super(props);
+    //     this.state = {
+    //         showModal: false,
+    //         title: '',
+    //         body: ''
+    //     }
+
+    //     this.handleClose = this.handleClose.bind(this);
+    // }
+
+    function handleShow(t, b) {
+
+        setShowModal(true);
+        setTitle(t);
+        setBody(b);
     }
 
-    handleShow (t, b) {
-        this.setState(
-            {
-                showModal : true,
-                title: t,
-                body: b
-            }
-        );
+    function handleClose () {
+        setShowModal(false);
     }
 
-    handleClose () {
-        this.setState({showModal : false});
-    }
-
-    render(){
-
-        return (
-            <Modal show={this.state.showModal} onHide={this.handleClose} centered>
-                <Modal.Header closeButton>
-                    <Modal.Title>{this.state.title}</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>{this.state.body}</Modal.Body>
-                <Modal.Footer>
-                    <button className="btn rdx-btn" onClick={this.handleClose}>
-                        Chiudi
-                    </button>
-                </Modal.Footer>
-            </Modal>
-          );
-    }
+    return (
+        <Modal show={showModal} onHide={handleClose} centered>
+            <Modal.Header closeButton>
+                <Modal.Title>{title}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>{body}</Modal.Body>
+            <Modal.Footer>
+                <button className="btn rdx-btn" onClick={handleClose}>
+                    Chiudi
+                </button>
+            </Modal.Footer>
+        </Modal>
+    );
+    
 }
 
 export default DialogBox;

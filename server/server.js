@@ -140,21 +140,35 @@ app.post('/insertWorkDays', (req, res) => {
   let values = [];
   let data = req.body.data.newWorkDays
 
-  mrUtils.checkWorkItem(data);
+  let err_war = mrUtils.checkWorkItem(data);
 
-  Array.from(data).forEach( wd => {
+  if (err_war.length > 0) {
 
-    values.push ([
-      wd.wrkdUsrID, wd.wrkdDay, wd.wrkdSpecsID, wd.wrkdActivity, wd.wrkdActivityType, wd.wrkdActivityHour, wd.wrkdSqdID, wd.wrkdCdc
-    ]);
-  });
+    let toJson = 
+    {
+      typo:'err_war',
+      errWar:err_war
+    }
 
-  console.log(values);
+    res.send(JSON.stringify(toJson));
 
-  // connection.query(query, [values], function (err, result) {
-  //   if (err) throw err;
-  //   console.log("Number of records inserted: " + result.affectedRows);
-  // });
+  } else {
+
+    Array.from(data).forEach( wd => {
+
+      values.push ([
+        wd.wrkdUsrID, wd.wrkdDay, wd.wrkdSpecsID, wd.wrkdActivity, wd.wrkdActivityType, wd.wrkdActivityHour, wd.wrkdSqdID, wd.wrkdCdc
+      ]);
+    });
+  
+    console.log(values);
+  
+    // connection.query(query, [values], function (err, result) {
+    //   if (err) throw err;
+    //   console.log("Number of records inserted: " + result.affectedRows);
+    // });
+
+  }
 
 });
 

@@ -5,7 +5,7 @@ import Hamburger from 'hamburger-react'
 import MonthComboBox from '../component/MonthComboBox';
 import {useLocation} from 'react-router-dom';
 import WorkTable from '../component/data-table/WorkTable';
-import SumTable from '../component/data-table/SumTable';
+import DialogBox from '../component/DialogBox';
 import AddWDButton from '../component/AddWDButton';
 import SaveWDButton from '../component/SaveWDButton';
 import ExportWDButton from '../component/ExportWDButton';
@@ -20,6 +20,7 @@ function DashboardPanel() {
         usrName:"",
         selectedMonth: 0
     });
+    const [nwd, setNewWorkDays] = useState([]);
 
     useEffect(() => {
 
@@ -46,14 +47,6 @@ function DashboardPanel() {
         if (wtRef.current) {
             //Funzione per cambiare i dati della WorkTable
             wtRef.current.wtMonthChange(m);
-        }
-    }
-
-    function wtAddNewRow(newRow) {
-
-        if (wtRef.current) {
-            //Funzione per aggiungere nuova riga
-            wtRef.current.wtAddNewRow(newRow);
         }
     }
 
@@ -97,13 +90,13 @@ function DashboardPanel() {
                                     <MonthComboBox usrID={location.state.usrID} month={usrData.selectedMonth} OnMonthChange= {(m) => {monthChange(m)}}/> 
                                 </div>
                                 <div className='offset-sm-4 col-sm-1 d-flex justify-content-end'>
-                                    <AddWDButton OnSingleAWDClick = {(newRow)=>{wtAddNewRow(newRow)}}type='s'/>
+                                    <AddWDButton OnSingleAWDClick = {(newRow)=>{setNewWorkDays( nwd => [...nwd, newRow])}}type='s'/>
                                 </div>
                                 <div className='col-sm-1 d-flex justify-content-end'>
                                     <AddWDButton type='m'/>
                                 </div>
                                 <div className='col-sm-1 d-flex justify-content-end'>
-                                    <SaveWDButton OnSaveClick={(e) => saveWorkDays(e)}/>
+                                    <SaveWDButton OnSaveClick={(e) => saveWorkDays(e)} nwd={nwd}/>
                                 </div>
                                 <div className='col-sm-1 d-flex justify-content-end'>
                                     <ExportWDButton/>
@@ -112,12 +105,11 @@ function DashboardPanel() {
                             <br></br>
                             <div className='row'>
                                 <div className='col-sm-12'>
-                                    <WorkTable usrID={location.state.usrID} month={usrData.selectedMonth} ref={wtRef} />
+                                    <WorkTable usrID={location.state.usrID} month={usrData.selectedMonth} ref={wtRef} nwd={nwd} UpdateNewRecords = {(newRecords => {setNewWorkDays(newRecords)})}/>
                                 </div>
                             </div>
                         </div>
                         <div className='col-sm-2'>
-                            {<SumTable/>}
                         </div>
                     </div>
                     <br></br>

@@ -3,7 +3,7 @@ import './css/MonthComboBox.css';
 
 function MonthComboBox(props) {
 
-    const [selectedMonth, setSelectedMonth] = useState(1)
+    const [selectedMonth, setSelectedMonth] = useState(1);
     const [months, setMonths] = useState([]);
 
     useEffect(() => {
