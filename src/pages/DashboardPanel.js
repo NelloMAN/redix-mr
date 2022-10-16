@@ -50,12 +50,9 @@ function DashboardPanel() {
         }
     }
 
-    function saveWorkDays(e) {
-
-        if (wtRef.current) {
-            //Funzione per salvare il tutto
-            wtRef.current.wtSaveWorkDays();
-        }
+    function UpdateExistingRecords(modifiedRecords) {
+        console.log("record esistente cambiato");
+        //TODO
     }
 
     return (
@@ -96,7 +93,7 @@ function DashboardPanel() {
                                     <AddWDButton type='m'/>
                                 </div>
                                 <div className='col-sm-1 d-flex justify-content-end'>
-                                    <SaveWDButton OnSaveClick={(e) => saveWorkDays(e)} nwd={nwd}/>
+                                    <SaveWDButton nwd={nwd}/>
                                 </div>
                                 <div className='col-sm-1 d-flex justify-content-end'>
                                     <ExportWDButton/>
@@ -105,7 +102,7 @@ function DashboardPanel() {
                             <br></br>
                             <div className='row'>
                                 <div className='col-sm-12'>
-                                    <WorkTable usrID={location.state.usrID} month={usrData.selectedMonth} ref={wtRef} nwd={nwd} UpdateNewRecords = {(newRecords => {setNewWorkDays(newRecords)})}/>
+                                    <WorkTable usrID={location.state.usrID} month={usrData.selectedMonth} ref={wtRef} nwd={nwd} UpdateNewRecords = {(newRecords => {setNewWorkDays(newRecords)})} UpdateExistingRecords = {(records => {UpdateExistingRecords(records)})}/>
                                 </div>
                             </div>
                         </div>

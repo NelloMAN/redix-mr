@@ -8,7 +8,6 @@ function SaveWDButton(props) {
 
     //Gestione salvataggio attività
     function saveWorkDaysClick(e) {
-        //props.OnSaveClick(e)
 
         let newWorkDays = props.nwd;
 

@@ -17,9 +17,6 @@ const WorkTable = React.forwardRef((props, ref) => {
 		},
 		wtAddNewRow(newRow) {
 			setNewWorkDays( nwd => [...nwd, newRow]);
-		},
-		wtSaveWorkDays() {
-			saveWorkDays()
 		}
 	}))
 
@@ -43,72 +40,104 @@ const WorkTable = React.forwardRef((props, ref) => {
         return <p>Loading</p>
     }
 
+	// Evento cambio dei valori del WorkRow. 
+	// state: new se è nuova altrimenti existed
+	// name: nome del campo cambiato
+	// id: per gli existed corrisponde al wrkdID, per i new è l'index dell'array props.nwd
+	// value: il nuovo valore settato
 	function wdChange(state, name, id, value) {
 
 		console.log("state: "+state+" - name: "+name+" - id: "+id+" - value: "+value );
 
+		let nwdS;
+		let wd;
+
 		if (state === "new") {
 
-			let nwdItems = [...props.nwd];
+			nwdS = [...props.nwd];
+			nwdS[id].wrkdUsrID = props.usrID;
 
-			nwdItems[id].wrkdUsrID = props.usrID;
+			ChangeRecordValues(nwdS[id], name, value)
 
-			switch(name) {
-				case "day":
-					nwdItems[id].wrkdDay = value;
-					break;
-				case "specs": 
-					nwdItems[id].wrkdSpecsID = value;
-					break;
-				case "activity":
-					nwdItems[id].wrkdActivity = value;
-					break;
-				case "hour":
-					nwdItems[id].wrkdActivityHour = parseInt(value);
-					break;
-				case "squad": 
-					nwdItems[id].wrkdSqdID = value;
-					break;
-				case "activity_type":
-					nwdItems[id].wrkdActivityType = value;
-					break;
-				case "cdc":
-					nwdItems[id].wrkdCdc = value;
-					break;
-				default:
-					break;
+			props.UpdateNewRecords(nwdS)
+
+		}  else if (state === "existed") {
+
+			wd = [...workDays];
+			let record = wd.find(w => w[1].wrkdID === id);
+			ChangeRecordValues(record, name, value);
+
+			// verifico che il record sia effettivamente cambiato rispetto all'origine
+			if (isRecordChanged(wd[id], id)) {
+				props.UpdateExistingRecords()
 			}
-			
-			props.UpdateNewRecords(nwdItems)
+		}		
+	}
 
+	function isRecordChanged(r, id) {
+
+		if (
+			r.wrkdDay === props.workDays[id].wrkdDay &&
+			r.wrkdSpecsID === props.workDays[id].wrkdSpecsID &&
+			r.wrkdActivity === props.workDays[id].wrkdActivity &&
+			r.wrkdActivityHour === parseInt(props.workDays[id].wrkdActivityHour) &&
+			r.wrkdSqdID === props.workDays[id].wrkdSqdID &&
+			r.wrkdActivityType === props.workDays[id].wrkdActivityType &&
+			r.wrkdCdc === props.workDays[id].wrkdCdc
+		) {
+			return false;
 		} else {
-
-		// workDays.map((subArray, index) => {
-		// 	subArray[1].map((w, i) => {
-		// 		if (w.wrkdID === id) {
-		// 			setWorkDays( w => w.wrkdDay = value);
-		// 		}
-		// 	})
-		// })
+			return true;
 		}
 	}
 
-	function saveWorkDays() {
+	function ChangeRecordValues (modifiedRecord, name, value) {
 
-		axios.post("http://localhost:3001/insertWorkDays", {
-		data: {
-			newWorkDays
+		switch(name) {
+			case "day":
+				modifiedRecord.wrkdDay = value;
+				break;
+			case "specs": 
+				switch(value) {
+					case 3: //FERIE
+						modifiedRecord.wrkdActivity = 'FERIE';
+						modifiedRecord.wrkdActivityType = 'FERIE';
+						modifiedRecord.wrkdActivityHour = 8;
+						modifiedRecord.wrkdSqdID = 1; //NONE SQUAD
+						break;
+					case 2: // MALATTIA
+						modifiedRecord.wrkdActivity = 'MALATTIA';
+						modifiedRecord.wrkdActivityType = 'MALATTIA';
+						modifiedRecord.wrkdActivityHour = 8;
+						modifiedRecord.wrkdSqdID = 1; //NONE SQUAD
+						break;
+					case 6: // PERMESSO
+						modifiedRecord.wrkdActivity = 'PERMESSO';
+						modifiedRecord.wrkdActivityType = 'PERMESSO';
+						break;
+					default:
+						break;
+				}
+				modifiedRecord.wrkdSpecsID = value;
+				break;
+			case "activity":
+				modifiedRecord.wrkdActivity = value;
+				break;
+			case "hour":
+				modifiedRecord.wrkdActivityHour = parseInt(value);
+				break;
+			case "squad": 
+				modifiedRecord.wrkdSqdID = value;
+				break;
+			case "activity_type":
+				modifiedRecord.wrkdActivityType = value;
+				break;
+			case "cdc":
+				modifiedRecord.wrkdCdc = value;
+				break;
+			default:
+				break;
 		}
-		}).then((response) => {
-			
-			let data = response.data;
-
-			//errWar è la lista contenente errori e warnings che il check lato server trova. Se è undefined allora non ce ne sono
-			if (data.errWar !== undefined) {
-				alert(data.errWar)
-			}
-			
-		}).catch(err => console.log(err))
 	}
  
 	return (
@@ -127,12 +156,7 @@ const WorkTable = React.forwardRef((props, ref) => {
 			</thead>
 			<tbody>	
 				<React.Fragment>
-				{
-					// props.nwd !== 'undefined' ? 
-					// 	props.nwd.map((nr, i) => {
-					// 		return (<WorkRow workDetails={nr} index={i} showDet="true" state="new" squadArray={squadArray} OnWDChange= {(state, name, id, value) => {wdChange(state, name, id, value)}}/>);
-					// 	}) : null
-					
+				{					
 					props.nwd.map((nr, i) => {
 						return (<WorkRow workDetails={nr} index={i} showDet="true" state="new" squadArray={squadArray} OnWDChange= {(state, name, id, value) => {wdChange(state, name, id, value)}}/>);
 					})
