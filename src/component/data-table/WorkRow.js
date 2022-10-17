@@ -39,7 +39,7 @@ function WorkRow(props) {
 			setDisabled(false)
 		}
 
-		props.OnWDChange(props.state, name, props.index, value);
+		props.OnWDChange(props.state, name, props.index, value, props.workDetails.wrkdDay);
 	}
 
 

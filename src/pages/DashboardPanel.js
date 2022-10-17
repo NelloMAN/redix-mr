@@ -13,14 +13,15 @@ import ExportWDButton from '../component/ExportWDButton';
 function DashboardPanel() {
 
     const location = useLocation();
-    const wtRef = useRef(null)
+    const wtRef = useRef(null);
 
     const [usrData, setUsrData] = useState({
         usrEmail:"",
         usrName:"",
         selectedMonth: 0
     });
-    const [nwd, setNewWorkDays] = useState([]);
+    const [nwd, setNewWorkDays] = useState([]); //array con la lista dei nuovi record inseriti
+    const [changewd, setModifiedRecods] = useState([]); //array con la lista dei record esistenti e modificati
 
     useEffect(() => {
 
@@ -50,9 +51,12 @@ function DashboardPanel() {
         }
     }
 
-    function UpdateExistingRecords(modifiedRecords) {
-        console.log("record esistente cambiato");
-        //TODO
+    function UpdateWorkDays( record) {
+
+        setModifiedRecods( changewd => [...changewd, record]);
+        
+        let updateWDArray = 
+
     }
 
     return (
@@ -93,7 +97,7 @@ function DashboardPanel() {
                                     <AddWDButton type='m'/>
                                 </div>
                                 <div className='col-sm-1 d-flex justify-content-end'>
-                                    <SaveWDButton nwd={nwd}/>
+                                    <SaveWDButton nwd={nwd} changewd={changewd}/>
                                 </div>
                                 <div className='col-sm-1 d-flex justify-content-end'>
                                     <ExportWDButton/>
@@ -102,7 +106,7 @@ function DashboardPanel() {
                             <br></br>
                             <div className='row'>
                                 <div className='col-sm-12'>
-                                    <WorkTable usrID={location.state.usrID} month={usrData.selectedMonth} ref={wtRef} nwd={nwd} UpdateNewRecords = {(newRecords => {setNewWorkDays(newRecords)})} UpdateExistingRecords = {(records => {UpdateExistingRecords(records)})}/>
+                                    <WorkTable usrID={location.state.usrID} month={usrData.selectedMonth} ref={wtRef} nwd={nwd} UpdateNewRecords = {(newRecords => {setNewWorkDays(newRecords)})} UpdateExistingRecords = {(record => {UpdateWorkDays(record)})}/>
                                 </div>
                             </div>
                         </div>
