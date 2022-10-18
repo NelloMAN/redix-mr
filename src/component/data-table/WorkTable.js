@@ -5,38 +5,20 @@ import "./css/WorkTable.css";
 
 const WorkTable = React.forwardRef((props, ref) => {
 	
-	const [newWorkDays, setNewWorkDays] = useState([]);
-	const [workDays, setWorkDays] = useState([]);
-	const [selectedMonth, setMonth] = useState(0);
 	const [squadArray, setSquad] = useState([]);
-	
-
-	useImperativeHandle(ref, () => ({
-		wtMonthChange(newM) {
-			setMonth(newM);
-		},
-		wtAddNewRow(newRow) {
-			setNewWorkDays( nwd => [...nwd, newRow]);
-		}
-	}))
 
 	useEffect(() => {
+
+		console.log(props.workDays);
 
 		axios.get('http://localhost:3001/getSquad')
 		.then(res => {
 		   setSquad(res.data);
 		});
 
-		let qMonth = selectedMonth === 0 ? props.month : selectedMonth;
+	}, []);
 
-		axios.get('http://localhost:3001/getUsrWrkDay/' +props.usrID +'/' + qMonth)
-		.then(res => {
-			setWorkDays(res.data);
-		});
-
-	}, [selectedMonth, newWorkDays]);
-
-	if (workDays.length === 0 && squadArray.length === 0) {
+	if (props.workDays.length === 0 && squadArray.length === 0) {
         return <p>Loading</p>
     }
 
@@ -64,11 +46,11 @@ const WorkTable = React.forwardRef((props, ref) => {
 		}  else if (state === "existed") {
 
 			// recupero il record modificato
-			let record = workDays.find(w => w[0] === wDay)[1].find(c => c.wrkdID === id);
+			let record = props.workDays.find(w => w[0] === wDay)[1].find(c => c.wrkdID === id);
 			
 			ChangeRecordValues(record, name, value);
 
-			props.UpdateExistingRecords();
+			props.UpdateExistingRecords(record, props.workDays);
 		}		
 	}
 
@@ -122,7 +104,7 @@ const WorkTable = React.forwardRef((props, ref) => {
 	}
  
 	return (
-
+		
 		<table className="table work-table rounded-3">
 			<thead>
 				<tr>
@@ -144,11 +126,12 @@ const WorkTable = React.forwardRef((props, ref) => {
 				}
 				</React.Fragment>		
 				{
-					workDays.map((subArray, index) => {
+					props.workDays.map((subArray, index) => {
 						return (
 							<React.Fragment>
 								{
 									subArray[1].map((w, i) => {
+										console.log(w);
 										return (<WorkRow workDetails={w} index={w.wrkdID} showDet={ i === 0 ? true : false} state="existed" squadArray={squadArray} OnWDChange={(state, name, id, value, wday) => {wdChange(state, name, id, value, wday)}}/>);
 									}
 								)}

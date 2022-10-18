@@ -9,6 +9,7 @@ import DialogBox from '../component/DialogBox';
 import AddWDButton from '../component/AddWDButton';
 import SaveWDButton from '../component/SaveWDButton';
 import ExportWDButton from '../component/ExportWDButton';
+import axios from "axios";
 
 function DashboardPanel() {
 
@@ -20,9 +21,7 @@ function DashboardPanel() {
         usrName:"",
         selectedMonth: 0
     });
-    const [nwd, setNewWorkDays] = useState([]); //array con la lista dei nuovi record inseriti
-    const [changewd, setModifiedRecods] = useState([]); //array con la lista dei record esistenti e modificati
-
+    //useEffetct per prendere i mesi dell'utente
     useEffect(() => {
 
         fetch('http://localhost:3001/getUsrMonth/'+location.state.usrID)
@@ -36,27 +35,34 @@ function DashboardPanel() {
             });
         })
         .catch();
-    },[]);
+    }, [location.state.usrID]);
+
+    const [nwd, setNewWorkDays] = useState([]); //array con la lista dei nuovi record inseriti
+
+    const [workDays, setWorkDays] = useState([]); //array con la lista dei giorni lavorati dell'utente
+    // useEffect per prendere i giorni dell'utente
+    useEffect(() => {
+
+        axios.get('http://localhost:3001/getUsrWrkDay/' +location.state.usrID +'/' + usrData.selectedMonth)
+		.then(res => {
+			setWorkDays(res.data);
+		});
+
+    },[location.state.usrID, usrData.selectedMonth]);
+
+    const [changewd, setModifiedRecords] = useState([]); //array con la lista dei record esistenti e modificati
 
     if (usrData.usrEmail === "") {
         return <p>Loading</p>
     }
 
-    //Funzione callback di MonthComboBox: quando viene cambiato il mese viene aggiornata anche la WorkTable
-    function monthChange(m) {
+    // funzione per aggiornare gli array contenente i record modificati 
+    // updRecord: il record modificato
+    // wd: la lista dei record esistenti con all'interno già il record modificato
+    function UpdateWorkDays( updRecord, wd) {
 
-        if (wtRef.current) {
-            //Funzione per cambiare i dati della WorkTable
-            wtRef.current.wtMonthChange(m);
-        }
-    }
-
-    function UpdateWorkDays( record) {
-
-        setModifiedRecods( changewd => [...changewd, record]);
-        
-        let updateWDArray = 
-
+        setModifiedRecords( changewd => [...changewd, updRecord]);
+        setWorkDays(wd);
     }
 
     return (
@@ -88,7 +94,7 @@ function DashboardPanel() {
                         <div className='col-sm-10'>
                             <div className='row'>
                                 <div className='col-sm-4'>
-                                    <MonthComboBox usrID={location.state.usrID} month={usrData.selectedMonth} OnMonthChange= {(m) => {monthChange(m)}}/> 
+                                    <MonthComboBox usrID={location.state.usrID} month={usrData.selectedMonth} OnMonthChange= {(m) => {setUsrData({selectedMonth: m})}}/> 
                                 </div>
                                 <div className='offset-sm-4 col-sm-1 d-flex justify-content-end'>
                                     <AddWDButton OnSingleAWDClick = {(newRow)=>{setNewWorkDays( nwd => [...nwd, newRow])}}type='s'/>
@@ -106,7 +112,7 @@ function DashboardPanel() {
                             <br></br>
                             <div className='row'>
                                 <div className='col-sm-12'>
-                                    <WorkTable usrID={location.state.usrID} month={usrData.selectedMonth} ref={wtRef} nwd={nwd} UpdateNewRecords = {(newRecords => {setNewWorkDays(newRecords)})} UpdateExistingRecords = {(record => {UpdateWorkDays(record)})}/>
+                                    <WorkTable usrID={location.state.usrID} month={usrData.selectedMonth} ref={wtRef} workDays={workDays} nwd={nwd} UpdateNewRecords = {(newRecords => {setNewWorkDays(newRecords)})} UpdateExistingRecords = {((updRecord, wd) => {UpdateWorkDays(updRecord, wd)})}/>
                                 </div>
                             </div>
                         </div>
