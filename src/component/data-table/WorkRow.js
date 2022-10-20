@@ -50,7 +50,7 @@ function WorkRow(props) {
 			{showDet()}
 			<td><input type="text" className="w-100" defaultValue={props.workDetails.wrkdActivity} value={props.workDetails.wrkdActivity} name="activity" onChange={(e) => onWorkDayChange(e)} disabled = {rowState}/></td>
 			<td><input type="number" className="w-100" defaultValue={props.workDetails.wrkdActivityHour} value={props.workDetails.wrkdActivityHour} name="hour" onChange={(e) => onWorkDayChange(e)} disabled = {rowState}/></td>
-			<td><SquadCell squadArray={props.squadArray} name="squad" selectedSquad={props.workDetails.sqdID} onChange={(e) => onWorkDayChange(e)} disabled = {rowState}/></td> 
+			<td><SquadCell squadArray={props.squadArray} name="squad" selectedSquad={props.workDetails.wrkdSqdID} onChange={(e) => onWorkDayChange(e)} disabled = {rowState}/></td> 
 			<td><input type="text" className="w-100" defaultValue={props.workDetails.wrkdActivityType} value={props.workDetails.wrkdActivityType}  name="activity_type" onChange={(e) => onWorkDayChange(e)} disabled = {rowState}/></td>
 			<td><input type="text" className="w-100" defaultValue={props.workDetails.wrkdCdc} value={props.workDetails.wrkdCdc} name="cdc" onChange={(e) => onWorkDayChange(e)} disabled = {rowState} /></td>
 		</tr>

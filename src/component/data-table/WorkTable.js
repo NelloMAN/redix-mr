@@ -65,13 +65,13 @@ const WorkTable = React.forwardRef((props, ref) => {
 					case 3: //FERIE
 						modifiedRecord.wrkdActivity = 'FERIE';
 						modifiedRecord.wrkdActivityType = 'FERIE';
-						modifiedRecord.wrkdActivityHour = 8;
+						modifiedRecord.wrkdActivityHour = 0;
 						modifiedRecord.wrkdSqdID = 1; //NONE SQUAD
 						break;
 					case 2: // MALATTIA
 						modifiedRecord.wrkdActivity = 'MALATTIA';
 						modifiedRecord.wrkdActivityType = 'MALATTIA';
-						modifiedRecord.wrkdActivityHour = 8;
+						modifiedRecord.wrkdActivityHour = 0;
 						modifiedRecord.wrkdSqdID = 1; //NONE SQUAD
 						break;
 					case 6: // PERMESSO
@@ -131,7 +131,6 @@ const WorkTable = React.forwardRef((props, ref) => {
 							<React.Fragment>
 								{
 									subArray[1].map((w, i) => {
-										console.log(w);
 										return (<WorkRow workDetails={w} index={w.wrkdID} showDet={ i === 0 ? true : false} state="existed" squadArray={squadArray} OnWDChange={(state, name, id, value, wday) => {wdChange(state, name, id, value, wday)}}/>);
 									}
 								)}
