@@ -1,37 +1,29 @@
 import '../global-css/_color.scss';
-import React, { useEffect, useState } from 'react';
+import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import './css/DialogBox.css';
 import { Modal } from 'react-bootstrap';
 
 
-function DialogBox(props) {
+const DialogBox = forwardRef((props, ref) => {
 
     const [showModal, setShowModal] = useState(false);
     const [title, setTitle] = useState('');
     const [body, setBody] = useState('');
 
-    // constructor(props){
 
-    //     super(props);
-    //     this.state = {
-    //         showModal: false,
-    //         title: '',
-    //         body: ''
-    //     }
+    useImperativeHandle(ref, () => ({
 
-    //     this.handleClose = this.handleClose.bind(this);
-    // }
-
-    function handleShow(t, b) {
-
-        setShowModal(true);
-        setTitle(t);
-        setBody(b);
-    }
+        handleShow(t, b) {
+            setShowModal(true);
+            setTitle(t);
+            setBody(b);
+        }
+    }));
 
     function handleClose () {
         setShowModal(false);
     }
+
 
     return (
         <Modal show={showModal} onHide={handleClose} centered>
@@ -47,6 +39,6 @@ function DialogBox(props) {
         </Modal>
     );
     
-}
+});
 
 export default DialogBox;

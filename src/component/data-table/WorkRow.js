@@ -5,7 +5,13 @@ import SquadCell from "./cell/SquadCell";
 
 function WorkRow(props) {
 
-	const [rowState, setDisabled] = useState(false);
+	const RowStateEnum = {
+		WORK: 0,
+		SICKNESS_HOLIDAYS: 1,
+		PERMIT:2
+	}
+
+	const [rowState, setDisabled] = useState(0);
 
 	function showDet() {
 
@@ -34,9 +40,11 @@ function WorkRow(props) {
 		const value = e.target.value;
 
 		if (value === 3 || value === 2) {
-			setDisabled(true);
+			setDisabled(RowStateEnum.SICKNESS_HOLIDAYS);
+		} else if (value === 6 ){
+			setDisabled(RowStateEnum.PERMIT);
 		} else {
-			setDisabled(false)
+			setDisabled(RowStateEnum.WORK);
 		}
 
 		props.OnWDChange(props.state, name, props.index, value, props.workDetails.wrkdDay);
@@ -48,11 +56,11 @@ function WorkRow(props) {
 		
 		<tr key={props.index} className={"work-row"+(props.state === "new" ? " work-row-new":"")}>
 			{showDet()}
-			<td><input type="text" className="w-100" defaultValue={props.workDetails.wrkdActivity} value={props.workDetails.wrkdActivity} name="activity" onChange={(e) => onWorkDayChange(e)} disabled = {rowState}/></td>
-			<td><input type="number" className="w-100" defaultValue={props.workDetails.wrkdActivityHour} value={props.workDetails.wrkdActivityHour} name="hour" onChange={(e) => onWorkDayChange(e)} disabled = {rowState}/></td>
-			<td><SquadCell squadArray={props.squadArray} name="squad" selectedSquad={props.workDetails.wrkdSqdID} onChange={(e) => onWorkDayChange(e)} disabled = {rowState}/></td> 
-			<td><input type="text" className="w-100" defaultValue={props.workDetails.wrkdActivityType} value={props.workDetails.wrkdActivityType}  name="activity_type" onChange={(e) => onWorkDayChange(e)} disabled = {rowState}/></td>
-			<td><input type="text" className="w-100" defaultValue={props.workDetails.wrkdCdc} value={props.workDetails.wrkdCdc} name="cdc" onChange={(e) => onWorkDayChange(e)} disabled = {rowState} /></td>
+			<td><input type="text" className="w-100" defaultValue={props.workDetails.wrkdActivity} value={props.workDetails.wrkdActivity} name="activity" onChange={(e) => onWorkDayChange(e)} disabled = {rowState === RowStateEnum.WORK ? false : true}/></td>
+			<td><input type="number" className="w-100" defaultValue={props.workDetails.wrkdActivityHour} value={props.workDetails.wrkdActivityHour} name="hour" onChange={(e) => onWorkDayChange(e)} disabled = {rowState === RowStateEnum.SICKNESS_HOLIDAYS ? true : false}/></td>
+			<td><SquadCell squadArray={props.squadArray} name="squad" selectedSquad={props.workDetails.wrkdSqdID} onChange={(e) => onWorkDayChange(e)} disabled = {rowState === RowStateEnum.WORK ? false : true}/></td> 
+			<td><input type="text" className="w-100" defaultValue={props.workDetails.wrkdActivityType} value={props.workDetails.wrkdActivityType}  name="activity_type" onChange={(e) => onWorkDayChange(e)} disabled = {rowState === RowStateEnum.WORK ? false : true}/></td>
+			<td><input type="text" className="w-100" defaultValue={props.workDetails.wrkdCdc} value={props.workDetails.wrkdCdc} name="cdc" onChange={(e) => onWorkDayChange(e)} disabled = {rowState === RowStateEnum.WORK ? false : true} /></td>
 		</tr>
 	);
 }

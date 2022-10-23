@@ -1,9 +1,4 @@
 import React, { useEffect } from "react";
-import {GiPalmTree} from 'react-icons/gi';
-import {BiPlusMedical} from 'react-icons/bi';
-import {ImAirplane} from 'react-icons/im';
-import {VscRemoteExplorer} from 'react-icons/vsc';
-import {BsClockHistory} from 'react-icons/bs';
 import $ from 'jquery';
 import './css/SquadCell.css';
 
@@ -28,7 +23,7 @@ function SquadCell(props) {
 
     return (
 
-        <select className="form-select rmr_select w-100" value={props.selectedSquad} aria-label="Default select example" onChange={(event) => {changeHandler(event) }}>
+        <select className="form-select rmr_select w-100" value={props.selectedSquad} aria-label="Default select example" onChange={(event) => {changeHandler(event) }} disabled={props.disabled}>
             {
                 props.squadArray.map((s, i) =>
                     <option value={s.sqdID} key={s.sqdID}>{s.sqdName}</option>
