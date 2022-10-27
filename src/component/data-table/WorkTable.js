@@ -81,7 +81,7 @@ const WorkTable = React.forwardRef((props, ref) => {
 					default:
 						break;
 				}
-				modifiedRecord.wrkdSpecsID = value;
+				modifiedRecord.wrkdInfoID = value;
 				break;
 			case "activity":
 				modifiedRecord.wrkdActivity = value;

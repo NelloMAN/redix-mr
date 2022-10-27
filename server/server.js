@@ -83,7 +83,21 @@ app.get('/getMonths/:usrID', (req, res) => {
 // getUsrWrkDay: recupero le attività dell'utente per il mese selezionato nel componente MonthComboBox
 app.get('/getUsrWrkDay/:usrID/:month', (req, res) => {
 
-    let query = 'select wrkdID, date_format(wrkdDay, "%Y-%m-%d") as wrkdDay, wrkdSpecsID, wrkdUsrID, wrkdActivity, wrkdActivityType, wrkdActivityHour, sqdID, wrkdCdc from work_day w inner join squad s on s.sqdID = w.wrkdSqdID where wrkdUsrID = '+req.params.usrID+' and month(wrkdDay) = '+req.params.month+' order by wrkdDay asc';
+    var query = 
+        'select\
+          wrkdID,\
+          date_format(wrkdDay, "%Y-%m-%d") as wrkdDay,\
+          wrkdInfoID,\
+          infoGrpID,\
+          wrkdUsrID,\
+          wrkdActivity,\
+          wrkdActivityType,\
+          wrkdActivityHour,\
+          wrkdSqdID,\
+          wrkdCdc\
+      from work_day w\
+        inner join info i on i.infoID = w.wrkdInfoID\
+      where wrkdUsrID = '+req.params.usrID+' and month(wrkdDay) = '+req.params.month+' order by wrkdDay asc';
 
     console.log('getUsrWrkDay --> '+query);
 
@@ -136,7 +150,7 @@ app.get('/getSquad', (req, res) => {
 // insertWorkDays: inserimento nuove righe
 app.post('/insertWorkDays', (req, res) => {
 
-  let query = 'insert into work_day (wrkdUsrID, wrkdDay, wrkdSpecsID, wrkdActivity, wrkdActivityType, wrkdActivityHour, wrkdSqdID, wrkdCdc) values ?'
+  let query = 'insert into work_day (wrkdUsrID, wrkdDay, wrkdInfoID, wrkdActivity, wrkdActivityType, wrkdActivityHour, wrkdSqdID, wrkdCdc) values ?'
   let values = [];
   let data = req.body.data.newWorkDays
 
@@ -157,7 +171,7 @@ app.post('/insertWorkDays', (req, res) => {
     Array.from(data).forEach( wd => {
 
       values.push ([
-        wd.wrkdUsrID, wd.wrkdDay, wd.wrkdSpecsID, wd.wrkdActivity, wd.wrkdActivityType, wd.wrkdActivityHour, wd.wrkdSqdID, wd.wrkdCdc
+        wd.wrkdUsrID, wd.wrkdDay, wd.wrkdInfoID, wd.wrkdActivity, wd.wrkdActivityType, wd.wrkdActivityHour, wd.wrkdSqdID, wd.wrkdCdc
       ]);
     });
   

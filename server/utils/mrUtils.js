@@ -21,7 +21,7 @@ function checkWorkItem(workItems) {
     let err_war = [];
 
     //Array con le ore totali per ogni giorno con info lavorative
-    var hoursPerDay = Enumerable.from(workItems).where(i => workingInfo.includes(i["wrkdSpecsID"])).groupBy(
+    var hoursPerDay = Enumerable.from(workItems).where(i => workingInfo.includes(i["wrkdInfoID"])).groupBy(
         "$.wrkdDay",
         null,
         function (key, h) {
@@ -90,7 +90,7 @@ function checkWorkItem(workItems) {
         const unique = (value, index, self) => {
             return self.indexOf(value) === index
         }
-        let specs = Enumerable.from(workItems).where(i => i["wrkdDay"] === wi['day']).select(r => r['wrkdSpecsID']).toArray();
+        let specs = Enumerable.from(workItems).where(i => i["wrkdDay"] === wi['day']).select(r => r['wrkdInfoID']).toArray();
         let distinctSpec = specs.filter(unique);
 
 

@@ -6,20 +6,29 @@ import SquadCell from "./cell/SquadCell";
 function WorkRow(props) {
 
 	const RowStateEnum = {
-		WORK: 0,
-		SICKNESS_HOLIDAYS: 1,
-		PERMIT:2
+		WORK: 1,
+		SICKNESS_HOLIDAYS: 2,
+		PERMIT:3
 	}
 
 	const [rowState, setDisabled] = useState(0);
 
 	function showDet() {
 
+		let enableFields = 0;
+
+		if (props.state === "new") {
+			enableFields = rowState
+		} else {
+			enableFields = props.workDetails.wrkdInfoID
+		}
+
 		if (props.showDet) {
+
 			return (
 				<React.Fragment>
 					<td><input type="date" className="w-100" defaultValue={props.workDetails.wrkdDay} name="day" onChange={(e) => onWorkDayChange(e)}/></td>
-					<SpecificationCell name="specs" details={props.workDetails.wrkdSpecsID} onChange={(e) => onWorkDayChange(e)}/>
+					<SpecificationCell name="specs" details={props.workDetails.wrkdInfoID} onChange={(e) => onWorkDayChange(e)}/>
 				</React.Fragment>
 			);
 		} else 

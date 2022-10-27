@@ -17,7 +17,7 @@ function AddWDButton(props) {
         let newRow = {
             wrkdID:lastID,
             wrkdDay:'',
-            wrkdSpecsID:1,
+            wrkdInfoID:1,
             wrkdActivity: '',
             wrkdActivityHour: '',
             wrkdSqdID: 1,
