@@ -1,8 +1,9 @@
+
 import '../global-css/_color.scss';
 import React, { useEffect, useRef, useState } from 'react';
 import './LoginPanel.scss';
 import DialogBox from '../component/DialogBox';
-import logo_redix from '../img/logo_redix.svg';
+import logo_redix from './../img/logo_redix.svg';
 import { sha256 } from 'js-sha256';
 import {Navigate, Route, useNavigate} from 'react-router-dom';
 import {IoMdLogIn} from 'react-icons/io';

@@ -1,10 +1,10 @@
 import '../global-css/_color.scss';
-import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react';
+import React, { forwardRef, useImperativeHandle, FC, useState } from 'react';
 import './css/DialogBox.css';
 import { Modal } from 'react-bootstrap';
 
 
-const DialogBox = forwardRef((props, ref) => {
+const DialogBox: FC<props> = forwardRef((props, ref) => {
 
     const [showModal, setShowModal] = useState(false);
     const [title, setTitle] = useState('');
