@@ -3,7 +3,7 @@ import './DashboardPanel.css';
 import logo_redix from '../img/logo_redix.svg';
 import Hamburger from 'hamburger-react'
 import MonthComboBox from '../component/MonthComboBox';
-import {useLocation} from 'react-router-dom';
+import {Router, useLocation} from 'react-router-dom';
 import WorkTable from '../component/data-table/WorkTable';
 import DialogBox from '../component/DialogBox';
 import AddWDButton from '../component/AddWDButton';
@@ -11,7 +11,9 @@ import SaveWDButton from '../component/SaveWDButton';
 import ExportWDButton from '../component/ExportWDButton';
 import axios from "axios";
 
-function DashboardPanel() {
+export interface IDashboardPanel {}
+
+const DashboardPanel: React.FunctionComponent<IDashboardPanel> = (props) => {
 
     const location = useLocation();
     const wtRef = useRef(null);

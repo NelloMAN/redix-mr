@@ -8,7 +8,9 @@ import { sha256 } from 'js-sha256';
 import {Navigate, Route, useNavigate} from 'react-router-dom';
 import {IoMdLogIn} from 'react-icons/io';
 
-function LoginPanel() {
+export interface ILoginPanel {}
+
+const LoginPanel: React.FunctionComponent<ILoginPanel> = (props) => {
 
     let navigate = useNavigate();
 
@@ -17,7 +19,7 @@ function LoginPanel() {
 
     const refDialog = useRef(null);
 
-    function handleChange(event) {
+    function handleChange(event:any) {
 
         const name = event.target.name
 
@@ -29,7 +31,7 @@ function LoginPanel() {
         
     }
 
-    function handleSubmit(event) {
+    function handleSubmit(event:any) {
 
         fetchUsr();
         event.preventDefault();

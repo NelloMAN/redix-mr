@@ -1,9 +1,9 @@
-import "./App.css";
+import "./RedixMonthlyReportApp.css";
 import { Route, Routes} from "react-router-dom";
 import LoginPanel from "./pages/LoginPanel";
 import DashboardPanel from "./pages/DashboardPanel";
 
-function App() {
+function RedixMonthlyReportApp() {
 	return (
 		<div>
 			<main>
@@ -16,4 +16,4 @@ function App() {
 	);
 }
 
-export default App;
+export default RedixMonthlyReportApp;

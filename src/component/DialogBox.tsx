@@ -4,7 +4,7 @@ import './css/DialogBox.css';
 import { Modal } from 'react-bootstrap';
 
 
-const DialogBox: FC<props> = forwardRef((props, ref) => {
+const DialogBox = forwardRef((props, ref) => {
 
     const [showModal, setShowModal] = useState(false);
     const [title, setTitle] = useState('');
@@ -13,7 +13,7 @@ const DialogBox: FC<props> = forwardRef((props, ref) => {
 
     useImperativeHandle(ref, () => ({
 
-        handleShow(t, b) {
+        handleShow(t:string, b:string) {
             setShowModal(true);
             setTitle(t);
             setBody(b);
