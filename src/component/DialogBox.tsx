@@ -3,6 +3,9 @@ import React, { forwardRef, useImperativeHandle, FC, useState } from 'react';
 import './css/DialogBox.css';
 import { Modal } from 'react-bootstrap';
 
+export interface IDialogBox {
+    handleShow(title:string, body:string):null;
+}
 
 const DialogBox = forwardRef((props, ref) => {
 

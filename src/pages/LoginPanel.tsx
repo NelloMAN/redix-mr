@@ -2,22 +2,22 @@
 import '../global-css/_color.scss';
 import React, { useEffect, useRef, useState } from 'react';
 import './LoginPanel.scss';
-import DialogBox from '../component/DialogBox';
+import DialogBox, { IDialogBox } from '../component/DialogBox';
 import logo_redix from './../img/logo_redix.svg';
 import { sha256 } from 'js-sha256';
-import {Navigate, Route, useNavigate} from 'react-router-dom';
+import {useHistory} from 'react-router-dom';
 import {IoMdLogIn} from 'react-icons/io';
 
 export interface ILoginPanel {}
 
 const LoginPanel: React.FunctionComponent<ILoginPanel> = (props) => {
 
-    let navigate = useNavigate();
+    let history = useHistory();
 
     const [usrEmail, setEmail] = useState('');
     const [usrPassword, setPassword] = useState('');
 
-    const refDialog = useRef(null);
+    const refDialog = React.useRef<IDialogBox | null>(null);
 
     function handleChange(event:any) {
 
@@ -44,9 +44,10 @@ const LoginPanel: React.FunctionComponent<ILoginPanel> = (props) => {
         .then (response => {
 
             if (Object.keys(response).length > 0) {
-                navigate("/dashboard", {replace: true, state:{usrID : response[0].usrID}});
+                //history.push("/dashboard", {replace: true, state:{usrID : response[0].usrID}});
+                history.push('/dashboard/'+response[0].usrID);
             }else {
-                refDialog.current.handleShow('Attenzione','Email o password errati');
+                refDialog.current?.handleShow('Attenzione','Email o password errati');
             }
         })
         .catch();
@@ -71,7 +72,7 @@ const LoginPanel: React.FunctionComponent<ILoginPanel> = (props) => {
                             <form onSubmit={handleSubmit}>
                                 <div className="form-group row">
                                     <div className="col-sm-3 d-flex align-items-center">
-                                        <h6 for="exampleInputEmail1" className='m-0'>Email:</h6>
+                                        <h6 className='m-0'>Email:</h6>
                                     </div>
                                     <div className="col-sm-9">
                                         <input type="email" name="email" value={usrEmail} onChange={(event) => {handleChange(event)}} className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" />
@@ -80,7 +81,7 @@ const LoginPanel: React.FunctionComponent<ILoginPanel> = (props) => {
                                 <br></br>
                                 <div className="form-group row">
                                     <div className="col-sm-3 d-flex align-items-center">
-                                        <h6 for="exampleInputPassword1" className='m-0'>Password:</h6>
+                                        <h6 className='m-0'>Password:</h6>
                                     </div>
                                     <div className="col-sm-9">
                                         <input type="password" name="password" value={usrPassword} onChange={(event) => {handleChange(event) }} className="form-control" id="exampleInputPassword1" placeholder="Password" />

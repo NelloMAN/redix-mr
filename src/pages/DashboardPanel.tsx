@@ -1,22 +1,22 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import './DashboardPanel.css';
 import logo_redix from '../img/logo_redix.svg';
 import Hamburger from 'hamburger-react'
 import MonthComboBox from '../component/MonthComboBox';
-import {Router, useLocation} from 'react-router-dom';
+import {RouteComponentProps} from 'react-router-dom';
 import WorkTable from '../component/data-table/WorkTable';
 import DialogBox from '../component/DialogBox';
 import AddWDButton from '../component/AddWDButton';
 import SaveWDButton from '../component/SaveWDButton';
 import ExportWDButton from '../component/ExportWDButton';
 import axios from "axios";
+import WorkDay from '../class/WorkDay';
 
-export interface IDashboardPanel {}
+export interface IDashboardPanel extends RouteComponentProps<{ usrID: string }>{}
 
-const DashboardPanel: React.FunctionComponent<IDashboardPanel> = (props) => {
+const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
 
-    const location = useLocation();
-    const wtRef = useRef(null);
+    const currentUsrID = parseInt(props.match.params.usrID, 10);
 
     const [usrData, setUsrData] = useState({
         usrEmail:"",
@@ -26,7 +26,7 @@ const DashboardPanel: React.FunctionComponent<IDashboardPanel> = (props) => {
     //useEffetct per prendere i mesi dell'utente
     useEffect(() => {
 
-        fetch('http://localhost:3001/getUsrMonth/'+location.state.usrID)
+        fetch('http://localhost:3001/getUsrMonth/'+currentUsrID)
         .then(response => response.json())
         .then (response => {
 
@@ -37,22 +37,22 @@ const DashboardPanel: React.FunctionComponent<IDashboardPanel> = (props) => {
             });
         })
         .catch();
-    }, [location.state.usrID]);
+    }, [currentUsrID]);
 
-    const [nwd, setNewWorkDays] = useState([]); //array con la lista dei nuovi record inseriti
+    const [nwd, setNewWorkDays] = useState<WorkDay[]>([]); //array con la lista dei nuovi record inseriti
 
-    const [workDays, setWorkDays] = useState([]); //array con la lista dei giorni lavorati dell'utente
+    const [workDays, setWorkDays] = useState<WorkDay[]>([]); //array con la lista dei giorni lavorati dell'utente
     // useEffect per prendere i giorni dell'utente
     useEffect(() => {
 
-        axios.get('http://localhost:3001/getUsrWrkDay/' +location.state.usrID +'/' + usrData.selectedMonth)
+        axios.get('http://localhost:3001/getUsrWrkDay/' +currentUsrID +'/' + usrData.selectedMonth)
 		.then(res => {
 			setWorkDays(res.data);
 		});
 
-    },[location.state.usrID, usrData.selectedMonth]);
+    },[currentUsrID, usrData.selectedMonth]);
 
-    const [changewd, setModifiedRecords] = useState([]); //array con la lista dei record esistenti e modificati
+    const [changewd, setModifiedRecords] = useState<WorkDay[]>([]); //array con la lista dei record esistenti e modificati
 
     if (usrData.usrEmail === "") {
         return <p>Loading</p>
@@ -61,7 +61,7 @@ const DashboardPanel: React.FunctionComponent<IDashboardPanel> = (props) => {
     // funzione per aggiornare gli array contenente i record modificati 
     // updRecord: il record modificato
     // wd: la lista dei record esistenti con all'interno già il record modificato
-    function UpdateWorkDays( updRecord, wd) {
+    function UpdateWorkDays( updRecord : WorkDay, wd : WorkDay[]) {
 
         setModifiedRecords( changewd => [...changewd, updRecord]);
         setWorkDays(wd);
@@ -96,10 +96,10 @@ const DashboardPanel: React.FunctionComponent<IDashboardPanel> = (props) => {
                         <div className='col-sm-10'>
                             <div className='row'>
                                 <div className='col-sm-4'>
-                                    <MonthComboBox usrID={location.state.usrID} month={usrData.selectedMonth} OnMonthChange= {(m) => {setUsrData({selectedMonth: m})}}/> 
+                                    <MonthComboBox usrID={currentUsrID} month={usrData.selectedMonth} OnMonthChange= {(m) => {setUsrData({selectedMonth: m})}}/> 
                                 </div>
                                 <div className='offset-sm-4 col-sm-1 d-flex justify-content-end'>
-                                    <AddWDButton OnSingleAWDClick = {(newRow)=>{setNewWorkDays( nwd => [...nwd, newRow])}}type='s'/>
+                                    <AddWDButton OnSingleAWDClick = {(newRow : WorkDay)=>{setNewWorkDays( nwd => [...nwd, newRow])}}type='s'/>
                                 </div>
                                 <div className='col-sm-1 d-flex justify-content-end'>
                                     <AddWDButton type='m'/>
@@ -114,7 +114,7 @@ const DashboardPanel: React.FunctionComponent<IDashboardPanel> = (props) => {
                             <br></br>
                             <div className='row'>
                                 <div className='col-sm-12'>
-                                    <WorkTable usrID={location.state.usrID} month={usrData.selectedMonth} ref={wtRef} workDays={workDays} nwd={nwd} UpdateNewRecords = {(newRecords => {setNewWorkDays(newRecords)})} UpdateExistingRecords = {((updRecord, wd) => {UpdateWorkDays(updRecord, wd)})}/>
+                                    <WorkTable usrID={currentUsrID} month={usrData.selectedMonth} workDays={workDays} nwd={nwd} UpdateNewRecords = {((newRecords : WorkDay[]) => {setNewWorkDays(newRecords)})} UpdateExistingRecords = {((updRecord : WorkDay, wd : WorkDay[]) => {UpdateWorkDays(updRecord, wd)})}/>
                                 </div>
                             </div>
                         </div>
