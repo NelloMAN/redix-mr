@@ -1,18 +1,16 @@
 
 import '../global-css/_color.scss';
-import React, { useEffect, useRef, useState } from 'react';
+import React, {useState } from 'react';
 import './LoginPanel.scss';
 import DialogBox, { IDialogBox } from '../component/DialogBox';
 import logo_redix from './../img/logo_redix.svg';
 import { sha256 } from 'js-sha256';
-import {useHistory} from 'react-router-dom';
+import {redirect} from 'react-router-dom';
 import {IoMdLogIn} from 'react-icons/io';
 
 export interface ILoginPanel {}
 
 const LoginPanel: React.FunctionComponent<ILoginPanel> = (props) => {
-
-    let history = useHistory();
 
     const [usrEmail, setEmail] = useState('');
     const [usrPassword, setPassword] = useState('');
@@ -45,7 +43,7 @@ const LoginPanel: React.FunctionComponent<ILoginPanel> = (props) => {
 
             if (Object.keys(response).length > 0) {
                 //history.push("/dashboard", {replace: true, state:{usrID : response[0].usrID}});
-                history.push('/dashboard/'+response[0].usrID);
+                redirect('/dashboard/'+response[0].usrID);
             }else {
                 refDialog.current?.handleShow('Attenzione','Email o password errati');
             }

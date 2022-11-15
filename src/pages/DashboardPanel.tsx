@@ -3,7 +3,7 @@ import './DashboardPanel.css';
 import logo_redix from '../img/logo_redix.svg';
 import Hamburger from 'hamburger-react'
 import MonthComboBox from '../component/MonthComboBox';
-import {RouteComponentProps} from 'react-router-dom';
+import {useParams} from 'react-router-dom';
 import WorkTable from '../component/data-table/WorkTable';
 import DialogBox from '../component/DialogBox';
 import AddWDButton from '../component/AddWDButton';
@@ -11,18 +11,25 @@ import SaveWDButton from '../component/SaveWDButton';
 import ExportWDButton from '../component/ExportWDButton';
 import axios from "axios";
 import WorkDay from '../class/WorkDay';
+import User from '../class/User';
 
-export interface IDashboardPanel extends RouteComponentProps<{ usrID: string }>{}
+export interface IDashboardPanel {}
 
 const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
 
-    const currentUsrID = parseInt(props.match.params.usrID, 10);
+    const {currentUsrID} = useParams();
 
-    const [usrData, setUsrData] = useState({
-        usrEmail:"",
-        usrName:"",
-        selectedMonth: 0
-    });
+    // const [usrData, setUsrData] = useState({
+    //     usrEmail:"",
+    //     usrName:"",
+    //     selectedMonth: 0
+    // });
+
+    const [usrData, setUsrData] = useState<User>({
+        usrData.
+    })
+
+
     //useEffetct per prendere i mesi dell'utente
     useEffect(() => {
 
@@ -96,7 +103,7 @@ const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
                         <div className='col-sm-10'>
                             <div className='row'>
                                 <div className='col-sm-4'>
-                                    <MonthComboBox usrID={currentUsrID} month={usrData.selectedMonth} OnMonthChange= {(m) => {setUsrData({selectedMonth: m})}}/> 
+                                    <MonthComboBox usrID={currentUsrID} month={usrData.selectedMonth} OnMonthChange= {(m:number) => {setUsrData({selectedMonth: m})}}/> 
                                 </div>
                                 <div className='offset-sm-4 col-sm-1 d-flex justify-content-end'>
                                     <AddWDButton OnSingleAWDClick = {(newRow : WorkDay)=>{setNewWorkDays( nwd => [...nwd, newRow])}}type='s'/>
