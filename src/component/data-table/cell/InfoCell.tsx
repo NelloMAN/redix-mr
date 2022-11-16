@@ -7,9 +7,15 @@ import {BsClockHistory} from 'react-icons/bs';
 import $ from 'jquery';
 import './css/SpecificationCell.css';
 
-function SpecificationCell(props) {
+export interface IInfoCellProps {
+	name : string,
+	details : number,
+	onChange( n: string, v : string) : any
+}
 
-	function handleInfoClick(event) {
+const InfoCell: React.FC<IInfoCellProps> = (props:IInfoCellProps) => {
+
+	function handleInfoClick(event:any) {
 
 		let sValue = 1
 		let isActive = $(event.currentTarget).hasClass('specs-active'); //prendo la spec cliccata e verifico se è attiva o meno
@@ -43,16 +49,7 @@ function SpecificationCell(props) {
 			}
 		}
 
-		let sTarget = {
-			name: props.name,
-			value: sValue
-		};
-
-		let customEvent = {
-			target: sTarget
-		};
-
-		props.onChange(customEvent);
+		props.onChange(props.name, ''+sValue);
 	}
 
 	return (
@@ -68,4 +65,4 @@ function SpecificationCell(props) {
 	);
 }
 
-export default SpecificationCell;
+export default InfoCell;

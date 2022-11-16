@@ -1,11 +1,21 @@
-import React, { useEffect, useState, useImperativeHandle } from "react";
+import React, { useEffect, useState, FC } from "react";
 import axios from "axios";
 import WorkRow from "./WorkRow";
 import "./css/WorkTable.css";
+import { WorkDay, DateWorkDay, Squad } from "../../interface/MRInterface";
 
-const WorkTable = React.forwardRef((props, ref) => {
-	
-	const [squadArray, setSquad] = useState([]);
+export interface IWorkTableProps {
+	usrID : number, 
+	month : number, 
+	workDays : DateWorkDay [],
+	nwd: WorkDay [],
+	UpdateNewRecords(newWorkDay : WorkDay []) : any,
+	UpdateExistingRecords( w : WorkDay | undefined, dwd : DateWorkDay []) : any
+}
+
+const WorkTable: React.FC<IWorkTableProps> = (props:IWorkTableProps) => {
+
+	const [squadArray, setSquad] = useState<Squad []>([]);
 
 	useEffect(() => {
 
@@ -27,12 +37,11 @@ const WorkTable = React.forwardRef((props, ref) => {
 	// name: nome del campo cambiato
 	// id: per gli existed corrisponde al wrkdID, per i new è l'index dell'array props.nwd
 	// value: il nuovo valore settato
-	function wdChange(state, name, id, value, wDay) {
+	function wdChange(state : string, name : string, id : number, value : string, wDay : WorkDay) {
 
 		console.log("state: "+state+" - name: "+name+" - id: "+id+" - value: "+value );
 
-		let nwdS;
-		let wd;
+		let nwdS : WorkDay [];
 
 		if (state === "new") {
 
@@ -46,7 +55,7 @@ const WorkTable = React.forwardRef((props, ref) => {
 		}  else if (state === "existed") {
 
 			// recupero il record modificato
-			let record = props.workDays.find(w => w[0] === wDay)[1].find(c => c.wrkdID === id);
+			let record : WorkDay = props.workDays.find(w => w.day === wDay.wrkdDay)!.wd.find(c => c.wrkdID === id)!;
 			
 			ChangeRecordValues(record, name, value);
 
@@ -54,15 +63,16 @@ const WorkTable = React.forwardRef((props, ref) => {
 		}		
 	}
 
-	function ChangeRecordValues (modifiedRecord, name, value) {
+	function ChangeRecordValues (modifiedRecord : WorkDay, name : string, value : string) {
 
 		switch(name) {
 			case "day":
-				modifiedRecord.wrkdDay = value;
+				modifiedRecord.wrkdDay = new Date(value);
 				break;
 			case "specs": 
-				switch(value) {
+				switch(parseInt(value)) {
 					case 3: //FERIE
+
 						modifiedRecord.wrkdActivity = 'FERIE';
 						modifiedRecord.wrkdActivityType = 'FERIE';
 						modifiedRecord.wrkdActivityHour = 0;
@@ -81,7 +91,7 @@ const WorkTable = React.forwardRef((props, ref) => {
 					default:
 						break;
 				}
-				modifiedRecord.wrkdInfoID = value;
+				modifiedRecord.wrkdInfoID = parseInt(value);
 				break;
 			case "activity":
 				modifiedRecord.wrkdActivity = value;
@@ -90,7 +100,7 @@ const WorkTable = React.forwardRef((props, ref) => {
 				modifiedRecord.wrkdActivityHour = parseInt(value);
 				break;
 			case "squad": 
-				modifiedRecord.wrkdSqdID = value;
+				modifiedRecord.wrkdSqdID = parseInt(value);
 				break;
 			case "activity_type":
 				modifiedRecord.wrkdActivityType = value;
@@ -121,17 +131,18 @@ const WorkTable = React.forwardRef((props, ref) => {
 				<React.Fragment>
 				{					
 					props.nwd.map((nr, i) => {
-						return (<WorkRow workDetails={nr} index={i} showDet="true" state="new" squadArray={squadArray} OnWDChange= {(state, name, id, value, wday) => {wdChange(state, name, id, value, wday)}}/>);
+						return (<WorkRow workDay={nr} index={i} showDet={true} rowState="new" squad={squadArray} OnWDChange= {(state, name, id, value, wday) => {wdChange(state, name, id, value, wday)}}/>);
 					})
 				}
 				</React.Fragment>		
 				{
+
 					props.workDays.map((subArray, index) => {
 						return (
 							<React.Fragment>
 								{
-									subArray[1].map((w, i) => {
-										return (<WorkRow workDetails={w} index={w.wrkdID} showDet={ i === 0 ? true : false} state="existed" squadArray={squadArray} OnWDChange={(state, name, id, value, wday) => {wdChange(state, name, id, value, wday)}}/>);
+									subArray.wd.map((w, i) => {
+										return (<WorkRow workDay={w} index={w.wrkdID} showDet={ i === 0 ? true : false} rowState="existed" squad={squadArray} OnWDChange={(state, name, id, value, wday) => {wdChange(state, name, id, value, wday)}}/>);
 									}
 								)}
 							</React.Fragment>
@@ -142,6 +153,6 @@ const WorkTable = React.forwardRef((props, ref) => {
 			</tbody>
 		</table>
 	);
-})
+}
 
 export default WorkTable;
