@@ -7,7 +7,7 @@ import { WorkDay, DateWorkDay, Squad } from "../../interface/MRInterface";
 export interface IWorkTableProps {
 	usrID : number, 
 	month : number, 
-	workDays : DateWorkDay [],
+	dateWorkDays : DateWorkDay [],
 	nwd: WorkDay [],
 	UpdateNewRecords(newWorkDay : WorkDay []) : any,
 	UpdateExistingRecords( w : WorkDay | undefined, dwd : DateWorkDay []) : any
@@ -19,16 +19,16 @@ const WorkTable: React.FC<IWorkTableProps> = (props:IWorkTableProps) => {
 
 	useEffect(() => {
 
-		console.log(props.workDays);
+		console.log(props.dateWorkDays);
 
 		axios.get('http://localhost:3001/getSquad')
 		.then(res => {
 		   setSquad(res.data);
 		});
 
-	}, []);
+	}, [props.usrID]);
 
-	if (props.workDays.length === 0 && squadArray.length === 0) {
+	if (props.dateWorkDays.length === 0 && squadArray.length === 0) {
         return <p>Loading</p>
     }
 
@@ -55,11 +55,11 @@ const WorkTable: React.FC<IWorkTableProps> = (props:IWorkTableProps) => {
 		}  else if (state === "existed") {
 
 			// recupero il record modificato
-			let record : WorkDay = props.workDays.find(w => w.day === wDay.wrkdDay)!.wd.find(c => c.wrkdID === id)!;
+			let record : WorkDay = props.dateWorkDays.find(w => w.day === wDay.wrkdDay)!.wd.find(c => c.wrkdID === id)!;
 			
 			ChangeRecordValues(record, name, value);
 
-			props.UpdateExistingRecords(record, props.workDays);
+			props.UpdateExistingRecords(record, props.dateWorkDays);
 		}		
 	}
 
@@ -137,7 +137,7 @@ const WorkTable: React.FC<IWorkTableProps> = (props:IWorkTableProps) => {
 				</React.Fragment>		
 				{
 
-					props.workDays.map((subArray, index) => {
+					props.dateWorkDays.map((subArray, index) => {
 						return (
 							<React.Fragment>
 								{
