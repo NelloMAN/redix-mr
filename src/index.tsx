@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import RedixMonthlyReportApp from './RedixMonthlyReportApp';
 import reportWebVitals from './reportWebVitals';
-import {BrowserRouter} from 'react-router-dom';
+import {BrowserRouter, Routes, Route} from 'react-router-dom';
 
 ReactDOM.render(
   <React.StrictMode>

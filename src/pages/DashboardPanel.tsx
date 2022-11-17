@@ -3,7 +3,7 @@ import './DashboardPanel.css';
 import logo_redix from '../img/logo_redix.svg';
 import Hamburger from 'hamburger-react'
 import MonthComboBox from '../component/MonthComboBox';
-import {useParams} from 'react-router-dom';
+import {useLocation, useParams} from 'react-router-dom';
 import WorkTable from '../component/data-table/WorkTable';
 import DialogBox from '../component/DialogBox';
 import AddWDButton from '../component/AddWDButton';
@@ -17,7 +17,8 @@ export interface IDashboardPanel {}
 
 const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
 
-    const {currentUsrID} = useParams()!;
+    const location = useLocation()
+    let currentUsrID = location.state.usrID;
 
     const [usr, setUsrData] = React.useState<User>({
         usrName: "",
@@ -44,7 +45,7 @@ const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
 
     const [nwd, setNewWorkDays] = useState<WorkDay[]>([]); //array con la lista dei nuovi record inseriti
 
-    const [workDays, setWorkDays] = useState<DateWorkDay[]>([]); //array con la lista dei giorni lavorati dell'utente
+    const [dateWorkDays, setWorkDays] = useState<DateWorkDay[]>([]); //array con la lista dei giorni lavorati dell'utente
     // useEffect per prendere i giorni dell'utente
     useEffect(() => {
 
@@ -64,7 +65,7 @@ const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
     // funzione per aggiornare gli array contenente i record modificati 
     // updRecord: il record modificato
     // wd: la lista dei record esistenti con all'interno già il record modificato
-    function UpdateWorkDays( updRecord : WorkDay, wd : WorkDay[]) {
+    function UpdateWorkDays( updRecord : WorkDay, wd : DateWorkDay[]) {
 
         setModifiedRecords( changewd => [...changewd, updRecord]);
         setWorkDays(wd);
@@ -117,7 +118,7 @@ const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
                             <br></br>
                             <div className='row'>
                                 <div className='col-sm-12'>
-                                    <WorkTable usrID={parseInt(currentUsrID!)} month={usr.selectedMonth} workDays={workDays} nwd={nwd} UpdateNewRecords = {((newRecords : WorkDay[]) => {setNewWorkDays(newRecords)})} UpdateExistingRecords = {((updRecord : WorkDay, wd : WorkDay[]) => {UpdateWorkDays(updRecord, wd)})}/>
+                                    <WorkTable usrID={parseInt(currentUsrID!)} month={usr.selectedMonth} workDays={dateWorkDays} nwd={nwd} UpdateNewRecords = {((newRecords : WorkDay[]) => {setNewWorkDays(newRecords)})} UpdateExistingRecords = {((updRecord : WorkDay, wd : DateWorkDay[]) => {UpdateWorkDays(updRecord, wd)})}/>
                                 </div>
                             </div>
                         </div>

@@ -1,18 +1,24 @@
 import "./RedixMonthlyReportApp.css";
-import { BrowserRouter, Routes, Route} from "react-router-dom";
+import { Routes, Route, Navigate, useNavigate} from "react-router-dom";
 import LoginPanel from "./pages/LoginPanel";
 import DashboardPanel from "./pages/DashboardPanel";
+import { useEffect } from "react";
 
 function RedixMonthlyReportApp() {
+
+	const navigate = useNavigate();
+
+	useEffect(() =>{
+		navigate('/login');
+	}, [])
+
 	return (
 		<div>
-			<main>
-				<BrowserRouter>
-					<Routes>
-						<Route path='/' element={<LoginPanel />} />
-						<Route path='/dashboard/:usrID' element={<DashboardPanel />} />
-					</Routes>
-				</BrowserRouter>
+			<main>	
+				<Routes>
+					<Route path='/login' element={<LoginPanel />} />
+					<Route path='/dashboard' element={<DashboardPanel />} />
+				</Routes>
 			</main>
 		</div>
 	);

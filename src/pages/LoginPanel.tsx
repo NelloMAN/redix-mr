@@ -5,12 +5,14 @@ import './LoginPanel.scss';
 import DialogBox, { IDialogBox } from '../component/DialogBox';
 import logo_redix from './../img/logo_redix.svg';
 import { sha256 } from 'js-sha256';
-import {redirect} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import {IoMdLogIn} from 'react-icons/io';
 
 export interface ILoginPanel {}
 
 const LoginPanel: React.FunctionComponent<ILoginPanel> = (props) => {
+
+    const navigate = useNavigate();
 
     const [usrEmail, setEmail] = useState('');
     const [usrPassword, setPassword] = useState('');
@@ -29,7 +31,7 @@ const LoginPanel: React.FunctionComponent<ILoginPanel> = (props) => {
         
     }
 
-    function handleSubmit(event:any) {
+    function handleSubmit(event:React.FormEvent) {
 
         fetchUsr();
         event.preventDefault();
@@ -42,8 +44,17 @@ const LoginPanel: React.FunctionComponent<ILoginPanel> = (props) => {
         .then (response => {
 
             if (Object.keys(response).length > 0) {
-                //history.push("/dashboard", {replace: true, state:{usrID : response[0].usrID}});
-                redirect('/dashboard/'+response[0].usrID);
+
+                navigate(
+                    "/dashboard", 
+                    {
+                        replace: true,
+                        state:{
+                            usrID : response[0].usrID
+                        }
+                    }
+                );
+
             }else {
                 refDialog.current?.handleShow('Attenzione','Email o password errati');
             }
@@ -67,7 +78,7 @@ const LoginPanel: React.FunctionComponent<ILoginPanel> = (props) => {
                     <br></br>
                     <div className='row'>
                         <div className='offset-sm-1 col-sm-10'>
-                            <form onSubmit={handleSubmit}>
+                            <form onSubmit={(e) => handleSubmit(e)}>
                                 <div className="form-group row">
                                     <div className="col-sm-3 d-flex align-items-center">
                                         <h6 className='m-0'>Email:</h6>
