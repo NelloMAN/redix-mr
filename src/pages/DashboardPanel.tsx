@@ -55,6 +55,7 @@ const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
             .then(res => {
                 console.log(currentUsrID);
                 console.log(usr.selectedMonth);
+                
                 setDateWorkDays(res.data);
             });
         }

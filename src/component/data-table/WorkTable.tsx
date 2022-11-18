@@ -28,10 +28,6 @@ const WorkTable: React.FC<IWorkTableProps> = (props:IWorkTableProps) => {
 
 	}, [props.usrID]);
 
-	if (props.dateWorkDays.length === 0 && squadArray.length === 0) {
-        return <p>Loading</p>
-    }
-
 	// Evento cambio dei valori del WorkRow. 
 	// state: new se è nuova altrimenti existed
 	// name: nome del campo cambiato
