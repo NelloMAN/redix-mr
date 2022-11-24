@@ -8,8 +8,11 @@ ovvero vengono controllati i dati inseriti dall'utente secondo alcuni criteri
 
 import Enumerable from "linq";
 import { Alert } from "./class/Alert";
-import { WorkDay, DateWorkDay } from "./class/MRServerInterface";
-import {DayType, WorkingInfo, ErrorType, WarnType} from './mrEnum';
+import { WorkDay } from "./class/WorkDay";
+
+import { DayType, WorkingInfo, ErrorEnum, WarnEnum } from './mrEnum';
+import { WarningInfo } from "./class/WarningInfo";
+import { ErrorInfo } from "./class/ErrorInfo";
 
 var Holidays = require('date-holidays');     //Libreria per recuperare i giorni di festività
 var holidays = new Holidays('IT');
@@ -38,11 +41,14 @@ export function checkWorkItem(dateWorkDayItems : WorkDay[]) {
     //#region Check warning per sabato, domenica e festivi per assegnare eventuali straordinari e permessi
     hoursPerDay.forEach(wi => {
         
-        let wDate = new Date(wi['day']);
+        let wDate = new Date(wi.day);
         let iwdWarn = DayType.WORK;
-        let straoWarn = '';
-        let straoHours = 0;
-        let permHours = 0;
+
+        let warnInfo : WarningInfo;
+        let errorInfo : ErrorInfo;
+
+        let warnAlert : Alert;
+        let errorAlert : Alert;
 
         //se è un sabato, una domenica o un giorno festivo iwdWarn viene valorizzato
         iwdWarn = getDayType(wDate);
@@ -50,61 +56,48 @@ export function checkWorkItem(dateWorkDayItems : WorkDay[]) {
         //Se il giorno non è weekend o festivo, verifico il numero di ore salvate in modo tale da inserire straordinari o ore di permesso automaticamente
         if (iwdWarn === DayType.WORK) {
             
-            if (wi['totalH'] > 8) {
+            if (wi.totalH > 8) {
 
-                straoWarn = 'Il giorno '+wi['day']+' hai superato le 8 ore di lavoro. Verranno aggiunte come straordinari';
-                straoHours = wi['totalH'] - 8;
+                let straoHours = wi.totalH - 8;
 
-                err_war.push([
-                    wi, 
-                    'WARNING', 
-                    mrEnum.WarnType.OVERTIME_HOURS,
-                    straoWarn,
-                    straoHours
-                ]);   
+                warnInfo =  new WarningInfo(WarnEnum.OVERTIME_HOURS) 
+                warnAlert = new Alert(wDate, warnInfo, ''+straoHours)
+
+                err_war.push(warnAlert);   
             }
-            else if (wi['totalH'] < 8) {
+            else if (wi.totalH < 8) {
 
-                straoWarn = 'Il giorno '+wi['day']+' non hai raggiunto le 8 ore di lavoro. Le rimanenti verranno inserite come ore di permesso'
-                permHours = 8 - wi['totalH'];
+                let permHours = 8 - wi.totalH;
 
-                err_war.push([
-                    wi, 
-                    'WARNING', 
-                    mrEnum.WarnType.PERMITS_HOURS,
-                    straoWarn,
-                    permHours
-                ]);   
+                warnInfo =  new WarningInfo(WarnEnum.PERMITS_HOURS) 
+                warnAlert = new Alert(wDate, warnInfo, ''+permHours)
+
+                err_war.push(warnAlert);   
             }
 
         } else {
 
-            err_war.push([
-                wi, 
-                'WARNING', 
-                WarnType.WORK_HOLIDAYS,
-                'Il giorno '+wi['day']+' è festivo. Le ore per questo giorno verranno inserite come straordinari',
-                wDate
-            ]);       
+            warnInfo =  new WarningInfo(WarnEnum.WORK_HOLIDAYS) 
+            warnAlert = new Alert(wDate, warnInfo, '')
+
+            err_war.push(warnAlert);
+               
         }
 
         //#region Check sulle specifiche 
-        const unique = (value, index, self) => {
-            return self.indexOf(value) === index
-        }
-        let specs = Enumerable.from(dateWorkDayItems).where(i => i["wrkdDay"] === wi['day']).select(r => r['wrkdInfoID']).toArray();
-        let distinctSpec = specs.filter(unique);
+        // const unique = (value, index, self) => {
+        //     return self.indexOf(value) === index
+        // }
+        let distinctSpec = Enumerable.from(dateWorkDayItems).where(i => i.wrkdDay === wi.day).select(r => r.wrkdInfoID).distinct().toArray();
+        // let distinctSpec = infos.filter(unique);
 
 
         if (distinctSpec.length > 2) {
             
-            err_war.push([
-                wi, 
-                'ERROR', 
-                ErrorType.MULTIPLE_INFO,
-                'Aggiunte troppe specifiche per un singolo giorno',
-                wDate
-            ]); 
+            errorInfo = new ErrorInfo(ErrorEnum.MULTIPLE_INFO);
+            errorAlert = new Alert(wDate, errorInfo, ''+wDate)
+            
+            err_war.push(errorAlert); 
 
         } else if (distinctSpec.length === 2) {
 
@@ -118,13 +111,10 @@ export function checkWorkItem(dateWorkDayItems : WorkDay[]) {
                 (distinctSpec[0] === 6 &&  distinctSpec[1] === 5) 
             ) {} else {
 
-                err_war.push([
-                    wi, 
-                    'ERROR', 
-                    ErrorType.INC_INFO,
-                    'Per il giorno '+wi['day']+' sono state aggiunte delle info incompatibili',
-                    wi['day']
-                ]); 
+                errorInfo = new ErrorInfo(ErrorEnum.INC_INFO);
+                errorAlert = new Alert(wDate, errorInfo, ''+wDate)
+                
+                err_war.push(errorAlert); 
             } 
         }
         //#endregion        
@@ -133,17 +123,16 @@ export function checkWorkItem(dateWorkDayItems : WorkDay[]) {
     //verifico che per i giorni festivi segnati ci siano info compatibili
     dateWorkDayItems.forEach(wi => {
 
-        let wDate = new Date(wi['wrkdDay']);
+        let wDate = new Date(wi.wrkdDay);
         let workDayType = getDayType(wDate);
 
-        if (workDayType !== DayType.WORK && !workingInfo.includes(wi['specs'])) {
-            err_war.push([
-                wi, 
-                'ERROR', 
-                ErrorType.HOLIDAYS_INC_INFO,
-                'Le info inserite per il giorno '+wi['wrkdDay']+' non sono compatibili in quanto giorni festivo',
-                wi['day']
-            ]); 
+        let errorInfo = new ErrorInfo(ErrorEnum.HOLIDAYS_INC_INFO);
+        let errorAlert = new Alert(wDate, errorInfo, ''+wDate)
+        
+        err_war.push(errorAlert); 
+
+        if (workDayType !== DayType.WORK && !workingInfo.includes(wi.wrkdInfoID)) {
+            err_war.push(errorAlert); 
         }
 
     });       
@@ -154,9 +143,9 @@ export function checkWorkItem(dateWorkDayItems : WorkDay[]) {
 
 
 //Metodo per la determinare se il dato giorno è weekend o festivo
-function getDayType(date) {
+function getDayType(date : Date) {
 
-    if ((date.getDay(0) || date.getDay(6)) && holidays.isHoliday(date)) {
+    if ((date.getDay() === 0 || date.getDay() === 6) && holidays.isHoliday(date)) {
         return DayType.BOTH_WEEKEND_HOLIDAY
     } else if (date.getDay() === 0) {
         return DayType.SUNDAY;

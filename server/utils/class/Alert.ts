@@ -1,20 +1,20 @@
-import { InfoSignal } from "../mrEnum";
-import { WorkDay } from "./MRServerInterface";
+import { Info } from "../mrEnum";
+import { WorkDay } from "../interface/MRServerInterface";
 
 export class Alert {
 
-    workDay : WorkDay;
-    infoSignal : InfoSignal;
+    day : Date;
+    info : Info;
     delta : string
 
     constructor(
-        public wd : WorkDay, 
-        public is: InfoSignal,
+        public wd : Date, 
+        public i: Info,
         public d: string
     )
     {
-        this.workDay = wd;
-        this.infoSignal = is;
+        this.day = wd;
+        this.info = i;
         this.delta = d
     }
 }
