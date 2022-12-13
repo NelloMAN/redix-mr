@@ -1,11 +1,9 @@
-import express, { Express, Request, Response } from "express";
-import { Pool, createPool, RowDataPacket } from 'mysql2'
+import express, { Express, NextFunction, Request, Response } from "express";
+import { Pool, createPool } from 'mysql2'
 import cors from 'cors';
 import bodyParser from "body-parser";
-import { WorkDay } from "./utils/class/WorkDay";
-import { checkWorkItem } from './utils/mrUtils'
-import { IWorkDay } from "./utils/interface/MRServerInterface";
-import { mr_query } from "./utils/rmr_query"
+import * as mrSqlConnector from "./utils/mysql_utils/mysql.connector.js"
+import * as mrController from "./utils/mrController.js";
 
 const PORT = process.env.PORT || 3001;
 
@@ -18,85 +16,65 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json())
 
-const pool : Pool  = createPool({
-  host: 'localhost',
-  user: 'root',
-  password: 'redixmr2022!_',
-  database: 'redix_mr',
-});
+mrSqlConnector.init()
 
 app.listen(PORT, () => {
   console.log('Server listening on ' + PORT);
 });
 
-export const execute = <T>(query: string, params: string[] | Object): Promise<RowDataPacket[]> => {
-  try {
-    if (!pool) throw new Error('Pool was not created. Ensure pool is created when running the app.');
-
-    return new Promise<RowDataPacket[]>((resolve, reject) => {
-      pool.query<RowDataPacket[]>(query, params, (error, results:RowDataPacket[]) => {
-        if (error) reject(error);
-        else resolve(results);
-      });
-    });
-
-  } catch (error) {
-    console.error('[mysql.connector][execute][Error]: ', error);
-    throw new Error('failed to execute MySQL query');
-  }
-}
-
 
 // checkUsr: verifica dell'esistenza dell'utente
-app.get('/checkUsr/:email/:pwd', (req: Request, res: Response) => {
+app.get('/checkUsr/:email/:pwd', (req: Request, res: Response, n: NextFunction) => {
 
-  pool.query("SELECT usrID FROM usr where usrEmail = '" + req.params.email + "' and usrPwd = '" + req.params.pwd + "'", (err, result) => {
-    if (err) {
-      console.log("ERROR CHECKUSR: " + err);
-    } else {
-      //console.log(result);
-      res.send(result);
-    }
-  })
+  mrController.getUser( req, res, n);
+
+  // pool.query("SELECT usrID FROM usr where usrEmail = '" + req.params.email + "' and usrPwd = '" + req.params.pwd + "'", (err, result) => {
+  //   if (err) {
+  //     console.log("ERROR CHECKUSR: " + err);
+  //   } else {
+  //     //console.log(result);
+  //     res.send(result);
+  //   }
+  // })
 });
 
 // getUsrMonth: recupero i mesi in cui l'utente ha registrato delle attività
 app.get('/getUsrMonth/:usrID', (req: Request, res: Response) => {
 
-  pool.query("select usrID, usrEmail, usrName, max(month(wrkdDay)) as lastMonth from usr u left join work_day wd on wd.wrkdUsrID = u.usrID where usrID = " + req.params.usrID + " group by usrID", (err, result) => {
-    if (err) {
-      console.log("ERROR CHECKUSR: " + err);
-    } else {
-      //console.log(result);
-      res.send(result);
-    }
-  })
+  // pool.query("select usrID, usrEmail, usrName, max(month(wrkdDay)) as lastMonth from usr u left join work_day wd on wd.wrkdUsrID = u.usrID where usrID = " + req.params.usrID + " group by usrID", (err, result) => {
+  //   if (err) {
+  //     console.log("ERROR CHECKUSR: " + err);
+  //   } else {
+  //     //console.log(result);
+  //     res.send(result);
+  //   }
+  // })
 });
 
 // setTimeName: setto le impostazioni delle date del db in italiano (per avere il nome del mese)
 app.get('/setTimeName', (req: Request, res: Response) => {
 
-  pool.query("SET lc_time_names = 'it_IT'", (err, result) => {
-    if (err) {
-      console.log("ERROR setTimeName: " + err);
-    } else {
-      //console.log(result);
-      res.send(result);
-    }
-  })
+  // pool.query("SET lc_time_names = 'it_IT'", (err, result) => {
+  //   if (err) {
+  //     console.log("ERROR setTimeName: " + err);
+  //   } else {
+  //     //console.log(result);
+  //     res.send(result);
+  //   }
+  // })
 });
 
 // getMonth: recupero i mesi in cui l'utente ha registrato delle attività per il componente MonthComboBox
 app.get('/getMonths/:usrID', (req: Request, res: Response) => {
 
-  pool.query("select distinct month(wrkdDay) as monthNumb, monthname(wrkdDay) as monthName from work_day where wrkdUsrID = " + req.params.usrID + "", (err, result) => {
-    if (err) {
-      console.log("ERROR getMonths: " + err);
-    } else {
-      //console.log(result);
-      res.send(result);
-    }
-  })
+  // pool.query("select distinct month(wrkdDay) as monthNumb, monthname(wrkdDay) as monthName from work_day where wrkdUsrID = " + req.params.usrID + "", (err, result) => {
+  //   if (err) {
+  //     console.log("ERROR getMonths: " + err);
+  //   } else {
+  //     //console.log(result);
+  //     res.send(result);
+  //   }
+  // })
 });
 
 // getUsrWrkDay: recupero le attività dell'utente per il mese selezionato nel componente MonthComboBox
@@ -104,16 +82,16 @@ app.get('/getUsrWrkDay/:usrID/:month', (req: Request, res: Response) => {
 
   //var query = 'select wrkdID, date_format(wrkdDay, "%Y-%m-%d") as wrkdDay, wrkdInfoID, infoGrpID, wrkdUsrID, wrkdActivity, wrkdActivityType, wrkdActivityHour, wrkdSqdID, wrkdCdc from work_day w inner join info i on i.infoID = w.wrkdInfoID where wrkdUsrID = ' + req.params.usrID + ' and month(wrkdDay) = ' + req.params.month + ' order by wrkdDay asc';
 
-  let query : string = mr_query.GetUsrWorkDay;
+  //let query : string = mr_query.GetUsrWorkDay;
   // let p =  new Promise((resolve, reject) => {
   //   pool.query<IWorkDay[]>(query, [req.params.usrID, req.params.month], (err, res) => {
   //     if (err) reject(err)
   //     else resolve(res)
   //   })
   // })
-  let p = execute
+  //let p = execute
 
-  console.log(p);
+  //console.log(p);
 })
 
 // console.log('getUsrWrkDay --> '+query);
@@ -149,15 +127,15 @@ app.get('/getUsrWrkDay/:usrID/:month', (req: Request, res: Response) => {
 // getSquad: recupero tutte le squad per il componente SquadCell
 app.get('/getSquad', (req: Request, res: Response) => {
 
-  pool.query("select sqdID, sqdName from squad", (err, result) => {
-    if (err) {
-      console.log("ERROR getSquad: " + err);
-    } else {
-      //console.log(result);
-      res.send(result);
-    }
-  }
-  )
+  // pool.query("select sqdID, sqdName from squad", (err, result) => {
+  //   if (err) {
+  //     console.log("ERROR getSquad: " + err);
+  //   } else {
+  //     //console.log(result);
+  //     res.send(result);
+  //   }
+  // }
+  // )
 });
 
 // insertWorkDays: inserimento nuove righe

@@ -45,6 +45,7 @@ const LoginPanel: React.FunctionComponent<ILoginPanel> = (props) => {
 
             if (Object.keys(response).length > 0) {
 
+                console.log(response[0].usrID);
                 navigate(
                     "/dashboard", 
                     {

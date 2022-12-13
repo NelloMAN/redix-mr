@@ -18,3 +18,12 @@ export interface IWorkDay extends RowDataPacket{
         wrkdSqdID: number; 
         wrkdCdc: string;
 }
+
+export interface IUser extends RowDataPacket {
+
+        usrID: number;
+        usrEmail: string;
+        usrName: string;
+        usrSurname: string;
+        usrPwd: string;        
+}

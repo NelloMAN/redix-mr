@@ -12,6 +12,7 @@ export class WorkDay{
     public wrkdActivityHour: number;
     public wrkdSqdID: number;
     public wrkdCdc: string;
+    public column: string;
 
     constructor(wID: number, wDay: Date, wInfoID: number, wUsrID: number, wActivity: string, wActivityType: string, wActivityHour: number, wSqdID: number, wCdc: string) {
 
@@ -24,6 +25,7 @@ export class WorkDay{
         this.wrkdActivityHour = wActivityHour;
         this.wrkdSqdID = wSqdID;
         this.wrkdCdc = wCdc
+        this.column = 'RowDataPacket';
     }
 
     readAll(connection:Connection): Promise<IWorkDay[]> {

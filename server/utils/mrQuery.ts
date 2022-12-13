@@ -1,4 +1,4 @@
-export const mr_query = {
+export const mrQuery = {
     GetUsrWorkDay: `
         select 
             wrkdID, 
@@ -17,18 +17,10 @@ export const mr_query = {
         order by wrkdDay asc
     `,
   
-    GetTeamsById: `
-    SELECT
-      id,
-        name,
-        league,
-      (case when t.isActive is not null
-        then 'true'
-        else 'false'
-      end) as 'isActive'
-    FROM teams_system.teams as t
-    WHERE
-      id = ?
+    GetUser: `
+      SELECT usrID 
+      FROM usr 
+      where usrEmail = ? and usrPwd = ?
     `,
   
     AddTeam: `
