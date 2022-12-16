@@ -1,5 +1,5 @@
 import { execute } from './mysql_utils/mysql.connector.js';
-import {IUser} from './interface/MRServerInterface';
+import {IUser} from './interface/MRServerInterface.js';
 import {mrQuery} from './mrQuery.js';
 
 /**

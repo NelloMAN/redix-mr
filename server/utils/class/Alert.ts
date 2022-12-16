@@ -1,5 +1,4 @@
-import { Info } from "../mrEnum";
-import { WorkDay } from "../interface/MRServerInterface";
+import {Info} from "../interface/MRServerInterface";
 
 export class Alert {
 

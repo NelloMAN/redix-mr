@@ -45,13 +45,12 @@ const LoginPanel: React.FunctionComponent<ILoginPanel> = (props) => {
 
             if (Object.keys(response).length > 0) {
 
-                console.log(response[0].usrID);
                 navigate(
                     "/dashboard", 
                     {
                         replace: true,
                         state:{
-                            usrID : response[0].usrID
+                            usrID : response.user[0].usrID
                         }
                     }
                 );
