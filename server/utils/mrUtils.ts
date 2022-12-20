@@ -8,8 +8,7 @@ ovvero vengono controllati i dati inseriti dall'utente secondo alcuni criteri
 
 import Enumerable from "linq";
 import { Alert } from "./class/Alert";
-import { WorkDay } from "./class/WorkDay";
-
+import { IWorkDay } from "./interface/MRServerInterface";
 import { DayType, WorkingInfo, ErrorEnum, WarnEnum } from './mrEnum';
 import { WarningInfo } from "./class/WarningInfo";
 import { ErrorInfo } from "./class/ErrorInfo";
@@ -20,7 +19,7 @@ var holidays = new Holidays('IT');
 let workingInfo = [WorkingInfo.OFFICE, WorkingInfo.SMARTWORKING, WorkingInfo.WORK_TRIP];
 
 // Check di validità delle attività inserite
-export function checkWorkItem(dateWorkDayItems : WorkDay[]) {
+export function checkWorkItem(dateWorkDayItems : IWorkDay[]) {
 
     //Array contenente errori e wanings
     let err_war : Alert [] = [];

@@ -2,15 +2,15 @@ import React, { useEffect, useRef, useState } from 'react';
 import './css/WorkRow.css';
 import InfoCell from "./cell/InfoCell";
 import SquadCell from "./cell/SquadCell";
-import { Squad, WorkDay } from '../../interface/MRInterface';
+import { Squad, IWorkDay } from '../../interface/MRInterface';
 
 export interface IWorkRowProps {
 	rowState: string,
 	showDet:boolean,
 	index: number,
-	workDay: WorkDay,
+	workDay: IWorkDay,
 	squad : Squad [],
-	OnWDChange(rs: string, n : string, i : number, v : string, wd : WorkDay) : any;
+	OnWDChange(rs: string, n : string, i : number, v : string, wd : IWorkDay) : any;
 }
 
 const WorkRow: React.FC<IWorkRowProps> = (props:IWorkRowProps) => {

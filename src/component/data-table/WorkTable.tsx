@@ -2,15 +2,15 @@ import React, { useEffect, useState, FC } from "react";
 import axios from "axios";
 import WorkRow from "./WorkRow";
 import "./css/WorkTable.css";
-import { WorkDay, DateWorkDay, Squad } from "../../interface/MRInterface";
+import { IWorkDay, DateWorkDay, Squad } from "../../interface/MRInterface";
 
 export interface IWorkTableProps {
 	usrID : number, 
 	month : number, 
 	dateWorkDays : DateWorkDay [],
-	nwd: WorkDay [],
-	UpdateNewRecords(newWorkDay : WorkDay []) : any,
-	UpdateExistingRecords( w : WorkDay | undefined, dwd : DateWorkDay []) : any
+	nwd: IWorkDay [],
+	UpdateNewRecords(newWorkDay : IWorkDay []) : any,
+	UpdateExistingRecords( w : IWorkDay | undefined, dwd : DateWorkDay []) : any
 }
 
 const WorkTable: React.FC<IWorkTableProps> = (props:IWorkTableProps) => {
@@ -33,11 +33,11 @@ const WorkTable: React.FC<IWorkTableProps> = (props:IWorkTableProps) => {
 	// name: nome del campo cambiato
 	// id: per gli existed corrisponde al wrkdID, per i new è l'index dell'array props.nwd
 	// value: il nuovo valore settato
-	function wdChange(state : string, name : string, id : number, value : string, wDay : WorkDay) {
+	function wdChange(state : string, name : string, id : number, value : string, wDay : IWorkDay) {
 
 		console.log("state: "+state+" - name: "+name+" - id: "+id+" - value: "+value );
 
-		let nwdS : WorkDay [];
+		let nwdS : IWorkDay [];
 
 		if (state === "new") {
 
@@ -51,7 +51,7 @@ const WorkTable: React.FC<IWorkTableProps> = (props:IWorkTableProps) => {
 		}  else if (state === "existed") {
 
 			// recupero il record modificato
-			let record : WorkDay = props.dateWorkDays.find(w => w.day === wDay.wrkdDay)!.wd.find(c => c.wrkdID === id)!;
+			let record : IWorkDay = props.dateWorkDays.find(w => w.day === wDay.wrkdDay)!.wd.find(c => c.wrkdID === id)!;
 			
 			ChangeRecordValues(record, name, value);
 
@@ -59,7 +59,7 @@ const WorkTable: React.FC<IWorkTableProps> = (props:IWorkTableProps) => {
 		}		
 	}
 
-	function ChangeRecordValues (modifiedRecord : WorkDay, name : string, value : string) {
+	function ChangeRecordValues (modifiedRecord : IWorkDay, name : string, value : string) {
 
 		switch(name) {
 			case "day":

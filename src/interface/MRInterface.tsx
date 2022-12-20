@@ -1,4 +1,4 @@
-export interface WorkDay {
+export interface IWorkDay {
     wrkdID: number,
     wrkdUsrID: number,
     wrkdDay: Date,
@@ -10,7 +10,8 @@ export interface WorkDay {
     wrkdCdc: string
 }
 
-export interface User {
+export interface IUser {
+    usrID: number,
     usrEmail : string,
     usrName : string,
     selectedMonth : number
@@ -18,7 +19,7 @@ export interface User {
 
 export interface DateWorkDay {
     day: Date,
-    wd: WorkDay[]
+    wd: IWorkDay[]
 }
 
 export interface Squad {

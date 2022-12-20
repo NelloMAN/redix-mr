@@ -1,5 +1,4 @@
 import express, { Express, NextFunction, Request, Response } from "express";
-import { Pool, createPool } from 'mysql2'
 import cors from 'cors';
 import bodyParser from "body-parser";
 import * as mrSqlConnector from "./utils/mysql_utils/mysql.connector.js"
@@ -25,17 +24,7 @@ app.listen(PORT, () => {
 
 // checkUsr: verifica dell'esistenza dell'utente
 app.get('/checkUsr/:email/:pwd', (req: Request, res: Response, n: NextFunction) => {
-
-  mrController.getUser( req, res, n);
-
-  // pool.query("SELECT usrID FROM usr where usrEmail = '" + req.params.email + "' and usrPwd = '" + req.params.pwd + "'", (err, result) => {
-  //   if (err) {
-  //     console.log("ERROR CHECKUSR: " + err);
-  //   } else {
-  //     //console.log(result);
-  //     res.send(result);
-  //   }
-  // })
+  mrController.getUserInfo( req, res, n);
 });
 
 // getUsrMonth: recupero i mesi in cui l'utente ha registrato delle attività

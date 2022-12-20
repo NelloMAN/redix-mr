@@ -1,12 +1,10 @@
-import {RowDataPacket} from 'mysql2'
-
 export interface Info{
         readonly type : string,
         code : number,
         message : string
 }
 
-export interface IWorkDay extends RowDataPacket{
+export interface IWorkDay {
 
         wrkdID: number; 
         wrkdDay: Date; 
@@ -19,11 +17,12 @@ export interface IWorkDay extends RowDataPacket{
         wrkdCdc: string;
 }
 
-export interface IUser extends RowDataPacket {
+export interface IUser {
 
         usrID: number;
         usrEmail: string;
         usrName: string;
         usrSurname: string;
-        usrPwd: string;        
+        usrPwd: string;
+        lastWorkedMonth: number;        
 }

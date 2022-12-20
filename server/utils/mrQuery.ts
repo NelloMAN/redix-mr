@@ -17,15 +17,28 @@ export const mrQuery = {
         order by wrkdDay asc
     `,
   
-    GetUser: `
-      SELECT usrID 
-      FROM usr 
-      where usrEmail = ? and usrPwd = ?
+    GetUserInfo: `
+      select 
+        usrID, 
+        usrEmail, 
+        usrName, 
+        max(month(wrkdDay)) as lastWorkedMonth 
+      from usr u 
+        left join work_day wd on wd.wrkdUsrID = u.usrID 
+        where usrEmail = ? and usrPwd = ?
+      group by usrID
     `,
   
-    AddTeam: `
-    INSERT INTO teams_system.teams (name, league, isActive)
-      VALUES (?, ?, true);
+    GetUserMonth: `
+      select 
+        usrID, 
+        usrEmail, 
+        usrName, 
+        max(month(wrkdDay)) as lastMonth 
+      from usr u 
+        left join work_day wd on wd.wrkdUsrID = u.usrID 
+      where usrID = ? 
+      group by usrID
     `,
   
     UpdateTeamById: `

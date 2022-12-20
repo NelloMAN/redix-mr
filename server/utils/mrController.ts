@@ -1,9 +1,9 @@
 import { RequestHandler, Request, Response } from "express";
 import * as mrServices from './mrServices.js';
 
-export const getUser: RequestHandler = async (req: Request, res: Response) => {
+export const getUserInfo: RequestHandler = async (req: Request, res: Response) => {
     try {
-      const user = await mrServices.getUser(req.params.email, req.params.pwd);
+      const user = await mrServices.getUserInfo(req.params.email, req.params.pwd);
   
       res.status(200).json({
         user
@@ -14,4 +14,4 @@ export const getUser: RequestHandler = async (req: Request, res: Response) => {
         message: 'There was an error when fetching user'
       });
     }
-  };
+};

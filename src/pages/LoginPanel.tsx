@@ -50,7 +50,10 @@ const LoginPanel: React.FunctionComponent<ILoginPanel> = (props) => {
                     {
                         replace: true,
                         state:{
-                            usrID : response.user[0].usrID
+                            usrID : response.user[0].usrID,
+                            usrName: response.user[0].usrName,
+                            usrEmail: response.user[0].usrEmail,
+                            selectedMonth: response.user[0].lastWorkedMonth
                         }
                     }
                 );
