@@ -15,11 +15,12 @@ export interface IWorkTableProps {
 
 const WorkTable: React.FC<IWorkTableProps> = (props:IWorkTableProps) => {
 
+	console.log('WorkTable');
+	console.log(props.dateWorkDays);
+
 	const [squadArray, setSquad] = useState<Squad []>([]);
 
 	useEffect(() => {
-
-		console.log(props.dateWorkDays);
 
 		axios.get('http://localhost:3001/getSquad')
 		.then(res => {
@@ -51,7 +52,7 @@ const WorkTable: React.FC<IWorkTableProps> = (props:IWorkTableProps) => {
 		}  else if (state === "existed") {
 
 			// recupero il record modificato
-			let record : IWorkDay = props.dateWorkDays.find(w => w.day === wDay.wrkdDay)!.wd.find(c => c.wrkdID === id)!;
+			let record : IWorkDay = props.dateWorkDays.find(w => w.dwdDate === wDay.wrkdDay)!.wdArray.find(c => c.wrkdID === id)!;
 			
 			ChangeRecordValues(record, name, value);
 
@@ -137,7 +138,7 @@ const WorkTable: React.FC<IWorkTableProps> = (props:IWorkTableProps) => {
 						return (
 							<React.Fragment>
 								{
-									subArray.wd.map((w, i) => {
+									subArray.wdArray.map((w, i) => {
 										return (<WorkRow workDay={w} index={w.wrkdID} showDet={ i === 0 ? true : false} rowState="existed" squad={squadArray} OnWDChange={(state, name, id, value, wday) => {wdChange(state, name, id, value, wday)}}/>);
 									}
 								)}

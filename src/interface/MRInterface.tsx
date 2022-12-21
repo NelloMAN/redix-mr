@@ -18,8 +18,8 @@ export interface IUser {
 }
 
 export interface DateWorkDay {
-    day: Date,
-    wd: IWorkDay[]
+    dwdDate: Date,
+    wdArray: IWorkDay[]
 }
 
 export interface Squad {

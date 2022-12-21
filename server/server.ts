@@ -27,6 +27,11 @@ app.get('/checkUsr/:email/:pwd', (req: Request, res: Response, n: NextFunction) 
   mrController.getUserInfo( req, res, n);
 });
 
+// getUsrWrkDay: recupero le attività dell'utente per il mese selezionato nel componente MonthComboBox
+app.get('/getUsrWrkDay/:usrID/:month', (req: Request, res: Response, n:NextFunction) => {
+  mrController.getUserWorkDay( req, res, n);
+})
+
 // getUsrMonth: recupero i mesi in cui l'utente ha registrato delle attività
 app.get('/getUsrMonth/:usrID', (req: Request, res: Response) => {
 
@@ -66,22 +71,7 @@ app.get('/getMonths/:usrID', (req: Request, res: Response) => {
   // })
 });
 
-// getUsrWrkDay: recupero le attività dell'utente per il mese selezionato nel componente MonthComboBox
-app.get('/getUsrWrkDay/:usrID/:month', (req: Request, res: Response) => {
 
-  //var query = 'select wrkdID, date_format(wrkdDay, "%Y-%m-%d") as wrkdDay, wrkdInfoID, infoGrpID, wrkdUsrID, wrkdActivity, wrkdActivityType, wrkdActivityHour, wrkdSqdID, wrkdCdc from work_day w inner join info i on i.infoID = w.wrkdInfoID where wrkdUsrID = ' + req.params.usrID + ' and month(wrkdDay) = ' + req.params.month + ' order by wrkdDay asc';
-
-  //let query : string = mr_query.GetUsrWorkDay;
-  // let p =  new Promise((resolve, reject) => {
-  //   pool.query<IWorkDay[]>(query, [req.params.usrID, req.params.month], (err, res) => {
-  //     if (err) reject(err)
-  //     else resolve(res)
-  //   })
-  // })
-  //let p = execute
-
-  //console.log(p);
-})
 
 // console.log('getUsrWrkDay --> '+query);
 

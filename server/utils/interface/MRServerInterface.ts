@@ -17,6 +17,12 @@ export interface IWorkDay {
         wrkdCdc: string;
 }
 
+export interface IDateWorkDay {
+
+        dwdDate: Date;
+        wdArray: IWorkDay[];
+}
+
 export interface IUser {
 
         usrID: number;

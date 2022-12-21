@@ -17,12 +17,7 @@ export interface IDashboardPanel {}
 
 const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
 
-    const location = useLocation()
-    let currentUsrID = location.state.usrID;
-    let usrEmail = location.state.usrEmail;
-    let usrName = location.state.usrName;
-    let selectedMonth = location.state.selectedMonth;
-
+    const location = useLocation();
 
     const [usr, setMonth] = React.useState<IUser>({
         usrID: location.state.usrID,
@@ -37,21 +32,18 @@ const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
     // useEffect per prendere i giorni dell'utente
     useEffect(() => {
 
-        if (selectedMonth !== 0) {
-            axios.get('http://localhost:3001/getUsrWrkDay/' +currentUsrID +'/' + selectedMonth)
+        if (usr.selectedMonth !== 0) {
+            axios.get('http://localhost:3001/getUsrWrkDay/' +usr.usrID +'/' + usr.selectedMonth)
             .then(res => {
-                console.log(currentUsrID);
-                console.log(selectedMonth);
-                
-                setDateWorkDays(res.data);
+                setDateWorkDays(res.data.dateWorkDay);
             });
         }
 
-    },[currentUsrID, selectedMonth]);
+    },[usr.usrID, usr.selectedMonth]);
 
     const [changewd, setModifiedRecords] = useState<IWorkDay[]>([]); //array con la lista dei record esistenti e modificati
 
-    if (usrEmail === "" || dateWorkDays.length === 0) {
+    if (usr.usrEmail === "" || dateWorkDays.length === 0) {
         return <p>Loading</p>
     }
 
@@ -78,7 +70,7 @@ const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
                     </div>
                     <div className='row header-name'>
                         <div className='col-sm-4 ps-3 pt-1 pb-1'>
-                            <p className='m-0'>Bentornato {usrName} ({usrEmail})</p>
+                            <p className='m-0'>Bentornato {usr.usrName} ({usr.usrEmail})</p>
                         </div>
                         <div className='offset-sm-6 col-sm-2 ps-3 pt-1 pb-1'>
                             <p className='m-0 text-end'> versione 1.0</p>
@@ -111,7 +103,7 @@ const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
                             <br></br>
                             <div className='row'>
                                 <div className='col-sm-12'>
-                                    <WorkTable usrID={parseInt(currentUsrID!)} month={selectedMonth} dateWorkDays={dateWorkDays} nwd={nwd} UpdateNewRecords = {((newRecords : IWorkDay[]) => {setNewWorkDays(newRecords)})} UpdateExistingRecords = {((updRecord : IWorkDay, wd : DateWorkDay[]) => {UpdateWorkDays(updRecord, wd)})}/>
+                                    <WorkTable usrID={usr.usrID} month={usr.selectedMonth} dateWorkDays={dateWorkDays} nwd={nwd} UpdateNewRecords = {((newRecords : IWorkDay[]) => {setNewWorkDays(newRecords)})} UpdateExistingRecords = {((updRecord : IWorkDay, wd : DateWorkDay[]) => {UpdateWorkDays(updRecord, wd)})}/>
                                 </div>
                             </div>
                         </div>
