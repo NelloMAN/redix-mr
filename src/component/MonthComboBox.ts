@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import './css/MonthComboBox.css';
 
-function MonthComboBox(props) {
+export interface IMonthComboBoxProps {
+	usrID : number, 
+	month : number,
+    OnMonthChange(selectedMonth: number) : any
+}
+
+const MonthComboBox: React.FC<IMonthComboBoxProps> = (props:IMonthComboBoxProps) => {
 
     const [selectedMonth, setSelectedMonth] = useState(1);
     const [months, setMonths] = useState([]);
@@ -34,7 +40,7 @@ function MonthComboBox(props) {
     }
 
     //Gestione cambio mese: chiamo funzione DashboardPanel che chiamerà funzione WorkTable per aggiornare i dati
-    function changeHandler(e) {
+    function changeHandler(e:any) {
 
         setSelectedMonth(e.target.value);
         props.OnMonthChange(e.target.value);
