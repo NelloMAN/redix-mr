@@ -93,7 +93,7 @@ const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
                         <div className='col-sm-10'>
                             <div className='row'>
                                 <div className='col-sm-4'>
-                                    <MonthComboBox usrID={currentUsrID} month={selectedMonth} OnMonthChange= {(m:number) => {setMonth({...usr, selectedMonth : m})}}/> 
+                                    <MonthComboBox usrID={usr.usrID} month={usr.selectedMonth} OnMonthChange= {(m:number) => {setMonth({...usr, selectedMonth : m})}}/> 
                                 </div>
                                 <div className='offset-sm-4 col-sm-1 d-flex justify-content-end'>
                                     <AddWDButton OnSingleAWDClick = {(newRow : IWorkDay)=>{setNewWorkDays( nwd => [...nwd, newRow])}}type='s'/>
