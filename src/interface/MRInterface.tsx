@@ -26,3 +26,9 @@ export interface Squad {
     sqdID : number, 
     sqdName : string
 }
+
+export interface IUsrMonth {
+
+    monthNumb: number;
+    monthName: string;
+}

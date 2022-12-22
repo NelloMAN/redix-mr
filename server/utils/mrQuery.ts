@@ -17,7 +17,7 @@ export const mrQuery = {
         order by wrkdDay asc
     `,
   
-    GetUserInfo: `
+    GetUsrInfo: `
       select 
         usrID, 
         usrEmail, 
@@ -28,17 +28,15 @@ export const mrQuery = {
         where usrEmail = ? and usrPwd = ?
       group by usrID
     `,
-  
-    GetUserMonth: `
+
+    SetTimeName: `SET lc_time_names = 'it_IT'`,
+
+    GetUsrMonth: `
       select 
-        usrID, 
-        usrEmail, 
-        usrName, 
-        max(month(wrkdDay)) as lastMonth 
-      from usr u 
-        left join work_day wd on wd.wrkdUsrID = u.usrID 
-      where usrID = ? 
-      group by usrID
+        distinct month(wrkdDay) as monthNumb, 
+        monthname(wrkdDay) as monthName 
+      from work_day 
+      where wrkdUsrID = ?
     `,
   
     UpdateTeamById: `

@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, FC } from 'react';
+import { IUsrMonth } from '../interface/MRInterface';
 import './css/MonthComboBox.css';
 
 export interface IMonthComboBoxProps {
@@ -10,7 +11,7 @@ export interface IMonthComboBoxProps {
 const MonthComboBox: React.FC<IMonthComboBoxProps> = (props:IMonthComboBoxProps) => {
 
     const [selectedMonth, setSelectedMonth] = useState(1);
-    const [months, setMonths] = useState([]);
+    const [months, setMonths] = React.useState<IUsrMonth[]>([]);
 
     useEffect(() => {
 
@@ -31,32 +32,33 @@ const MonthComboBox: React.FC<IMonthComboBoxProps> = (props:IMonthComboBoxProps)
 
     async function fetchMonths() {
 
-        await fetch('http://localhost:3001/getMonths/'+props.usrID)
+        await fetch('http://localhost:3001/getUsrMonths/'+props.usrID)
         .then(response => response.json())
         .then (response => {
-            setMonths(response);
+            console.log(response.usrMonth);
+            setMonths(response.usrMonth);
         })
         .catch();
     }
 
     //Gestione cambio mese: chiamo funzione DashboardPanel che chiamerà funzione WorkTable per aggiornare i dati
-    function changeHandler(e:any) {
+    function changeHandler(e: React.ChangeEvent<HTMLSelectElement>) {
 
-        setSelectedMonth(e.target.value);
-        props.OnMonthChange(e.target.value);
+        console.log('MonthComboBox onChange new value selected: '+e.target.value)
+
+        setSelectedMonth(parseInt(e.target.value));
+        props.OnMonthChange(parseInt(e.target.value));
     }
 
     return (
-
         <select className="form-select rmr_select w-50" value={selectedMonth} aria-label="Default select example" onChange={(event) => {changeHandler(event) }}>
             {
                 months.map((m, i) =>
                     <option value={m.monthNumb} key={m.monthNumb}>{m.monthName}</option>
                 )
             }
-        </select>
-        
-    )
+        </select> 
+    );
 }
 
 export default MonthComboBox;

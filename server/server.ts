@@ -24,51 +24,22 @@ app.listen(PORT, () => {
 
 // checkUsr: verifica dell'esistenza dell'utente
 app.get('/checkUsr/:email/:pwd', (req: Request, res: Response, n: NextFunction) => {
-  mrController.getUserInfo( req, res, n);
+  mrController.getUsrInfo( req, res, n);
 });
 
 // getUsrWrkDay: recupero le attività dell'utente per il mese selezionato nel componente MonthComboBox
 app.get('/getUsrWrkDay/:usrID/:month', (req: Request, res: Response, n:NextFunction) => {
-  mrController.getUserWorkDay( req, res, n);
+  mrController.getUsrWorkDay( req, res, n);
 })
 
-// getUsrMonth: recupero i mesi in cui l'utente ha registrato delle attività
-app.get('/getUsrMonth/:usrID', (req: Request, res: Response) => {
-
-  // pool.query("select usrID, usrEmail, usrName, max(month(wrkdDay)) as lastMonth from usr u left join work_day wd on wd.wrkdUsrID = u.usrID where usrID = " + req.params.usrID + " group by usrID", (err, result) => {
-  //   if (err) {
-  //     console.log("ERROR CHECKUSR: " + err);
-  //   } else {
-  //     //console.log(result);
-  //     res.send(result);
-  //   }
-  // })
-});
-
 // setTimeName: setto le impostazioni delle date del db in italiano (per avere il nome del mese)
-app.get('/setTimeName', (req: Request, res: Response) => {
-
-  // pool.query("SET lc_time_names = 'it_IT'", (err, result) => {
-  //   if (err) {
-  //     console.log("ERROR setTimeName: " + err);
-  //   } else {
-  //     //console.log(result);
-  //     res.send(result);
-  //   }
-  // })
+app.get('/setTimeName', (req: Request, res: Response, n : NextFunction) => {
+  mrController.setTimeName(req, res, n);
 });
 
 // getMonth: recupero i mesi in cui l'utente ha registrato delle attività per il componente MonthComboBox
-app.get('/getMonths/:usrID', (req: Request, res: Response) => {
-
-  // pool.query("select distinct month(wrkdDay) as monthNumb, monthname(wrkdDay) as monthName from work_day where wrkdUsrID = " + req.params.usrID + "", (err, result) => {
-  //   if (err) {
-  //     console.log("ERROR getMonths: " + err);
-  //   } else {
-  //     //console.log(result);
-  //     res.send(result);
-  //   }
-  // })
+app.get('/getUsrMonths/:usrID', (req: Request, res: Response, n : NextFunction) => {
+  mrController.getUsrMonth(req, res, n);
 });
 
 

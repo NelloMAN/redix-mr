@@ -32,3 +32,9 @@ export interface IUser {
         usrPwd: string;
         lastWorkedMonth: number;        
 }
+
+export interface IUsrMonth {
+
+        monthNumb: number;
+        monthName: string;
+}
