@@ -21,19 +21,19 @@ export const getUsrWorkDay: RequestHandler = async (req: Request, res: Response)
   try {
     const workDay = await mrServices.getUserWorkDay(parseInt(req.params.usrID), parseInt(req.params.month));
 
-    let processedDate = new Map();
+    let processedDate = new Map<Date,IWorkDay[]>();
 
     workDay.forEach( (row: IWorkDay) => {
 
       if (!processedDate.has(row.wrkdDay)) {
 
-        let dayTable = [];
+        let dayTable : IWorkDay[] = [];
         dayTable.push(row);
 
-        processedDate.set(row.wrkdActivity, dayTable);
+        processedDate.set(row.wrkdDay, dayTable);
       } else {
 
-        let tempArray = processedDate.get(row.wrkdDay);
+        let tempArray:IWorkDay[]= processedDate.get(row.wrkdDay)!;
         tempArray.push(row);
         processedDate.set(row.wrkdDay, tempArray);
       }
@@ -43,7 +43,7 @@ export const getUsrWorkDay: RequestHandler = async (req: Request, res: Response)
     processedDate.forEach( (value, key) =>{
 
       let dwdItem : IDateWorkDay = {
-        dwdDate : new Date,
+        dwdDate : new Date(),
         wdArray: []
       };
 
