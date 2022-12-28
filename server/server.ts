@@ -42,50 +42,9 @@ app.get('/getUsrMonths/:usrID', (req: Request, res: Response, n : NextFunction) 
   mrController.getUsrMonth(req, res, n);
 });
 
-
-
-// console.log('getUsrWrkDay --> '+query);
-
-// pool.query<IWorkDay>(query, (err:QueryError, result:WorkDay[]) => {
-//   if (err) {
-//     console.log("ERROR getMonths: "+err);
-//   } else {
-
-//     let processedDate = new Map();
-
-//     result.forEach( (row: { [x: string]: any; }) => {
-
-//       if (!processedDate.has(row['wrkdDay'])) {
-
-//         let dayTable = [];
-//         dayTable.push(row);
-
-//         processedDate.set(row['wrkdDay'], dayTable);
-//       } else {
-
-//         let tempArray = processedDate.get(row['wrkdDay']);
-//         tempArray.push(row);
-//         processedDate.set(row['wrkdDay'], tempArray);
-//       }
-
-//     });
-
-//     const jsonData = [...processedDate];
-
-//     res.send(jsonData);
-
 // getSquad: recupero tutte le squad per il componente SquadCell
-app.get('/getSquad', (req: Request, res: Response) => {
-
-  // pool.query("select sqdID, sqdName from squad", (err, result) => {
-  //   if (err) {
-  //     console.log("ERROR getSquad: " + err);
-  //   } else {
-  //     //console.log(result);
-  //     res.send(result);
-  //   }
-  // }
-  // )
+app.get('/getSquad', (req: Request, res: Response, n : NextFunction) => {
+  mrController.getSquad( req, res, n);
 });
 
 // insertWorkDays: inserimento nuove righe

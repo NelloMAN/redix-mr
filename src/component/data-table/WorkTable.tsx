@@ -15,16 +15,14 @@ export interface IWorkTableProps {
 
 const WorkTable: React.FC<IWorkTableProps> = (props:IWorkTableProps) => {
 
-	console.log('WorkTable');
-	console.log(props.dateWorkDays);
-
 	const [squadArray, setSquad] = useState<Squad []>([]);
 
 	useEffect(() => {
 
 		axios.get('http://localhost:3001/getSquad')
 		.then(res => {
-		   setSquad(res.data);
+			console.log(res.data.squad);
+		   setSquad(res.data.squad);
 		});
 
 	}, [props.usrID]);
