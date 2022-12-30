@@ -6,7 +6,8 @@ import MonthComboBox from '../component/MonthComboBox';
 import {useLocation} from 'react-router-dom';
 import WorkTable from '../component/data-table/WorkTable';
 import DialogBox from '../component/DialogBox';
-import AddWDButton from '../component/AddWDButton';
+import AddSingleWDButton from '../component/AddSingleWDButton';
+import AddMultipleWDButton from '../component/AddMultipleWDButton';
 import SaveWDButton from '../component/SaveWDButton';
 import ExportWDButton from '../component/ExportWDButton';
 import axios from "axios";
@@ -56,6 +57,11 @@ const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
         setDateWorkDays(wd);
     }
 
+    function ManageSavedResult(result : string) {
+        //TODO
+        //Gestione dell'esito dopo il salvataggio
+    }
+
     return (
         <div>
             <header className=''>
@@ -88,13 +94,13 @@ const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
                                     <MonthComboBox usrID={usr.usrID} month={usr.selectedMonth} OnMonthChange= {(m:number) => {setMonth({...usr, selectedMonth : m})}}/> 
                                 </div>
                                 <div className='offset-sm-4 col-sm-1 d-flex justify-content-end'>
-                                    <AddWDButton OnSingleAWDClick = {(newRow : IWorkDay)=>{setNewWorkDays( nwd => [...nwd, newRow])}}type='s'/>
+                                    <AddSingleWDButton OnSingleAWDClick = {(newWD : IWorkDay)=>{setNewWorkDays( nwd => [...nwd, newWD])}} type='s'/>
                                 </div>
                                 <div className='col-sm-1 d-flex justify-content-end'>
-                                    <AddWDButton type='m'/>
+                                    <AddMultipleWDButton OnMultipleAWDClick = {(newWDS : IWorkDay[])=>{setNewWorkDays( nwd => nwd.concat(newWDS))}} type='m'/>
                                 </div>
                                 <div className='col-sm-1 d-flex justify-content-end'>
-                                    <SaveWDButton nwd={nwd} changewd={changewd}/>
+                                    <SaveWDButton nwd={nwd} OnSaveWDButtonClick={(result : string) => {ManageSavedResult(result)}}/>
                                 </div>
                                 <div className='col-sm-1 d-flex justify-content-end'>
                                     <ExportWDButton/>

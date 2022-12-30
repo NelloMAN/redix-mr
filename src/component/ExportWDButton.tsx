@@ -3,10 +3,13 @@ import React, { useEffect, useState } from 'react';
 import {MdImportExport} from 'react-icons/md';
 import './css/ExportWDButton.css';
 
-function ExportWDButton(props) {
+export interface IExportWDButtonProps {
+}
+
+const ExportWDButton: React.FC<IExportWDButtonProps> = (props:IExportWDButtonProps) => {
 
     //Gestione cambio mese: chiamo funzione DashboardPanel che chiamerà funzione WorkTable per aggiornare i dati
-    function exportWorkDaysClick(e) {
+    function exportWorkDaysClick() {
 
     }
 
