@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import {MdSave} from 'react-icons/md';
 import axios from 'axios';
 import './css/SaveWDButton.css';
-import { IWorkDay } from '../interface/MRInterface';
+import { IWorkDay } from '../utils/interface/MRInterface';
 
 export interface ISaveWDButtonProps {
 	nwd : IWorkDay [],

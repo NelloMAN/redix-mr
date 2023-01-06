@@ -2,7 +2,7 @@ import React, { useEffect, useState, FC } from "react";
 import axios from "axios";
 import WorkRow from "./WorkRow";
 import "./css/WorkTable.css";
-import { IWorkDay, DateWorkDay, Squad } from "../../interface/MRInterface";
+import { IWorkDay, DateWorkDay, Squad } from "../../utils/interface/MRInterface";
 
 export interface IWorkTableProps {
 	usrID : number, 

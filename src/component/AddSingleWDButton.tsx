@@ -2,7 +2,7 @@ import '../global-css/_color.scss';
 import React, { useEffect, useState } from 'react';
 import {MdAddBox} from 'react-icons/md';
 import {MdLibraryAdd} from 'react-icons/md';
-import { IWorkDay } from '../interface/MRInterface';
+import { IWorkDay } from '../utils/interface/MRInterface';
 import './css/AddWDButton.css';
 
 export interface IAddSingleWDButtonProps {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, FC } from 'react';
-import { IUsrMonth } from '../interface/MRInterface';
+import { IUsrMonth } from '../utils/interface/MRInterface';
 import './css/MonthComboBox.css';
 
 export interface IMonthComboBoxProps {

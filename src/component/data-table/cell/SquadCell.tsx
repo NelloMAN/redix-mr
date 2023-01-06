@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Squad } from "../../../interface/MRInterface";
+import { Squad } from "../../../utils/interface/MRInterface";
 import './css/SquadCell.css';
 
 export interface ISquadCellProps {

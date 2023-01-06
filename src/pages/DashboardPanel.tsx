@@ -11,7 +11,7 @@ import AddMultipleWDButton from '../component/AddMultipleWDButton';
 import SaveWDButton from '../component/SaveWDButton';
 import ExportWDButton from '../component/ExportWDButton';
 import axios from "axios";
-import {IWorkDay, DateWorkDay, IUser} from '../interface/MRInterface';
+import {IWorkDay, DateWorkDay, IUser} from '../utils/interface/MRInterface';
 
 
 export interface IDashboardPanel {}
