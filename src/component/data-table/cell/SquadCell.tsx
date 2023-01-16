@@ -18,14 +18,15 @@ const SquadCell: React.FC<ISquadCellProps> = (props:ISquadCellProps) => {
 
     return (
 
-        <select className="form-select rmr_select w-100" value={props.selectedSquad} aria-label="Default select example" onChange={(event) => {changeHandler(event) }} disabled={props.disabled}>
-            {
-                props.squad.map((s, i) =>
-                    <option value={s.sqdID} key={s.sqdID}>{s.sqdName}</option>
-                )
-            }
-        </select>
-        
+        <td>
+            <select className="form-select rmr_select w-100" value={props.selectedSquad} aria-label="Default select example" onChange={(event) => {changeHandler(event) }} disabled={props.disabled}>
+                {
+                    props.squad.map((s, i) =>
+                        <option value={s.sqdID} key={s.sqdID}>{s.sqdName}</option>
+                    )
+                }
+            </select>
+        </td>
     )
 }
 

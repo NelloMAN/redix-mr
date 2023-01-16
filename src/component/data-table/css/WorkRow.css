@@ -20,6 +20,12 @@ input:active {
   background-color: #89af3c87;
 }
 
+.work-row-todelete,
+.work-row-todelete input {
+  background-color: rgb(255, 211, 211);
+}
+
+
 .work-row-new td input,
 .work-row-new td input:active,
 .work-row-new td input:focus {

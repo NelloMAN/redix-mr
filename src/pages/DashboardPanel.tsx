@@ -44,6 +44,8 @@ const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
 
     const [changewd, setModifiedRecords] = useState<IWorkDay[]>([]); //array con la lista dei record esistenti e modificati
 
+    const [deleteWdID, setDeleteWdIDList] = useState<number []>([]); //array contenente gli id da cancellare
+
     if (usr.usrEmail === "" || dateWorkDays.length === 0) {
         return <p>Loading</p>
     }
@@ -55,6 +57,15 @@ const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
 
         setModifiedRecords( changewd => [...changewd, updRecord]);
         setDateWorkDays(wd);
+    }
+
+    function UpdateDeletedRecords( dwdID : number) {
+
+        if(deleteWdID.includes(dwdID)) {
+        	setDeleteWdIDList(deleteWdID.filter(item => item !== dwdID))
+        } else {
+        	setDeleteWdIDList( dwdList => [...dwdList, dwdID]);
+        }
     }
 
     function ManageSavedResult(result : string) {
@@ -91,16 +102,29 @@ const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
                         <div className='col-sm-10'>
                             <div className='row'>
                                 <div className='col-sm-4'>
-                                    <MonthComboBox usrID={usr.usrID} month={usr.selectedMonth} OnMonthChange= {(m:number) => {setMonth({...usr, selectedMonth : m})}}/> 
+                                    <MonthComboBox 
+                                        usrID={usr.usrID} 
+                                        month={usr.selectedMonth}
+                                        OnMonthChange= {(m:number) => {setMonth({...usr, selectedMonth : m})}}
+                                    /> 
                                 </div>
                                 <div className='offset-sm-4 col-sm-1 d-flex justify-content-end'>
-                                    <AddSingleWDButton OnSingleAWDClick = {(newWD : IWorkDay)=>{setNewWorkDays( nwd => [...nwd, newWD])}} type='s'/>
+                                    <AddSingleWDButton 
+                                        OnSingleAWDClick = {(newWD : IWorkDay)=>{setNewWorkDays( nwd => [...nwd, newWD])}} 
+                                        type='s'
+                                    />
                                 </div>
                                 <div className='col-sm-1 d-flex justify-content-end'>
-                                    <AddMultipleWDButton OnMultipleAWDClick = {(newWDS : IWorkDay[])=>{setNewWorkDays( nwd => nwd.concat(newWDS))}} type='m'/>
+                                    <AddMultipleWDButton 
+                                        OnMultipleAWDClick = {(newWDS : IWorkDay[])=>{setNewWorkDays( nwd => nwd.concat(newWDS))}} 
+                                        type='m'
+                                    />
                                 </div>
                                 <div className='col-sm-1 d-flex justify-content-end'>
-                                    <SaveWDButton nwd={nwd} OnSaveWDButtonClick={(result : string) => {ManageSavedResult(result)}}/>
+                                    <SaveWDButton 
+                                        nwd={nwd} 
+                                        OnSaveWDButtonClick={(result : string) => {ManageSavedResult(result)}}
+                                    />
                                 </div>
                                 <div className='col-sm-1 d-flex justify-content-end'>
                                     <ExportWDButton/>
@@ -109,7 +133,15 @@ const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
                             <br></br>
                             <div className='row'>
                                 <div className='col-sm-12'>
-                                    <WorkTable usrID={usr.usrID} month={usr.selectedMonth} dateWorkDays={dateWorkDays} nwd={nwd} UpdateNewRecords = {((newRecords : IWorkDay[]) => {setNewWorkDays(newRecords)})} UpdateExistingRecords = {((updRecord : IWorkDay, wd : DateWorkDay[]) => {UpdateWorkDays(updRecord, wd)})}/>
+                                    <WorkTable 
+                                        usrID={usr.usrID} 
+                                        month={usr.selectedMonth} 
+                                        dateWorkDays={dateWorkDays} 
+                                        nwd={nwd} 
+                                        UpdateNewRecords = {((newRecords : IWorkDay[]) => {setNewWorkDays(newRecords)})} 
+                                        UpdateExistingRecords = {((updRecord : IWorkDay, wd : DateWorkDay[]) => {UpdateWorkDays(updRecord, wd)})}
+                                        UpdateDeleteRecords = {((dwd : number) => (UpdateDeletedRecords(dwd)))}
+                                    />
                                 </div>
                             </div>
                         </div>

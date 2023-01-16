@@ -1,0 +1,15 @@
+.del-cell {
+    color:black;
+}
+
+.del-cell:hover{
+    color:rgb(255 100 100);
+}
+
+.del-cell-clicked {
+    color:rgb(255 100 100);
+}
+
+.del-cell-clicked:hover{
+    color:rgb(255 100 100);
+}

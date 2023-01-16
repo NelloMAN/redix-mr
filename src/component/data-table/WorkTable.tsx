@@ -11,12 +11,14 @@ export interface IWorkTableProps {
 	nwd: IWorkDay [],
 	UpdateNewRecords(newWorkDay : IWorkDay []) : any,
 	UpdateExistingRecords( w : IWorkDay | undefined, dwd : DateWorkDay []) : any
+	UpdateDeleteRecords( dr : number) : any
 }
 
 const WorkTable: React.FC<IWorkTableProps> = (props:IWorkTableProps) => {
 
 	const [squadArray, setSquad] = useState<Squad []>([]);
-
+	//const [deleteWdIDList, setDeleteWdIDList] = useState<number []>([])
+	
 	useEffect(() => {
 
 		axios.get('http://localhost:3001/getSquad')
@@ -55,7 +57,11 @@ const WorkTable: React.FC<IWorkTableProps> = (props:IWorkTableProps) => {
 			ChangeRecordValues(record, name, value);
 
 			props.UpdateExistingRecords(record, props.dateWorkDays);
-		}		
+		}
+		
+		if (name === 'delete') {
+			props.UpdateDeleteRecords(parseInt(value))
+		}
 	}
 
 	function ChangeRecordValues (modifiedRecord : IWorkDay, name : string, value : string) {
@@ -67,7 +73,6 @@ const WorkTable: React.FC<IWorkTableProps> = (props:IWorkTableProps) => {
 			case "specs": 
 				switch(parseInt(value)) {
 					case 3: //FERIE
-
 						modifiedRecord.wrkdActivity = 'FERIE';
 						modifiedRecord.wrkdActivityType = 'FERIE';
 						modifiedRecord.wrkdActivityHour = 0;
@@ -120,13 +125,14 @@ const WorkTable: React.FC<IWorkTableProps> = (props:IWorkTableProps) => {
 					<th scope="col">Squad</th>
 					<th scope="col">Tipo Attività</th>
 					<th scope="col">CDC</th>
+					<th scope="col"></th>
 				</tr>
 			</thead>
 			<tbody>	
 				<React.Fragment>
 				{					
 					props.nwd.map((nr, i) => {
-						return (<WorkRow workDay={nr} index={i} showDet={true} rowState="new" squad={squadArray} OnWDChange= {(state, name, id, value, wday) => {wdChange(state, name, id, value, wday)}}/>);
+						return (<WorkRow workDay={nr} index={i} showDet={true} rowState="new" squad={squadArray} enable={true} OnWDChange= {(state, name, id, value, wday) => {wdChange(state, name, id, value, wday)}}/>);
 					})
 				}
 				</React.Fragment>		
@@ -137,7 +143,7 @@ const WorkTable: React.FC<IWorkTableProps> = (props:IWorkTableProps) => {
 							<React.Fragment>
 								{
 									subArray.wdArray.map((w, i) => {
-										return (<WorkRow workDay={w} index={w.wrkdID} showDet={ i === 0 ? true : false} rowState="existed" squad={squadArray} OnWDChange={(state, name, id, value, wday) => {wdChange(state, name, id, value, wday)}}/>);
+										return (<WorkRow workDay={w} index={w.wrkdID} showDet={ i === 0 ? true : false} rowState="existed" squad={squadArray} enable={true} OnWDChange={(state, name, id, value, wday) => {wdChange(state, name, id, value, wday)}}/>);
 									}
 								)}
 							</React.Fragment>
