@@ -16,8 +16,14 @@ input:active {
   background-color: white;
 }
 
-.work-row-new {
+.work-row-new,
+.work-row-new input  {
   background-color: #89af3c87;
+}
+
+.work-row-upd,
+.work-row-upd input  {
+  background-color: #ffba71;
 }
 
 .work-row-todelete,

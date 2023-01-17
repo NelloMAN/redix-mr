@@ -8,12 +8,12 @@ import DeleteCell from './cell/DeleteCell';
 import $ from 'jquery';
 
 export interface IWorkRowProps {
-	rowState: string,
-	showDet: boolean,
-	index: number,
-	workDay: IWorkDay,
-	squad: Squad [],
-	enable: boolean,
+	rowState: string,		//stato della riga: nuova(new) o esistente(existed)
+	showDet: boolean,		//mostrare data e info: true se è il primo elemento dell'array dateworkday o false se non è il primo
+	index: number,			//indice della riga
+	workDay: IWorkDay,		//Workday da mostrare nella riga
+	squad: Squad [],		//lista delle squad
+	enable: boolean,		//abilitare la riga: true se è modificabile false se non lo è
 	OnWDChange(rs: string, n : string, i : number, v : string, wd : IWorkDay) : any;
 }
 
@@ -23,39 +23,71 @@ const WorkRow: React.FC<IWorkRowProps> = (props:IWorkRowProps) => {
 	const [enableRow, setRowEnable] = useState<boolean>(props.enable);
 	const [lastSelectedInfo, setSelectedInfo] = useState<string>(''+props.workDay.wrkdInfoID)
 
-	useEffect(() => {
+	function renderComponent() {
 
-		if (!enableRow) {
-			//$('#row_'+props.workDay.wrkdID).off(); //rimuove tutti gli eventi assegnati all'elemento
-			$('#row_'+props.workDay.wrkdID).find("*").not('#deleteCell_' + props.workDay.wrkdID).prop('disabled', true); //rimuove tutti gli eventi assegnati ai figli
+		if (enableRow) {
 
+			if (props.showDet) { //
+
+				return (
+					<tr id={'row_'+props.workDay.wrkdID} key={props.index} className={"work-row"+(props.rowState === "new" ? " work-row-new":"")}>
+						<td>
+							<input type="date" className="w-100" defaultValue={''+props.workDay.wrkdDay} name="day" onChange={(e) => onWorkDayChange(e.target.name, e.target.value)}/>
+						</td>
+						<InfoCell name="specs" details={parseInt(lastSelectedInfo)} onChange={(n,v) => onWorkDayChange(n,v)}/>
+						<td>
+							<input type="text" className="w-100" defaultValue={props.workDay.wrkdActivity} value={props.workDay.wrkdActivity} name="activity" onChange={(e) => onWorkDayChange(e.target.name, e.target.value)} disabled = {rowInfoType === RowStateEnum.WORK ? false : true}/>
+						</td>
+						<td>
+							<input type="number" className="w-100" defaultValue={props.workDay.wrkdActivityHour} value={props.workDay.wrkdActivityHour} name="hour" onChange={(e) => onWorkDayChange(e.target.name, e.target.value)} disabled = {rowInfoType === RowStateEnum.SICKNESS_HOLIDAYS ? true : false}/>
+						</td>
+						<SquadCell squad={props.squad} name="squad" selectedSquad={props.workDay.wrkdSqdID} onChange={(n,v) => onWorkDayChange(n, v)} disabled = {rowInfoType === RowStateEnum.WORK ? false : true}/>
+						<td>
+							<input type="text" className="w-100" defaultValue={props.workDay.wrkdActivityType} value={props.workDay.wrkdActivityType}  name="activity_type" onChange={(e) => onWorkDayChange(e.target.name, e.target.value)} disabled = {rowInfoType === RowStateEnum.WORK ? false : true}/>
+						</td>
+						<td>
+							<input type="text" className="w-100" defaultValue={props.workDay.wrkdCdc} value={props.workDay.wrkdCdc} name="cdc" onChange={(e) => onWorkDayChange(e.target.name, e.target.value)} disabled = {rowInfoType === RowStateEnum.WORK ? false : true} />
+						</td>
+						<DeleteCell cellID = {'deleteCell_' + props.workDay.wrkdID} wd={props.workDay} onChange={(n,v) => onWorkDayChange(n, v)} disabled = {false} />
+					</tr>
+				);
+			} else 
+			{
+				return (
+					<tr id={'row_'+props.workDay.wrkdID} key={props.index} className={"work-row"+(props.rowState === "new" ? " work-row-new":"")}>
+						<td></td>
+						<td></td>
+						<td>
+							<input type="text" className="w-100" defaultValue={props.workDay.wrkdActivity} value={props.workDay.wrkdActivity} name="activity" onChange={(e) => onWorkDayChange(e.target.name, e.target.value)} disabled = {rowInfoType === RowStateEnum.WORK ? false : true}/>
+						</td>
+						<td>
+							<input type="number" className="w-100" defaultValue={props.workDay.wrkdActivityHour} value={props.workDay.wrkdActivityHour} name="hour" onChange={(e) => onWorkDayChange(e.target.name, e.target.value)} disabled = {rowInfoType === RowStateEnum.SICKNESS_HOLIDAYS ? true : false}/>
+						</td>
+						<SquadCell squad={props.squad} name="squad" selectedSquad={props.workDay.wrkdSqdID} onChange={(n,v) => onWorkDayChange(n, v)} disabled = {rowInfoType === RowStateEnum.WORK ? false : true}/>
+						<td>
+							<input type="text" className="w-100" defaultValue={props.workDay.wrkdActivityType} value={props.workDay.wrkdActivityType}  name="activity_type" onChange={(e) => onWorkDayChange(e.target.name, e.target.value)} disabled = {rowInfoType === RowStateEnum.WORK ? false : true}/>
+						</td>
+						<td>
+							<input type="text" className="w-100" defaultValue={props.workDay.wrkdCdc} value={props.workDay.wrkdCdc} name="cdc" onChange={(e) => onWorkDayChange(e.target.name, e.target.value)} disabled = {rowInfoType === RowStateEnum.WORK ? false : true} />
+						</td>
+						<DeleteCell cellID = {'deleteCell_' + props.workDay.wrkdID} wd={props.workDay} onChange={(n,v) => onWorkDayChange(n, v)} disabled = {false} />
+					</tr>
+				);
+			}
 		} else {
-			$('#row_'+props.workDay.wrkdID).on("*", false); //rimuove tutti gli eventi assegnati all'elemento
-			setFieldState(lastSelectedInfo);
-		}
-
-	  }, [enableRow]);
-
-	function showDet() {
-
-		if (props.showDet) {
 
 			return (
-				<React.Fragment>
-					<td>
-						<input type="date" className="w-100" defaultValue={''+props.workDay.wrkdDay} name="day" onChange={(e) => onWorkDayChange(e.target.name, e.target.value)}/>
-					</td>
-					<InfoCell name="specs" details={props.workDay.wrkdInfoID} onChange={(n,v) => onWorkDayChange(n,v)}/>
-				</React.Fragment>
-			);
-		} else 
-		{
-			return (
-				<React.Fragment>
+				<tr id={'row_'+props.workDay.wrkdID} key={props.index} className={"work-row"+(props.rowState === "new" ? " work-row-new":"")}>
+					<td>{''+props.workDay.wrkdDay}</td>
 					<td></td>
-					<td></td>
-				</React.Fragment>
-			);
+					<td>{props.workDay.wrkdActivity}</td>
+					<td>{''+props.workDay.wrkdActivityHour}</td>
+					<td>{''+props.workDay.wrkdSqdID}</td>
+					<td>{props.workDay.wrkdActivityType} </td>
+					<td>{props.workDay.wrkdCdc}</td>
+					<DeleteCell cellID = {'deleteCell_' + props.workDay.wrkdID} wd={props.workDay} onChange={(n,v) => onWorkDayChange(n, v)} disabled = {false} />
+				</tr>
+			)
 		}
 	}
 
@@ -65,18 +97,14 @@ const WorkRow: React.FC<IWorkRowProps> = (props:IWorkRowProps) => {
 		const name = n;
 		const value = v;
 
-		//#region aggiorno lo stato della riga a seconda della specifica selezionata
-		if (name === 'specs') {
+		
 
-			setSelectedInfo(value);
-
-			setFieldState(value);
-		}
-		//#endregion
 
 		//#region cambio il colore della riga se è in stato CANCELLATO
 		if (name === 'delete') {
 
+			//aggiungo il colore rosso per le righe cancellate, rimuovo eventualmente il colore arancione nel caso si stesse cancellando una righa modificata
+			$('#row_'+props.workDay.wrkdID).removeClass("work-row-upd");
 			$('#row_'+props.workDay.wrkdID).toggleClass('work-row-todelete');
 
 			if ($('#row_'+props.workDay.wrkdID).prop("className").split(" ").includes("work-row-todelete")) {
@@ -85,6 +113,21 @@ const WorkRow: React.FC<IWorkRowProps> = (props:IWorkRowProps) => {
 				setRowEnable(true)
 			};
 			
+		} else {
+
+			// aggiungo il colore arancione per le righe modificate
+			if (!$('#row_'+props.workDay.wrkdID).hasClass("work-row-upd") && props.rowState !== 'new') { 
+				$('#row_'+props.workDay.wrkdID).addClass("work-row-upd");
+			}
+
+			//#region aggiorno lo stato della riga a seconda della specifica selezionata
+			if (name === 'specs') {
+
+				setSelectedInfo(value);
+	
+				setFieldState(value);
+			}
+			//#endregion
 		}
 
 		//#endregion
@@ -103,25 +146,7 @@ const WorkRow: React.FC<IWorkRowProps> = (props:IWorkRowProps) => {
 	}
 
 	return (
-		
-		<tr id={'row_'+props.workDay.wrkdID} key={props.index} className={"work-row"+(props.rowState === "new" ? " work-row-new":"")}>
-
-			{showDet()}
-			<td>
-				<input type="text" className="w-100" defaultValue={props.workDay.wrkdActivity} value={props.workDay.wrkdActivity} name="activity" onChange={(e) => onWorkDayChange(e.target.name, e.target.value)} disabled = {rowInfoType === RowStateEnum.WORK ? false : true}/>
-			</td>
-			<td>
-				<input type="number" className="w-100" defaultValue={props.workDay.wrkdActivityHour} value={props.workDay.wrkdActivityHour} name="hour" onChange={(e) => onWorkDayChange(e.target.name, e.target.value)} disabled = {rowInfoType === RowStateEnum.SICKNESS_HOLIDAYS ? true : false}/>
-			</td>
-			<SquadCell squad={props.squad} name="squad" selectedSquad={props.workDay.wrkdSqdID} onChange={(n,v) => onWorkDayChange(n, v)} disabled = {rowInfoType === RowStateEnum.WORK ? false : true}/>
-			<td>
-				<input type="text" className="w-100" defaultValue={props.workDay.wrkdActivityType} value={props.workDay.wrkdActivityType}  name="activity_type" onChange={(e) => onWorkDayChange(e.target.name, e.target.value)} disabled = {rowInfoType === RowStateEnum.WORK ? false : true}/>
-			</td>
-			<td>
-				<input type="text" className="w-100" defaultValue={props.workDay.wrkdCdc} value={props.workDay.wrkdCdc} name="cdc" onChange={(e) => onWorkDayChange(e.target.name, e.target.value)} disabled = {rowInfoType === RowStateEnum.WORK ? false : true} />
-			</td>
-			<DeleteCell cellID = {'deleteCell_' + props.workDay.wrkdID} wd={props.workDay} onChange={(n,v) => onWorkDayChange(n, v)} disabled = {false} />
-		</tr>
+		renderComponent()
 	);
 }
 

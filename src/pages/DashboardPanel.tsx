@@ -52,12 +52,13 @@ const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
 
     // funzione per aggiornare gli array contenente i record modificati 
     // updRecord: il record modificato
-    // wd: la lista dei record esistenti con all'interno già il record modificato
+    // wd: la lista dei record esistenti; aggiornare la lista con setDateWoekDays serve per aggiornare le righe
     function UpdateWorkDays( updRecord : IWorkDay, wd : DateWorkDay[]) {
 
         setModifiedRecords( changewd => [...changewd, updRecord]);
-        setDateWorkDays(wd);
+        //setDateWorkDays(wd);
     }
+
 
     function UpdateDeletedRecords( dwdID : number) {
 
