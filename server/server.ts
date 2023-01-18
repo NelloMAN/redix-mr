@@ -3,6 +3,8 @@ import cors from 'cors';
 import bodyParser from "body-parser";
 import * as mrSqlConnector from "./utils/mysql_utils/mysql.connector.js"
 import * as mrController from "./utils/mrController.js";
+import { IWorkDay } from "./utils/interface/MRServerInterface.js";
+import Enumerable from "linq";
 
 const PORT = process.env.PORT || 3001;
 
@@ -50,11 +52,13 @@ app.get('/getSquad', (req: Request, res: Response, n : NextFunction) => {
 // saveWorkDays: inserimento nuove righe
 app.post('/saveWorkDays', (req: Request, res: Response) => {
 
-  let newWorkDays = req.body.newWorkDays;
-  let changeWorkDays = req.body.changeWorkDays;
-  let deletedWorkDaysID = req.body.changeWorkDays
+  let newWorkDays : IWorkDay [] = req.body.newWorkDays;
+  let changeWorkDays : IWorkDay [] = req.body.changeWorkDays;
+  let deletedWorkDaysID : number [] = req.body.changeWorkDays
 
+  let removeFromChangeWD : IWorkDay [] = changeWorkDays.filter(x => deletedWorkDaysID.indexOf(x.wrkdID) !== -1);
 
+  console.log(removeFromChangeWD)
 
   // let query = 'insert into work_day (wrkdUsrID, wrkdDay, wrkdInfoID, wrkdActivity, wrkdActivityType, wrkdActivityHour, wrkdSqdID, wrkdCdc) values ?'
   // let values = [];

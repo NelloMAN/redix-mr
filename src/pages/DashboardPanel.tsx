@@ -52,16 +52,27 @@ const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
 
     // funzione per aggiornare gli array contenente i record modificati 
     // updRecord: il record modificato
-    // wd: la lista dei record esistenti; aggiornare la lista con setDateWoekDays serve per aggiornare le righe
-    function UpdateWorkDays( updRecord : IWorkDay, wd : DateWorkDay[]) {
+    function UpdateWorkDays( updRecord : IWorkDay) {
 
-        setModifiedRecords( changewd => [...changewd, updRecord]);
+        let tempChangeWD : IWorkDay [] = [];
+
+        //verifico se è necessario sostituire dei record in modo da non più volte lo stesso record
+        if (changewd.some( x => x.wrkdID === updRecord.wrkdID)) {
+            tempChangeWD = changewd.filter(elem => elem.wrkdID !== updRecord.wrkdID);
+        }
+
+        //aggiungo il record modificato
+        tempChangeWD.push(updRecord);
+
+        //aggiorno lo state
+        setModifiedRecords( tempChangeWD);
         //setDateWorkDays(wd);
     }
 
 
     function UpdateDeletedRecords( dwdID : number) {
 
+        //aggiungo il wrkdID nella lista dei cancellati, a meno che sia già presente il che vuol dire che l'utente ha annullato la cancellazione
         if(deleteWdID.includes(dwdID)) {
         	setDeleteWdIDList(deleteWdID.filter(item => item !== dwdID))
         } else {
@@ -142,7 +153,7 @@ const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
                                         dateWorkDays={dateWorkDays} 
                                         nwd={nwd} 
                                         UpdateNewRecords = {((newRecords : IWorkDay[]) => {setNewWorkDays(newRecords)})} 
-                                        UpdateExistingRecords = {((updRecord : IWorkDay, wd : DateWorkDay[]) => {UpdateWorkDays(updRecord, wd)})}
+                                        UpdateExistingRecords = {((updRecord : IWorkDay) => {UpdateWorkDays(updRecord)})}
                                         UpdateDeleteRecords = {((dwd : number) => (UpdateDeletedRecords(dwd)))}
                                     />
                                 </div>
