@@ -7,6 +7,8 @@ import { IWorkDay } from '../utils/interface/MRInterface';
 
 export interface ISaveWDButtonProps {
 	nwd : IWorkDay [],
+    changewd: IWorkDay [],
+    deleteWdIDList: number [],
     OnSaveWDButtonClick(result: string) : any
 }
 
@@ -16,11 +18,15 @@ const SaveWDButton: React.FC<ISaveWDButtonProps> = (props:ISaveWDButtonProps) =>
     function saveWorkDaysClick() {
 
         let newWorkDays : IWorkDay [] = props.nwd;
+        let changeWorkDays : IWorkDay [] = props.changewd;
+        let deletedWorkDaysID : number [] = props.deleteWdIDList;
 
-        axios.post("http://localhost:3001/insertWorkDays", {
-            data: {
-                newWorkDays
-            }
+        axios.post("http://localhost:3001/saveWorkDays", {
+            
+                newWorkDays,
+                changeWorkDays,
+                deletedWorkDaysID
+                
             }).then((response) => {
                 
                 let data = response.data;
@@ -42,7 +48,8 @@ const SaveWDButton: React.FC<ISaveWDButtonProps> = (props:ISaveWDButtonProps) =>
             data-bs-toggle="tooltip" 
             data-bs-placement="top" 
             title="Save"> 
-            <MdSave className='wd-button-icon'/>
+
+                <MdSave className='wd-button-icon'/>
         </button>                
     )
 }

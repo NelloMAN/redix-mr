@@ -14,7 +14,17 @@ const ExportWDButton: React.FC<IExportWDButtonProps> = (props:IExportWDButtonPro
     }
 
     return (
-        <button type="button" className='btn rdx-btn btn-circle' onClick={() => exportWorkDaysClick()} data-bs-toggle="tooltip" data-bs-placement="top" title="Export"> <MdImportExport className='wd-button-icon'/></button>                
+        <button 
+            type="button" 
+            className='btn rdx-btn btn-circle' 
+            onClick={() => exportWorkDaysClick()} 
+            data-bs-toggle="tooltip" 
+            data-bs-placement="top" 
+            title="Export"> 
+            
+            <MdImportExport 
+                className='wd-button-icon'/>
+        </button>                
     )
 }
 

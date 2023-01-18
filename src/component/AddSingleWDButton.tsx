@@ -4,6 +4,7 @@ import {MdAddBox} from 'react-icons/md';
 import {MdLibraryAdd} from 'react-icons/md';
 import { IWorkDay } from '../utils/interface/MRInterface';
 import './css/AddWDButton.css';
+import { RowStateEnum } from '../utils/MREnum';
 
 export interface IAddSingleWDButtonProps {
 	type : string,
@@ -24,6 +25,7 @@ const AddSingleWDButton: React.FC<IAddSingleWDButtonProps> = (props:IAddSingleWD
             wrkdID: lastID,
             wrkdDay: new Date(),
             wrkdInfoID: 1,
+            wrkdInfoGrpID: RowStateEnum.WORK,
             wrkdActivity: '',
             wrkdActivityHour: 8,
             wrkdSqdID: 1,
@@ -37,7 +39,17 @@ const AddSingleWDButton: React.FC<IAddSingleWDButtonProps> = (props:IAddSingleWD
 
 
     return (
-        <button type="button" className='btn rdx-btn btn-circle' onClick={() => addSingleRowClicked()} data-bs-toggle="tooltip" data-bs-placement="top" title="Add one row"> <MdAddBox className='wd-button-icon'/></button>
+        <button 
+            type="button" 
+            className='btn rdx-btn btn-circle' 
+            onClick={() => addSingleRowClicked()} 
+            data-bs-toggle="tooltip" 
+            data-bs-placement="top" 
+            title="Add one row"> 
+
+            <MdAddBox 
+                className='wd-button-icon'/>
+        </button>
     )
 }
 

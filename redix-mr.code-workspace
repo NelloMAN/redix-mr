@@ -3,5 +3,22 @@
         {
             "path": "."
         }
-    ]
+    ],
+    "settings": {
+        "sqltools.connections": [
+            {
+                "mysqlOptions": {
+                    "authProtocol": "default"
+                },
+                "previewLimit": 50,
+                "server": "localhost",
+                "port": 3001,
+                "driver": "MySQL",
+                "name": "redix_mr",
+                "database": "redix_mr",
+                "username": "root",
+                "password": "redixmr2022!_"
+            }
+        ]
+    }
 }

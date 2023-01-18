@@ -19,7 +19,7 @@ export interface IWorkRowProps {
 
 const WorkRow: React.FC<IWorkRowProps> = (props:IWorkRowProps) => {
 
-	const [rowInfoType, setFieldEnable] = useState(props.rowState === 'new' ? 0 : props.workDay.wrkdInfoID);
+	const [rowInfoType, setFieldEnable] = useState(props.rowState === 'new' ? RowStateEnum.WORK : props.workDay.wrkdInfoGrpID);
 	const [enableRow, setRowEnable] = useState<boolean>(props.enable);
 	const [lastSelectedInfo, setSelectedInfo] = useState<string>(''+props.workDay.wrkdInfoID)
 
@@ -96,9 +96,6 @@ const WorkRow: React.FC<IWorkRowProps> = (props:IWorkRowProps) => {
 
 		const name = n;
 		const value = v;
-
-		
-
 
 		//#region cambio il colore della riga se è in stato CANCELLATO
 		if (name === 'delete') {

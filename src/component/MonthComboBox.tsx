@@ -51,7 +51,12 @@ const MonthComboBox: React.FC<IMonthComboBoxProps> = (props:IMonthComboBoxProps)
     }
 
     return (
-        <select className="form-select rmr_select w-50" value={selectedMonth} aria-label="Default select example" onChange={(event) => {changeHandler(event) }}>
+        <select 
+            className="form-select rmr_select w-50" 
+            value={selectedMonth} 
+            aria-label="Default select example" 
+            onChange={(event) => {changeHandler(event) }}>
+                
             {
                 months.map((m, i) =>
                     <option value={m.monthNumb} key={m.monthNumb}>{m.monthName}</option>

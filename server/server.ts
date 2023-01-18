@@ -47,8 +47,14 @@ app.get('/getSquad', (req: Request, res: Response, n : NextFunction) => {
   mrController.getSquad( req, res, n);
 });
 
-// insertWorkDays: inserimento nuove righe
-app.post('/insertWorkDays', (req: Request, res: Response) => {
+// saveWorkDays: inserimento nuove righe
+app.post('/saveWorkDays', (req: Request, res: Response) => {
+
+  let newWorkDays = req.body.newWorkDays;
+  let changeWorkDays = req.body.changeWorkDays;
+  let deletedWorkDaysID = req.body.changeWorkDays
+
+
 
   // let query = 'insert into work_day (wrkdUsrID, wrkdDay, wrkdInfoID, wrkdActivity, wrkdActivityType, wrkdActivityHour, wrkdSqdID, wrkdCdc) values ?'
   // let values = [];

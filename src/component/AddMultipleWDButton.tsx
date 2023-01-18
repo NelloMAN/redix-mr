@@ -44,7 +44,17 @@ const AddMultipleWDButton: React.FC<IAddMultipleWDButtonProps> = (props:IAddMult
     }
 
     return (
-        <button type="button" className='btn rdx-btn btn-circle' onClick={() => addMultipleRowClicked()} data-bs-toggle="tooltip" data-bs-placement="top" title="Add multiple rows"> <MdLibraryAdd className='wd-button-icon'/></button>
+        <button 
+            type="button" 
+            className='btn rdx-btn btn-circle' 
+            onClick={() => addMultipleRowClicked()} 
+            data-bs-toggle="tooltip" 
+            data-bs-placement="top" 
+            title="Add multiple rows"> 
+            
+            <MdLibraryAdd 
+                className='wd-button-icon'/>
+        </button>
     )
 }
 

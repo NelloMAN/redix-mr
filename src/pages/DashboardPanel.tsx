@@ -123,7 +123,9 @@ const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
                                 </div>
                                 <div className='col-sm-1 d-flex justify-content-end'>
                                     <SaveWDButton 
-                                        nwd={nwd} 
+                                        nwd={nwd}
+                                        changewd={changewd}
+                                        deleteWdIDList={deleteWdID} 
                                         OnSaveWDButtonClick={(result : string) => {ManageSavedResult(result)}}
                                     />
                                 </div>

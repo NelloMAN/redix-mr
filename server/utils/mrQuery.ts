@@ -4,7 +4,7 @@ export const mrQuery = {
             wrkdID, 
             date_format(wrkdDay, "%Y-%m-%d") as wrkdDay, 
             wrkdInfoID, 
-            infoGrpID, 
+            infoGrpID as wrkdInfoGrpID, 
             wrkdUsrID, 
             wrkdActivity, 
             wrkdActivityType, 

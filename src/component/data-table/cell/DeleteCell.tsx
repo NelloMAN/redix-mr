@@ -31,7 +31,19 @@ const DeleteCell: React.FC<IDeleteCellProps> = (props:IDeleteCellProps) => {
     return (
 
         <td>
-            <button type="button" id={props.cellID} className='btn del-cell' onClick={deleteHandler} data-bs-toggle="tooltip" data-bs-placement="top" title="Delete row" disabled={props.disabled}> <RiDeleteBin6Line className='wd-button-icon'/></button>                
+            <button 
+                type="button" 
+                id={props.cellID} 
+                className='btn del-cell' 
+                onClick={deleteHandler} 
+                data-bs-toggle="tooltip" 
+                data-bs-placement="top" 
+                title="Delete row" 
+                disabled={props.disabled}> 
+                
+                <RiDeleteBin6Line 
+                    className='wd-button-icon'/>
+            </button>                
         </td>
     )
 }

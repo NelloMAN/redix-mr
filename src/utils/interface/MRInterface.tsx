@@ -3,6 +3,7 @@ export interface IWorkDay {
     wrkdUsrID: number,
     wrkdDay: Date,
     wrkdInfoID: number,
+    wrkdInfoGrpID: number;
     wrkdActivity: string,
     wrkdActivityHour: number,
     wrkdSqdID: number,
