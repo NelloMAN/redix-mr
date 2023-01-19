@@ -19,7 +19,7 @@ var holidays = new Holidays('IT');
 let workingInfo = [WorkingInfo.OFFICE, WorkingInfo.SMARTWORKING, WorkingInfo.WORK_TRIP];
 
 // Check di validità delle attività inserite
-export function checkWorkItem(workDaysArray : IWorkDay[]) {
+export function checkWorkItem(workDaysArray : IWorkDay[]) : Alert [] {
 
     //Array contenente errori e wanings
     let err_war : Alert [] = [];

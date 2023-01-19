@@ -82,9 +82,10 @@ const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
                 tempNewWorkDays = tempNewWorkDays.filter(elem => elem.wrkdID !== dwdID);
 
                 setNewWorkDays(tempNewWorkDays);
-            }
 
-        	setDeleteWdIDList( dwdList => [...dwdList, dwdID]);
+            } else {
+                setDeleteWdIDList( dwdList => [...dwdList, dwdID]);
+            }
         }
     }
 

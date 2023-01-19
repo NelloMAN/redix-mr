@@ -5,6 +5,7 @@ import * as mrSqlConnector from "./utils/mysql_utils/mysql.connector.js"
 import * as mrController from "./utils/mrController.js";
 import * as mrUtils from "./utils/mrUtils.js"
 import { IWorkDay } from "./utils/interface/MRServerInterface.js";
+import { Alert } from "./utils/class/Alert.js";
 import Enumerable from "linq";
 
 const PORT = process.env.PORT || 3001;
@@ -61,7 +62,7 @@ app.post('/saveWorkDays', (req: Request, res: Response) => {
 
   console.log(changeWorkDaysDef)
 
-  let err_war = mrUtils.checkWorkItem(newWorkDays);
+  let err_war : Alert[] = mrUtils.checkWorkItem(newWorkDays);
 
   // if (err_war.length > 0) {
 

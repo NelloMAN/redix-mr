@@ -6,6 +6,7 @@ import { Squad, IWorkDay } from '../../utils/interface/MRInterface';
 import { RowStateEnum } from '../../utils/MREnum';
 import DeleteCell from './cell/DeleteCell';
 import $ from 'jquery';
+import uniqid from 'uniqid';
 
 export interface IWorkRowProps {
 	rowState: string,		//stato della riga: nuova(new) o esistente(existed)
@@ -30,9 +31,9 @@ const WorkRow: React.FC<IWorkRowProps> = (props:IWorkRowProps) => {
 			if (props.showDet) { //
 
 				return (
-					<tr id={'row_'+props.workDay.wrkdID} key={props.index} className={"work-row"+(props.rowState === "new" ? " work-row-new":"")}>
+					<tr id={'row_'+props.workDay.wrkdID} key={uniqid()} className={"work-row"+(props.rowState === "new" ? " work-row-new":"")}>
 						<td>
-							<input type="date" className="w-100" defaultValue={''+props.workDay.wrkdDay} name="day" onChange={(e) => onWorkDayChange(e.target.name, e.target.value)}/>
+							<input type="date"  key={props.index} className="w-100" defaultValue={''+props.workDay.wrkdDay} name="day" onChange={(e) => onWorkDayChange(e.target.name, e.target.value)}/>
 						</td>
 						<InfoCell name="specs" details={parseInt(lastSelectedInfo)} onChange={(n,v) => onWorkDayChange(n,v)}/>
 						<td>
@@ -54,7 +55,7 @@ const WorkRow: React.FC<IWorkRowProps> = (props:IWorkRowProps) => {
 			} else 
 			{
 				return (
-					<tr id={'row_'+props.workDay.wrkdID} key={props.index} className={"work-row"+(props.rowState === "new" ? " work-row-new":"")}>
+					<tr id={'row_'+props.workDay.wrkdID} key={uniqid()} className={"work-row"+(props.rowState === "new" ? " work-row-new":"")}>
 						<td></td>
 						<td></td>
 						<td>
@@ -77,7 +78,7 @@ const WorkRow: React.FC<IWorkRowProps> = (props:IWorkRowProps) => {
 		} else {
 
 			return (
-				<tr id={'row_'+props.workDay.wrkdID} key={props.index} className={"work-row"+(props.rowState === "new" ? " work-row-new":"")}>
+				<tr id={'row_'+props.workDay.wrkdID} key={uniqid()} className={"work-row"+(props.rowState === "new" ? " work-row-new":"")}>
 					<td>{''+props.workDay.wrkdDay}</td>
 					<td></td>
 					<td>{props.workDay.wrkdActivity}</td>

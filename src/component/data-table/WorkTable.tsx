@@ -3,6 +3,7 @@ import axios from "axios";
 import WorkRow from "./WorkRow";
 import "./css/WorkTable.css";
 import { IWorkDay, DateWorkDay, Squad } from "../../utils/interface/MRInterface";
+import uniqid from 'uniqid';
 
 export interface IWorkTableProps {
 	usrID : number, 
@@ -132,7 +133,18 @@ const WorkTable: React.FC<IWorkTableProps> = (props:IWorkTableProps) => {
 				<React.Fragment>
 				{					
 					props.nwd.map((nr, i) => {
-						return (<WorkRow workDay={nr} index={i} showDet={true} rowState="new" squad={squadArray} enable={true} OnWDChange= {(state, name, id, value, wday) => {wdChange(state, name, id, value, wday)}}/>);
+						return (
+							<WorkRow 
+								workDay={nr} 
+								key={uniqid()}
+								index={i} 
+								showDet={true} 
+								rowState="new" 
+								squad={squadArray} 
+								enable={true} 
+								OnWDChange= {(state, name, id, value, wday) => {wdChange(state, name, id, value, wday)}}
+							/>
+						);
 					})
 				}
 				</React.Fragment>		
@@ -143,7 +155,18 @@ const WorkTable: React.FC<IWorkTableProps> = (props:IWorkTableProps) => {
 							<React.Fragment>
 								{
 									subArray.wdArray.map((w, i) => {
-										return (<WorkRow workDay={w} index={w.wrkdID} showDet={ i === 0 ? true : false} rowState="existed" squad={squadArray} enable={true} OnWDChange={(state, name, id, value, wday) => {wdChange(state, name, id, value, wday)}}/>);
+										return (
+											<WorkRow 
+												workDay={w}
+												key={uniqid()} 
+												index={w.wrkdID} 
+												showDet={ i === 0 ? true : false} 
+												rowState="existed" 
+												squad={squadArray} 
+												enable={true} 
+												OnWDChange={(state, name, id, value, wday) => {wdChange(state, name, id, value, wday)}}
+											/>
+										);
 									}
 								)}
 							</React.Fragment>
