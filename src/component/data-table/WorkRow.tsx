@@ -98,7 +98,7 @@ const WorkRow: React.FC<IWorkRowProps> = (props:IWorkRowProps) => {
 		const value = v;
 
 		//#region cambio il colore della riga se è in stato CANCELLATO
-		if (name === 'delete') {
+		if (name === 'delete' && props.rowState !== 'new') {
 
 			//aggiungo il colore rosso per le righe cancellate, rimuovo eventualmente il colore arancione nel caso si stesse cancellando una righa modificata
 			$('#row_'+props.workDay.wrkdID).removeClass("work-row-upd");
@@ -121,7 +121,7 @@ const WorkRow: React.FC<IWorkRowProps> = (props:IWorkRowProps) => {
 			if (name === 'specs') {
 
 				setSelectedInfo(value);
-	
+
 				setFieldState(value);
 			}
 			//#endregion

@@ -3,6 +3,7 @@ import cors from 'cors';
 import bodyParser from "body-parser";
 import * as mrSqlConnector from "./utils/mysql_utils/mysql.connector.js"
 import * as mrController from "./utils/mrController.js";
+import * as mrUtils from "./utils/mrUtils.js"
 import { IWorkDay } from "./utils/interface/MRServerInterface.js";
 import Enumerable from "linq";
 
@@ -54,17 +55,13 @@ app.post('/saveWorkDays', (req: Request, res: Response) => {
 
   let newWorkDays : IWorkDay [] = req.body.newWorkDays;
   let changeWorkDays : IWorkDay [] = req.body.changeWorkDays;
-  let deletedWorkDaysID : number [] = req.body.changeWorkDays
+  let deletedWorkDaysID : number [] = req.body.deletedWorkDaysID
 
-  let removeFromChangeWD : IWorkDay [] = changeWorkDays.filter(x => deletedWorkDaysID.indexOf(x.wrkdID) !== -1);
+  let changeWorkDaysDef : IWorkDay [] = changeWorkDays.filter(x => deletedWorkDaysID.indexOf(x.wrkdID) === -1);
 
-  console.log(removeFromChangeWD)
+  console.log(changeWorkDaysDef)
 
-  // let query = 'insert into work_day (wrkdUsrID, wrkdDay, wrkdInfoID, wrkdActivity, wrkdActivityType, wrkdActivityHour, wrkdSqdID, wrkdCdc) values ?'
-  // let values = [];
-  // let data : WorkDay [] = req.body.data.newWorkDays
-
-  // let err_war = checkWorkItem(data);
+  let err_war = mrUtils.checkWorkItem(newWorkDays);
 
   // if (err_war.length > 0) {
 

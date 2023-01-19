@@ -54,11 +54,11 @@ const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
     // updRecord: il record modificato
     function UpdateWorkDays( updRecord : IWorkDay) {
 
-        let tempChangeWD : IWorkDay [] = [];
+        let tempChangeWD : IWorkDay [] = changewd;
 
         //verifico se è necessario sostituire dei record in modo da non più volte lo stesso record
-        if (changewd.some( x => x.wrkdID === updRecord.wrkdID)) {
-            tempChangeWD = changewd.filter(elem => elem.wrkdID !== updRecord.wrkdID);
+        if (tempChangeWD.some( x => x.wrkdID === updRecord.wrkdID)) {
+            tempChangeWD = tempChangeWD.filter(elem => elem.wrkdID !== updRecord.wrkdID);
         }
 
         //aggiungo il record modificato
@@ -66,7 +66,6 @@ const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
 
         //aggiorno lo state
         setModifiedRecords( tempChangeWD);
-        //setDateWorkDays(wd);
     }
 
 
@@ -76,6 +75,15 @@ const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
         if(deleteWdID.includes(dwdID)) {
         	setDeleteWdIDList(deleteWdID.filter(item => item !== dwdID))
         } else {
+
+            if (nwd.some( x => x.wrkdID === dwdID)) {
+                
+                let tempNewWorkDays = nwd;
+                tempNewWorkDays = tempNewWorkDays.filter(elem => elem.wrkdID !== dwdID);
+
+                setNewWorkDays(tempNewWorkDays);
+            }
+
         	setDeleteWdIDList( dwdList => [...dwdList, dwdID]);
         }
     }

@@ -37,7 +37,8 @@ const SaveWDButton: React.FC<ISaveWDButtonProps> = (props:ISaveWDButtonProps) =>
                     props.OnSaveWDButtonClick(data.errWar);
                 }
                 
-            }).catch(err => console.log(err))
+            }).catch(err => console.log(err)
+        )
     }
 
     return (

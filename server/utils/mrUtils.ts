@@ -19,13 +19,13 @@ var holidays = new Holidays('IT');
 let workingInfo = [WorkingInfo.OFFICE, WorkingInfo.SMARTWORKING, WorkingInfo.WORK_TRIP];
 
 // Check di validità delle attività inserite
-export function checkWorkItem(dateWorkDayItems : IWorkDay[]) {
+export function checkWorkItem(workDaysArray : IWorkDay[]) {
 
     //Array contenente errori e wanings
     let err_war : Alert [] = [];
 
     //Array con le ore totali per ogni giorno con info lavorative
-    var hoursPerDay = Enumerable.from(dateWorkDayItems).where(i => workingInfo.includes(i.wrkdInfoID)).groupBy( g =>
+    var hoursPerDay = Enumerable.from(workDaysArray).where(i => workingInfo.includes(i.wrkdInfoID)).groupBy( g =>
         g.wrkdDay,
         element => element,
         function (key, h) {
@@ -87,7 +87,7 @@ export function checkWorkItem(dateWorkDayItems : IWorkDay[]) {
         // const unique = (value, index, self) => {
         //     return self.indexOf(value) === index
         // }
-        let distinctSpec = Enumerable.from(dateWorkDayItems).where(i => i.wrkdDay === wi.day).select(r => r.wrkdInfoID).distinct().toArray();
+        let distinctSpec = Enumerable.from(workDaysArray).where(i => i.wrkdDay === wi.day).select(r => r.wrkdInfoID).distinct().toArray();
         // let distinctSpec = infos.filter(unique);
 
 
@@ -120,7 +120,7 @@ export function checkWorkItem(dateWorkDayItems : IWorkDay[]) {
     });
 
     //verifico che per i giorni festivi segnati ci siano info compatibili
-    dateWorkDayItems.forEach(wi => {
+    workDaysArray.forEach(wi => {
 
         let wDate = new Date(wi.wrkdDay);
         let workDayType = getDayType(wDate);
