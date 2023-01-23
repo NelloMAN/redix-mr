@@ -2,27 +2,37 @@ import '../global-css/_color.scss';
 import React, { useEffect, useState } from 'react';
 import {MdAddBox} from 'react-icons/md';
 import {MdLibraryAdd} from 'react-icons/md';
-import { IWorkDay } from '../utils/interface/MRInterface';
+import { IUser, IWorkDay } from '../utils/interface/MRInterface';
 import './css/AddWDButton.css';
 import { RowStateEnum } from '../utils/MREnum';
+import axios from 'axios';
 
 export interface IAddSingleWDButtonProps {
 	type : string,
+    usrID: number,
     OnSingleAWDClick(newWorkDay: IWorkDay) : any
 }
 
 const AddSingleWDButton: React.FC<IAddSingleWDButtonProps> = (props:IAddSingleWDButtonProps) => {
 
-    const [lastID, setLastID] = useState(0);
+    const [lastID, setFirstWDIDAvailable] = useState(0);
+
+    useEffect(() => {
+
+        axios.get('http://localhost:3001/getFirstWDIDAvailable/' +props.usrID)
+        .then(res => {
+            setFirstWDIDAvailable(parseInt(res.data[0].firstWDIDAvailable));
+        }); 
+
+    },[]);
 
     function addSingleRowClicked() {
 
         //setto nuovo id per la nuova riga
         let lid = lastID
-        setLastID(lid + 1);
 
         let newWorkDay : IWorkDay = {
-            wrkdID: lastID,
+            wrkdID: lid,
             wrkdDay: new Date(),
             wrkdInfoID: 1,
             wrkdInfoGrpID: RowStateEnum.WORK,
@@ -34,6 +44,7 @@ const AddSingleWDButton: React.FC<IAddSingleWDButtonProps> = (props:IAddSingleWD
             wrkdUsrID: 0
         };
 
+        setFirstWDIDAvailable(lid + 1);
         props.OnSingleAWDClick(newWorkDay);
     }
 

@@ -44,9 +44,10 @@ const WorkTable: React.FC<IWorkTableProps> = (props:IWorkTableProps) => {
 		if (state === "new") {
 
 			nwdS = [...props.nwd];
-			nwdS[id].wrkdUsrID = props.usrID;
+			
+			let nrIndex : number = props.nwd.findIndex(c => c.wrkdID === id)!;
 
-			ChangeRecordValues(nwdS[id], name, value)
+			ChangeRecordValues(nwdS[nrIndex], name, value)
 
 			props.UpdateNewRecords(nwdS)
 
@@ -136,7 +137,7 @@ const WorkTable: React.FC<IWorkTableProps> = (props:IWorkTableProps) => {
 						return (
 							<WorkRow 
 								workDay={nr} 
-								key={uniqid()}
+								key={nr.wrkdID}
 								index={i} 
 								showDet={true} 
 								rowState="new" 
@@ -158,7 +159,7 @@ const WorkTable: React.FC<IWorkTableProps> = (props:IWorkTableProps) => {
 										return (
 											<WorkRow 
 												workDay={w}
-												key={uniqid()} 
+												key={w.wrkdID} 
 												index={w.wrkdID} 
 												showDet={ i === 0 ? true : false} 
 												rowState="existed" 

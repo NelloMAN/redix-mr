@@ -40,6 +40,13 @@ export const mrQuery = {
       from work_day 
       where wrkdUsrID = ?
     `,
+
+    GetFirstWDIDAvailable: `
+      select 
+        max(wrkdID) + 1 as firstWDIDAvailable  
+      from work_day 
+      where wrkdUsrID = ?
+    `,
   
     UpdateTeamById: `
     UPDATE teams_system.teams

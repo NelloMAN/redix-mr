@@ -102,7 +102,22 @@ export const getSquad: RequestHandler = async (req: Request, res: Response) => {
       squad
     });
   } catch (error) {
-    console.error('[mrController][getUsrMonth][Error] ', typeof error === 'object' ? JSON.stringify(error) : error);
+    console.error('[mrController][getSquad][Error] ', typeof error === 'object' ? JSON.stringify(error) : error);
+    res.status(500).json({
+      message: 'There was an error when fetching UsrMonth'
+    });
+  }
+};
+
+export const getFirstWDIDAvailable: RequestHandler = async (req: Request, res: Response) => {
+  try {
+    const firstWDIDAvailable : number = await mrServices.getFirstWDIDAvailable(parseInt(req.params.usrID));
+
+    res.status(200).json(
+      firstWDIDAvailable
+    );
+  } catch (error) {
+    console.error('[mrController][getFirstWDIDAvailable][Error] ', typeof error === 'object' ? JSON.stringify(error) : error);
     res.status(500).json({
       message: 'There was an error when fetching UsrMonth'
     });

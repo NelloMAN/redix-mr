@@ -133,6 +133,7 @@ const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
                                     <AddSingleWDButton 
                                         OnSingleAWDClick = {(newWD : IWorkDay)=>{setNewWorkDays( nwd => [...nwd, newWD])}} 
                                         type='s'
+                                        usrID={usr.usrID}
                                     />
                                 </div>
                                 <div className='col-sm-1 d-flex justify-content-end'>

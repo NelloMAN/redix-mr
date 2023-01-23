@@ -51,6 +51,10 @@ app.get('/getSquad', (req: Request, res: Response, n : NextFunction) => {
   mrController.getSquad( req, res, n);
 });
 
+app.get('/getFirstWDIDAvailable/:usrID', (req: Request, res: Response, n : NextFunction) => {
+  mrController.getFirstWDIDAvailable( req, res, n);
+});
+
 // saveWorkDays: inserimento nuove righe
 app.post('/saveWorkDays', (req: Request, res: Response) => {
 

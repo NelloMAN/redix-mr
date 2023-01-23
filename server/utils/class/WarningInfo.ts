@@ -1,5 +1,5 @@
-import { WarnEnum } from "../mrEnum";
-import { Info } from "../interface/MRServerInterface";
+import { WarnEnum } from "../mrEnum.js";
+import { Info } from "../interface/MRServerInterface.js";
 
 export class WarningInfo implements Info {
 

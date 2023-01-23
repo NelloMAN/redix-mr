@@ -7,14 +7,16 @@ ovvero vengono controllati i dati inseriti dall'utente secondo alcuni criteri
 */ 
 
 import Enumerable from "linq";
-import { Alert } from "./class/Alert";
-import { IWorkDay } from "./interface/MRServerInterface";
-import { DayType, WorkingInfo, ErrorEnum, WarnEnum } from './mrEnum';
-import { WarningInfo } from "./class/WarningInfo";
-import { ErrorInfo } from "./class/ErrorInfo";
+import { Alert } from "./class/Alert.js";
+import { IWorkDay } from "./interface/MRServerInterface.js";
+import { DayType, WorkingInfo, ErrorEnum, WarnEnum } from './mrEnum.js';
+import { WarningInfo } from "./class/WarningInfo.js";
+import { ErrorInfo } from "./class/ErrorInfo.js";
+import dateHolidays from 'date-holidays';
 
-var Holidays = require('date-holidays');     //Libreria per recuperare i giorni di festività
-var holidays = new Holidays('IT');
+
+    //Libreria per recuperare i giorni di festività
+var holidays = new dateHolidays('IT');
 
 let workingInfo = [WorkingInfo.OFFICE, WorkingInfo.SMARTWORKING, WorkingInfo.WORK_TRIP];
 
@@ -156,5 +158,3 @@ function getDayType(date : Date) {
         return DayType.WORK;
     }
 }
-
-module.exports = {checkWorkItem};

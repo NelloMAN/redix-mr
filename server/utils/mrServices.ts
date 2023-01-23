@@ -28,3 +28,7 @@ export const getUsrMonth = async (usrID: Number) : Promise<IUsrMonth[]> => {
 export const getSquad = async () : Promise<ISquad[]> => {
     return execute<ISquad[]>(mrQuery.GetSquad, []);
 };
+
+export const getFirstWDIDAvailable = async (usrID: number) : Promise<number> => {
+    return execute<number>(mrQuery.GetFirstWDIDAvailable, [usrID]);
+};

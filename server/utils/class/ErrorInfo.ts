@@ -1,5 +1,5 @@
-import { ErrorEnum } from "../mrEnum";
-import { Info } from "../interface/MRServerInterface";
+import { ErrorEnum } from "../mrEnum.js";
+import { Info } from "../interface/MRServerInterface.js";
 
 export class ErrorInfo implements Info {
 

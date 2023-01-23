@@ -31,7 +31,7 @@ const WorkRow: React.FC<IWorkRowProps> = (props:IWorkRowProps) => {
 			if (props.showDet) { //
 
 				return (
-					<tr id={'row_'+props.workDay.wrkdID} key={uniqid()} className={"work-row"+(props.rowState === "new" ? " work-row-new":"")}>
+					<tr id={'row_'+props.workDay.wrkdID} className={"work-row"+(props.rowState === "new" ? " work-row-new":"")}>
 						<td>
 							<input type="date"  key={props.index} className="w-100" defaultValue={''+props.workDay.wrkdDay} name="day" onChange={(e) => onWorkDayChange(e.target.name, e.target.value)}/>
 						</td>
@@ -55,7 +55,7 @@ const WorkRow: React.FC<IWorkRowProps> = (props:IWorkRowProps) => {
 			} else 
 			{
 				return (
-					<tr id={'row_'+props.workDay.wrkdID} key={uniqid()} className={"work-row"+(props.rowState === "new" ? " work-row-new":"")}>
+					<tr id={'row_'+props.workDay.wrkdID} className={"work-row"+(props.rowState === "new" ? " work-row-new":"")}>
 						<td></td>
 						<td></td>
 						<td>
@@ -78,7 +78,7 @@ const WorkRow: React.FC<IWorkRowProps> = (props:IWorkRowProps) => {
 		} else {
 
 			return (
-				<tr id={'row_'+props.workDay.wrkdID} key={uniqid()} className={"work-row"+(props.rowState === "new" ? " work-row-new":"")}>
+				<tr id={'row_'+props.workDay.wrkdID} className={"work-row"+(props.rowState === "new" ? " work-row-new":"")}>
 					<td>{''+props.workDay.wrkdDay}</td>
 					<td></td>
 					<td>{props.workDay.wrkdActivity}</td>
@@ -129,7 +129,7 @@ const WorkRow: React.FC<IWorkRowProps> = (props:IWorkRowProps) => {
 		}
 
 		//#endregion
-		props.OnWDChange(props.rowState, name, props.index, value, props.workDay);
+		props.OnWDChange(props.rowState, name, props.workDay.wrkdID, value, props.workDay);
 	}
 
 	function setFieldState( info : string) {
