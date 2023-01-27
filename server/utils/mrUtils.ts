@@ -7,7 +7,6 @@ ovvero vengono controllati i dati inseriti dall'utente secondo alcuni criteri
 */ 
 
 import Enumerable from "linq";
-import { Alert } from "./class/Alert.js";
 import { IWorkDay, IAlert } from "./interface/MRServerInterface.js";
 import { DayType, WorkingInfo, ErrorEnum, WarnEnum } from './mrEnum.js';
 import { WarningInfo } from "./class/WarningInfo.js";

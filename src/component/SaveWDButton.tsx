@@ -3,13 +3,13 @@ import React, { useEffect, useState } from 'react';
 import {MdSave} from 'react-icons/md';
 import axios from 'axios';
 import './css/SaveWDButton.css';
-import { IWorkDay } from '../utils/interface/MRInterface';
+import { IAlert, IWorkDay } from '../utils/interface/MRInterface';
 
 export interface ISaveWDButtonProps {
 	nwd : IWorkDay [],
     changewd: IWorkDay [],
     deleteWdIDList: number [],
-    OnSaveWDButtonClick(result: string) : any
+    OnSaveWDButtonClick(a: IAlert[]) : any
 }
 
 const SaveWDButton: React.FC<ISaveWDButtonProps> = (props:ISaveWDButtonProps) => {
@@ -29,12 +29,11 @@ const SaveWDButton: React.FC<ISaveWDButtonProps> = (props:ISaveWDButtonProps) =>
                 
             }).then((response) => {
                 
-                let data = response.data;
+                let alert : IAlert[] = response.data.errWar;
     
                 //errWar è la lista contenente errori e warnings che il check lato server trova. Se è undefined allora non ce ne sono
-                if (data.errWar !== undefined) {
-                    alert(data.errWar)
-                    props.OnSaveWDButtonClick(data.errWar);
+                if (alert !== undefined) {
+                    props.OnSaveWDButtonClick(alert);
                 }
                 
             }).catch(err => console.log(err)

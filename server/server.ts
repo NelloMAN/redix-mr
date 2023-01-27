@@ -71,14 +71,12 @@ app.post('/saveWorkDays', (req: Request, res: Response) => {
 
   if (err_war.length > 0) {
 
-    let toJson = 
-    {
+    let toJson = {
       typo:'err_war',
       errWar:err_war
     }
 
     res.send(JSON.stringify(toJson));
-
   } //else {
 
   //   Array.from(data).forEach( wd => {

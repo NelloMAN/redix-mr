@@ -11,7 +11,8 @@ import AddMultipleWDButton from '../component/AddMultipleWDButton';
 import SaveWDButton from '../component/SaveWDButton';
 import ExportWDButton from '../component/ExportWDButton';
 import axios from "axios";
-import {IWorkDay, DateWorkDay, IUser} from '../utils/interface/MRInterface';
+import {IWorkDay, DateWorkDay, IUser, IAlert} from '../utils/interface/MRInterface';
+import DialogInfoBox, { IDialogInfoBox } from '../component/DialogInfoBox';
 
 
 export interface IDashboardPanel {}
@@ -19,13 +20,7 @@ export interface IDashboardPanel {}
 const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
 
     const location = useLocation();
-
-    // const [usr, setMonth] = React.useState<IUser>({
-    //     usrID: location.state.usrID,
-    //     usrName: location.state.usrName,
-    //     usrEmail: location.state.usrEmail,
-    //     selectedMonth: location.state.selectedMonth
-    // })
+    const refInfoDialog = React.useRef<IDialogInfoBox | null>(null);
 
     const [usr, setMonth] = React.useState<IUser>(location.state.stateToDashboard);
 
@@ -91,9 +86,15 @@ const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
         }
     }
 
-    function ManageSavedResult(result : string) {
+    function ManageSavedResult(ialert : IAlert []) {
         //TODO
         //Gestione dell'esito dopo il salvataggio
+
+        if (ialert.length > 0) {
+            refInfoDialog.current?.handleShow(ialert);
+        } else {
+            alert('Non ci sono alert');
+        }
     }
 
     return (
@@ -149,7 +150,7 @@ const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
                                         nwd={nwd}
                                         changewd={changewd}
                                         deleteWdIDList={deleteWdID} 
-                                        OnSaveWDButtonClick={(result : string) => {ManageSavedResult(result)}}
+                                        OnSaveWDButtonClick={(ia : IAlert[]) => {ManageSavedResult(ia)}}
                                     />
                                 </div>
                                 <div className='col-sm-1 d-flex justify-content-end'>
@@ -180,6 +181,7 @@ const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
                     </div>
                 </div>
             </section>
+            <DialogInfoBox ref={refInfoDialog} />
         </div>   
     );
 }
