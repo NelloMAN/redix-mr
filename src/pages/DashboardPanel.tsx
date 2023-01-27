@@ -20,12 +20,14 @@ const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
 
     const location = useLocation();
 
-    const [usr, setMonth] = React.useState<IUser>({
-        usrID: location.state.usrID,
-        usrName: location.state.usrName,
-        usrEmail: location.state.usrEmail,
-        selectedMonth: location.state.selectedMonth
-    })
+    // const [usr, setMonth] = React.useState<IUser>({
+    //     usrID: location.state.usrID,
+    //     usrName: location.state.usrName,
+    //     usrEmail: location.state.usrEmail,
+    //     selectedMonth: location.state.selectedMonth
+    // })
+
+    const [usr, setMonth] = React.useState<IUser>(location.state.stateToDashboard);
 
     const [nwd, setNewWorkDays] = useState<IWorkDay[]>([]); //array con la lista dei nuovi record inseriti
 

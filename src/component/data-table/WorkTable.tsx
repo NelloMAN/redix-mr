@@ -37,8 +37,6 @@ const WorkTable: React.FC<IWorkTableProps> = (props:IWorkTableProps) => {
 	// value: il nuovo valore settato
 	function wdChange(state : string, name : string, id : number, value : string, wDay : IWorkDay) {
 
-		console.log("state: "+state+" - name: "+name+" - id: "+id+" - value: "+value );
-
 		let nwdS : IWorkDay [];
 
 		if (state === "new") {
@@ -131,7 +129,7 @@ const WorkTable: React.FC<IWorkTableProps> = (props:IWorkTableProps) => {
 				</tr>
 			</thead>
 			<tbody>	
-				<React.Fragment>
+				<React.Fragment key="new">
 				{					
 					props.nwd.map((nr, i) => {
 						return (
@@ -153,23 +151,23 @@ const WorkTable: React.FC<IWorkTableProps> = (props:IWorkTableProps) => {
 
 					props.dateWorkDays.map((subArray, index) => {
 						return (
-							<React.Fragment>
-								{
-									subArray.wdArray.map((w, i) => {
-										return (
-											<WorkRow 
-												workDay={w}
-												key={w.wrkdID} 
-												index={w.wrkdID} 
-												showDet={ i === 0 ? true : false} 
-												rowState="existed" 
-												squad={squadArray} 
-												enable={true} 
-												OnWDChange={(state, name, id, value, wday) => {wdChange(state, name, id, value, wday)}}
-											/>
-										);
-									}
-								)}
+							<React.Fragment key={'dwd-fragm-'+subArray.dwdDate}>
+							{
+								subArray.wdArray.map((w, i) => {
+									return (
+										<WorkRow 
+											workDay={w}
+											key={w.wrkdID} 
+											index={w.wrkdID} 
+											showDet={ i === 0 ? true : false} 
+											rowState="existed" 
+											squad={squadArray} 
+											enable={true} 
+											OnWDChange={(state, name, id, value, wday) => {wdChange(state, name, id, value, wday)}}
+										/>
+									);
+								})
+							}
 							</React.Fragment>
 						);
 					})				

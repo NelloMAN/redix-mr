@@ -1,7 +1,7 @@
 import { ErrorEnum } from "../mrEnum.js";
-import { Info } from "../interface/MRServerInterface.js";
+import { IInfo } from "../interface/MRServerInterface.js";
 
-export class ErrorInfo implements Info {
+export class ErrorInfo implements IInfo {
 
     type: string = 'E';
     public code: number;

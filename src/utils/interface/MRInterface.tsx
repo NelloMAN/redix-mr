@@ -33,3 +33,17 @@ export interface IUsrMonth {
     monthNumb: number;
     monthName: string;
 }
+
+export interface IInfo{
+
+    readonly type : string,
+    code : number,
+    message : string
+}
+
+export interface IAlert {
+
+    day : Date;
+    info : IInfo;
+    delta : string;
+}

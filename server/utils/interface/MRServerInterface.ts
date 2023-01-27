@@ -1,4 +1,4 @@
-export interface Info{
+export interface IInfo{
         readonly type : string,
         code : number,
         message : string
@@ -44,4 +44,11 @@ export interface ISquad {
 
         sqdID: number;
         sqdName: string;
+}
+
+export interface IAlert {
+
+        day : Date;
+        info : IInfo;
+        delta : string;
 }

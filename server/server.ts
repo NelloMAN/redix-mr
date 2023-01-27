@@ -4,7 +4,7 @@ import bodyParser from "body-parser";
 import * as mrSqlConnector from "./utils/mysql_utils/mysql.connector.js"
 import * as mrController from "./utils/mrController.js";
 import * as mrUtils from "./utils/mrUtils.js"
-import { IWorkDay } from "./utils/interface/MRServerInterface.js";
+import { IWorkDay, IAlert } from "./utils/interface/MRServerInterface.js";
 import { Alert } from "./utils/class/Alert.js";
 import Enumerable from "linq";
 
@@ -62,23 +62,24 @@ app.post('/saveWorkDays', (req: Request, res: Response) => {
   let changeWorkDays : IWorkDay [] = req.body.changeWorkDays;
   let deletedWorkDaysID : number [] = req.body.deletedWorkDaysID
 
+  //verifico se all'interno della lista degli id dei record cancellati c'è qualche record anche modificato. Se si rimuovo il record dagli elementi modificati per poi cancellarlo definitivamente
   let changeWorkDaysDef : IWorkDay [] = changeWorkDays.filter(x => deletedWorkDaysID.indexOf(x.wrkdID) === -1);
 
-  console.log(changeWorkDaysDef)
+  let wdToCheck : IWorkDay [] = newWorkDays.concat(changeWorkDaysDef);
 
-  let err_war : Alert[] = mrUtils.checkWorkItem(newWorkDays);
+  let err_war : IAlert[] = mrUtils.checkWorkItem(wdToCheck);
 
-  // if (err_war.length > 0) {
+  if (err_war.length > 0) {
 
-  //   let toJson = 
-  //   {
-  //     typo:'err_war',
-  //     errWar:err_war
-  //   }
+    let toJson = 
+    {
+      typo:'err_war',
+      errWar:err_war
+    }
 
-  //   res.send(JSON.stringify(toJson));
+    res.send(JSON.stringify(toJson));
 
-  // } else {
+  } //else {
 
   //   Array.from(data).forEach( wd => {
 
@@ -97,5 +98,3 @@ app.post('/saveWorkDays', (req: Request, res: Response) => {
 }
 
 );
-
-

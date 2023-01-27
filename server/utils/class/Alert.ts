@@ -1,14 +1,14 @@
-import {Info} from "../interface/MRServerInterface";
+import {IInfo} from "../interface/MRServerInterface";
 
 export class Alert {
 
     day : Date;
-    info : Info;
+    info : IInfo;
     delta : string
 
     constructor(
         public wd : Date, 
-        public i: Info,
+        public i: IInfo,
         public d: string
     )
     {

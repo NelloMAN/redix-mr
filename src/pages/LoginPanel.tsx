@@ -7,6 +7,8 @@ import logo_redix from './../img/logo_redix.svg';
 import { sha256 } from 'js-sha256';
 import {useNavigate} from 'react-router-dom';
 import {IoMdLogIn} from 'react-icons/io';
+import axios from 'axios';
+import { IUser } from '../utils/interface/MRInterface';
 
 export interface ILoginPanel {}
 
@@ -39,30 +41,34 @@ const LoginPanel: React.FunctionComponent<ILoginPanel> = (props) => {
 
      async function fetchUsr(){
 
-        fetch('http://localhost:3001/checkUsr/'+usrEmail+'/'+sha256(usrPassword))
-        .then(response => response.json())
-        .then (response => {
+        
+        axios.get('http://localhost:3001/checkUsr/'+usrEmail+'/'+sha256(usrPassword))
+        .then(res => {
+            //setDateWorkDays(res.data.dateWorkDay);
+            if (res.data.user.length > 0) {
 
-            if (Object.keys(response).length > 0) {
+                const stateToDashboard : IUser = {
+
+                    usrID: res.data.user[0].usrID,
+                    usrEmail : res.data.user[0].usrEmail,
+                    usrName : res.data.user[0].usrName,
+                    selectedMonth : res.data.user[0].lastWorkedMonth
+                }
 
                 navigate(
                     "/dashboard", 
                     {
                         replace: true,
                         state:{
-                            usrID : response.user[0].usrID,
-                            usrName: response.user[0].usrName,
-                            usrEmail: response.user[0].usrEmail,
-                            selectedMonth: response.user[0].lastWorkedMonth
+                            stateToDashboard
                         }
                     }
                 );
 
             }else {
                 refDialog.current?.handleShow('Attenzione','Email o password errati');
-            }
-        })
-        .catch();
+            }        
+        });
     }
 
     return (

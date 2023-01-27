@@ -33,21 +33,21 @@ const WorkRow: React.FC<IWorkRowProps> = (props:IWorkRowProps) => {
 				return (
 					<tr id={'row_'+props.workDay.wrkdID} className={"work-row"+(props.rowState === "new" ? " work-row-new":"")}>
 						<td>
-							<input type="date"  key={props.index} className="w-100" defaultValue={''+props.workDay.wrkdDay} name="day" onChange={(e) => onWorkDayChange(e.target.name, e.target.value)}/>
+							<input type="date"  className="w-100" defaultValue={''+props.workDay.wrkdDay} name="day" onChange={(e) => onWorkDayChange(e.target.name, e.target.value)}/>
 						</td>
 						<InfoCell name="specs" details={parseInt(lastSelectedInfo)} onChange={(n,v) => onWorkDayChange(n,v)}/>
 						<td>
-							<input type="text" className="w-100" defaultValue={props.workDay.wrkdActivity} value={props.workDay.wrkdActivity} name="activity" onChange={(e) => onWorkDayChange(e.target.name, e.target.value)} disabled = {rowInfoType === RowStateEnum.WORK ? false : true}/>
+							<input type="text" className="w-100" defaultValue={props.workDay.wrkdActivity} name="activity" onChange={(e) => onWorkDayChange(e.target.name, e.target.value)} disabled = {rowInfoType === RowStateEnum.WORK ? false : true}/>
 						</td>
 						<td>
-							<input type="number" className="w-100" defaultValue={props.workDay.wrkdActivityHour} value={props.workDay.wrkdActivityHour} name="hour" onChange={(e) => onWorkDayChange(e.target.name, e.target.value)} disabled = {rowInfoType === RowStateEnum.SICKNESS_HOLIDAYS ? true : false}/>
+							<input type="number" className="w-100" defaultValue={props.workDay.wrkdActivityHour}name="hour" onChange={(e) => onWorkDayChange(e.target.name, e.target.value)} disabled = {rowInfoType === RowStateEnum.SICKNESS_HOLIDAYS ? true : false}/>
 						</td>
 						<SquadCell squad={props.squad} name="squad" selectedSquad={props.workDay.wrkdSqdID} onChange={(n,v) => onWorkDayChange(n, v)} disabled = {rowInfoType === RowStateEnum.WORK ? false : true}/>
 						<td>
-							<input type="text" className="w-100" defaultValue={props.workDay.wrkdActivityType} value={props.workDay.wrkdActivityType}  name="activity_type" onChange={(e) => onWorkDayChange(e.target.name, e.target.value)} disabled = {rowInfoType === RowStateEnum.WORK ? false : true}/>
+							<input type="text" className="w-100" defaultValue={props.workDay.wrkdActivityType} name="activity_type" onChange={(e) => onWorkDayChange(e.target.name, e.target.value)} disabled = {rowInfoType === RowStateEnum.WORK ? false : true}/>
 						</td>
 						<td>
-							<input type="text" className="w-100" defaultValue={props.workDay.wrkdCdc} value={props.workDay.wrkdCdc} name="cdc" onChange={(e) => onWorkDayChange(e.target.name, e.target.value)} disabled = {rowInfoType === RowStateEnum.WORK ? false : true} />
+							<input type="text" className="w-100" defaultValue={props.workDay.wrkdCdc} name="cdc" onChange={(e) => onWorkDayChange(e.target.name, e.target.value)} disabled = {rowInfoType === RowStateEnum.WORK ? false : true} />
 						</td>
 						<DeleteCell cellID = {'deleteCell_' + props.workDay.wrkdID} wd={props.workDay} onChange={(n,v) => onWorkDayChange(n, v)} disabled = {false} />
 					</tr>
@@ -59,17 +59,17 @@ const WorkRow: React.FC<IWorkRowProps> = (props:IWorkRowProps) => {
 						<td></td>
 						<td></td>
 						<td>
-							<input type="text" className="w-100" defaultValue={props.workDay.wrkdActivity} value={props.workDay.wrkdActivity} name="activity" onChange={(e) => onWorkDayChange(e.target.name, e.target.value)} disabled = {rowInfoType === RowStateEnum.WORK ? false : true}/>
+							<input type="text" className="w-100" defaultValue={props.workDay.wrkdActivity} name="activity" onChange={(e) => onWorkDayChange(e.target.name, e.target.value)} disabled = {rowInfoType === RowStateEnum.WORK ? false : true}/>
 						</td>
 						<td>
-							<input type="number" className="w-100" defaultValue={props.workDay.wrkdActivityHour} value={props.workDay.wrkdActivityHour} name="hour" onChange={(e) => onWorkDayChange(e.target.name, e.target.value)} disabled = {rowInfoType === RowStateEnum.SICKNESS_HOLIDAYS ? true : false}/>
+							<input type="number" className="w-100" defaultValue={props.workDay.wrkdActivityHour} name="hour" onChange={(e) => onWorkDayChange(e.target.name, e.target.value)} disabled = {rowInfoType === RowStateEnum.SICKNESS_HOLIDAYS ? true : false}/>
 						</td>
 						<SquadCell squad={props.squad} name="squad" selectedSquad={props.workDay.wrkdSqdID} onChange={(n,v) => onWorkDayChange(n, v)} disabled = {rowInfoType === RowStateEnum.WORK ? false : true}/>
 						<td>
-							<input type="text" className="w-100" defaultValue={props.workDay.wrkdActivityType} value={props.workDay.wrkdActivityType}  name="activity_type" onChange={(e) => onWorkDayChange(e.target.name, e.target.value)} disabled = {rowInfoType === RowStateEnum.WORK ? false : true}/>
+							<input type="text" className="w-100" defaultValue={props.workDay.wrkdActivityType}  name="activity_type" onChange={(e) => onWorkDayChange(e.target.name, e.target.value)} disabled = {rowInfoType === RowStateEnum.WORK ? false : true}/>
 						</td>
 						<td>
-							<input type="text" className="w-100" defaultValue={props.workDay.wrkdCdc} value={props.workDay.wrkdCdc} name="cdc" onChange={(e) => onWorkDayChange(e.target.name, e.target.value)} disabled = {rowInfoType === RowStateEnum.WORK ? false : true} />
+							<input type="text" className="w-100" defaultValue={props.workDay.wrkdCdc} name="cdc" onChange={(e) => onWorkDayChange(e.target.name, e.target.value)} disabled = {rowInfoType === RowStateEnum.WORK ? false : true} />
 						</td>
 						<DeleteCell cellID = {'deleteCell_' + props.workDay.wrkdID} wd={props.workDay} onChange={(n,v) => onWorkDayChange(n, v)} disabled = {false} />
 					</tr>

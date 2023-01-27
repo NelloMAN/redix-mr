@@ -8,7 +8,7 @@ ovvero vengono controllati i dati inseriti dall'utente secondo alcuni criteri
 
 import Enumerable from "linq";
 import { Alert } from "./class/Alert.js";
-import { IWorkDay } from "./interface/MRServerInterface.js";
+import { IWorkDay, IAlert } from "./interface/MRServerInterface.js";
 import { DayType, WorkingInfo, ErrorEnum, WarnEnum } from './mrEnum.js';
 import { WarningInfo } from "./class/WarningInfo.js";
 import { ErrorInfo } from "./class/ErrorInfo.js";
@@ -21,10 +21,10 @@ var holidays = new dateHolidays('IT');
 let workingInfo = [WorkingInfo.OFFICE, WorkingInfo.SMARTWORKING, WorkingInfo.WORK_TRIP];
 
 // Check di validità delle attività inserite
-export function checkWorkItem(workDaysArray : IWorkDay[]) : Alert [] {
+export function checkWorkItem(workDaysArray : IWorkDay[]) : IAlert [] {
 
     //Array contenente errori e wanings
-    let err_war : Alert [] = [];
+    let err_war : IAlert [] = [];
 
     //Array con le ore totali per ogni giorno con info lavorative
     var hoursPerDay = Enumerable.from(workDaysArray).where(i => workingInfo.includes(i.wrkdInfoID)).groupBy( g =>
@@ -48,8 +48,8 @@ export function checkWorkItem(workDaysArray : IWorkDay[]) : Alert [] {
         let warnInfo : WarningInfo;
         let errorInfo : ErrorInfo;
 
-        let warnAlert : Alert;
-        let errorAlert : Alert;
+        let warnAlert : IAlert;
+        let errorAlert : IAlert;
 
         //se è un sabato, una domenica o un giorno festivo iwdWarn viene valorizzato
         iwdWarn = getDayType(wDate);
@@ -62,7 +62,13 @@ export function checkWorkItem(workDaysArray : IWorkDay[]) : Alert [] {
                 let straoHours = wi.totalH - 8;
 
                 warnInfo =  new WarningInfo(WarnEnum.OVERTIME_HOURS) 
-                warnAlert = new Alert(wDate, warnInfo, ''+straoHours)
+
+                warnAlert = {
+
+                    day : wDate, 
+                    info : warnInfo, 
+                    delta : ''+straoHours
+                }
 
                 err_war.push(warnAlert);   
             }
@@ -70,8 +76,13 @@ export function checkWorkItem(workDaysArray : IWorkDay[]) : Alert [] {
 
                 let permHours = 8 - wi.totalH;
 
-                warnInfo =  new WarningInfo(WarnEnum.PERMITS_HOURS) 
-                warnAlert = new Alert(wDate, warnInfo, ''+permHours)
+                warnInfo =  new WarningInfo(WarnEnum.PERMITS_HOURS);
+
+                warnAlert = {
+                    day: wDate, 
+                    info: warnInfo, 
+                    delta: ''+permHours
+                };
 
                 err_war.push(warnAlert);   
             }
@@ -79,7 +90,12 @@ export function checkWorkItem(workDaysArray : IWorkDay[]) : Alert [] {
         } else {
 
             warnInfo =  new WarningInfo(WarnEnum.WORK_HOLIDAYS) 
-            warnAlert = new Alert(wDate, warnInfo, '')
+
+            warnAlert = {
+                day: wDate, 
+                info: warnInfo, 
+                delta: ''
+            }
 
             err_war.push(warnAlert);
                
@@ -96,7 +112,12 @@ export function checkWorkItem(workDaysArray : IWorkDay[]) : Alert [] {
         if (distinctSpec.length > 2) {
             
             errorInfo = new ErrorInfo(ErrorEnum.MULTIPLE_INFO);
-            errorAlert = new Alert(wDate, errorInfo, ''+wDate)
+            errorAlert = {
+
+                day: wDate, 
+                info: errorInfo, 
+                delta: ''+wDate
+            }
             
             err_war.push(errorAlert); 
 
@@ -113,7 +134,12 @@ export function checkWorkItem(workDaysArray : IWorkDay[]) : Alert [] {
             ) {} else {
 
                 errorInfo = new ErrorInfo(ErrorEnum.INC_INFO);
-                errorAlert = new Alert(wDate, errorInfo, ''+wDate)
+
+                errorAlert = {
+                    day: wDate, 
+                    info: errorInfo, 
+                    delta: ''+wDate
+                }
                 
                 err_war.push(errorAlert); 
             } 
@@ -128,9 +154,12 @@ export function checkWorkItem(workDaysArray : IWorkDay[]) : Alert [] {
         let workDayType = getDayType(wDate);
 
         let errorInfo = new ErrorInfo(ErrorEnum.HOLIDAYS_INC_INFO);
-        let errorAlert = new Alert(wDate, errorInfo, ''+wDate)
-        
-        err_war.push(errorAlert); 
+
+        let errorAlert = {
+            day: wDate, 
+            info: errorInfo, 
+            delta: ''+wDate
+        }
 
         if (workDayType !== DayType.WORK && !workingInfo.includes(wi.wrkdInfoID)) {
             err_war.push(errorAlert); 
