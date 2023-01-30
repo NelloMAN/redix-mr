@@ -5,8 +5,6 @@ import * as mrSqlConnector from "./utils/mysql_utils/mysql.connector.js"
 import * as mrController from "./utils/mrController.js";
 import * as mrUtils from "./utils/mrUtils.js"
 import { IWorkDay, IAlert } from "./utils/interface/MRServerInterface.js";
-import { Alert } from "./utils/class/Alert.js";
-import Enumerable from "linq";
 
 const PORT = process.env.PORT || 3001;
 
@@ -59,13 +57,25 @@ app.get('/getFirstWDIDAvailable/:usrID', (req: Request, res: Response, n : NextF
 app.post('/saveWorkDays', (req: Request, res: Response) => {
 
   let newWorkDays : IWorkDay [] = req.body.newWorkDays;
+
+  /*
+  Setto la proprietà wrkdID di tutti gli elementi della lista
+  newWorkDays(creandone una nuova ovvero newZeroIdWD) in modo tale 
+  da distingure i record da inserire da quelli da updateare prima
+  che vengano concatenati per fare il check
+  */ 
+  let newZeroIdWD : IWorkDay [] = newWorkDays.map((item) => ({...item,value: item.wrkdID * 0,}));
+
   let changeWorkDays : IWorkDay [] = req.body.changeWorkDays;
   let deletedWorkDaysID : number [] = req.body.deletedWorkDaysID
 
-  //verifico se all'interno della lista degli id dei record cancellati c'è qualche record anche modificato. Se si rimuovo il record dagli elementi modificati per poi cancellarlo definitivamente
+  /*
+  /verifico se all'interno della lista degli id dei record cancellati c'è qualche record anche modificato. 
+  Se si rimuovo il record dagli elementi modificati per poi cancellarlo definitivamente
+  */
   let changeWorkDaysDef : IWorkDay [] = changeWorkDays.filter(x => deletedWorkDaysID.indexOf(x.wrkdID) === -1);
 
-  let wdToCheck : IWorkDay [] = newWorkDays.concat(changeWorkDaysDef);
+  let wdToCheck : IWorkDay [] = newZeroIdWD.concat(changeWorkDaysDef);
 
   let err_war : IAlert[] = mrUtils.checkWorkItem(wdToCheck);
 
@@ -73,7 +83,8 @@ app.post('/saveWorkDays', (req: Request, res: Response) => {
 
     let toJson = {
       typo:'err_war',
-      errWar:err_war
+      errWar:err_war,
+      wdToSave: wdToCheck
     }
 
     res.send(JSON.stringify(toJson));
@@ -96,3 +107,8 @@ app.post('/saveWorkDays', (req: Request, res: Response) => {
 }
 
 );
+
+app.post('/applyCorrection', (req: Request, res: Response) => {
+
+
+})

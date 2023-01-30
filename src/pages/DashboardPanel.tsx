@@ -43,6 +43,16 @@ const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
 
     const [deleteWdID, setDeleteWdIDList] = useState<number []>([]); //array contenente gli id da cancellare
 
+    /*
+    Se, una volta cliccato Salva, ci sono delle attività nella lista deleted che
+    compaiono anche nella lista modified, queste vengono rimosse dalla modified chiamando
+    l'API /saveWorkDays. Se però ci sono anche delle correzioni da effettuare (es. aggiungere ore
+    permesso) viene chiamata un'altra API (/applyCorrection) che effettua quelle correzioni e salva il tutto.
+    In wdToSave salviamo la lista che viene generata da /saveWorkDays che verrà 
+    passata come parametro alla applyCorrection
+    */
+    const [wdToSave, setWorkDayToSave] = useState<IWorkDay []>([]); 
+
     if (usr.usrEmail === "" || dateWorkDays.length === 0) {
         return <p>Loading</p>
     }
@@ -86,11 +96,13 @@ const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
         }
     }
 
-    function ManageSavedResult(ialert : IAlert []) {
+    function ManageSavedResult(ialert : IAlert [], wdts : IWorkDay []) {
         //TODO
         //Gestione dell'esito dopo il salvataggio
 
         if (ialert.length > 0) {
+
+            setWorkDayToSave(wdts);
             refInfoDialog.current?.handleShow(ialert);
         } else {
             alert('Non ci sono alert');
@@ -150,7 +162,7 @@ const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
                                         nwd={nwd}
                                         changewd={changewd}
                                         deleteWdIDList={deleteWdID} 
-                                        OnSaveWDButtonClick={(ia : IAlert[]) => {ManageSavedResult(ia)}}
+                                        OnSaveWDButtonClick={(ia : IAlert[], wd : IWorkDay []) => {ManageSavedResult(ia, wd)}}
                                     />
                                 </div>
                                 <div className='col-sm-1 d-flex justify-content-end'>
@@ -181,7 +193,10 @@ const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
                     </div>
                 </div>
             </section>
-            <DialogInfoBox ref={refInfoDialog} />
+            <DialogInfoBox 
+                ref={refInfoDialog} 
+                wdToSave={wdToSave}
+                wdToDel={deleteWdID}/>
         </div>   
     );
 }

@@ -8,7 +8,7 @@ ovvero vengono controllati i dati inseriti dall'utente secondo alcuni criteri
 
 import Enumerable from "linq";
 import { IWorkDay, IAlert } from "./interface/MRServerInterface.js";
-import { DayType, WorkingInfo, ErrorEnum, WarnEnum } from './mrEnum.js';
+import { DayType, WorkingInfo, ErrorEnum, WarnEnum, Info, InfoGroup } from './mrEnum.js';
 import { WarningInfo } from "./class/WarningInfo.js";
 import { ErrorInfo } from "./class/ErrorInfo.js";
 import dateHolidays from 'date-holidays';
@@ -16,7 +16,6 @@ import dateHolidays from 'date-holidays';
 
     //Libreria per recuperare i giorni di festività
 var holidays = new dateHolidays('IT');
-
 let workingInfo = [WorkingInfo.OFFICE, WorkingInfo.SMARTWORKING, WorkingInfo.WORK_TRIP];
 
 // Check di validità delle attività inserite
@@ -168,6 +167,36 @@ export function checkWorkItem(workDaysArray : IWorkDay[]) : IAlert [] {
 
     console.log(err_war);
     return err_war;
+}
+
+export function applyCorrection(iaArray : IAlert[], wdArray : IWorkDay[]) : IWorkDay[] {
+
+    let wdCorrected : IWorkDay [] = wdArray;
+
+    iaArray.forEach(ia => {
+
+        if (ia.info.code === WarnEnum.PERMITS_HOURS) {
+
+            const wd : IWorkDay = Enumerable.from(wdArray).firstOrDefault(x => x.wrkdDay === ia.day)!;
+            
+            const permitWD : IWorkDay = {
+
+                wrkdUsrID: wd.wrkdUsrID,
+                wrkdSqdID: 1,
+                wrkdDay: wd.wrkdDay,
+                wrkdActivity: 'PERMESSO',
+                wrkdActivityHour: parseInt(ia.delta),
+                wrkdActivityType: 'PERMESSO',
+                wrkdCdc: '',
+                wrkdInfoID: Info.PERMIT,
+                wrkdInfoGrpID: InfoGroup.INFO_PERMIT,
+                wrkdID: 0
+            }
+
+            wdCorrected.push(permitWD);
+        }
+    })
+    return wdCorrected;
 }
 
 

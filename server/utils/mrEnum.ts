@@ -6,6 +6,23 @@ export enum DayType {
     BOTH_WEEKEND_HOLIDAY = 4  //sabato o domenica e festivo
 }
 
+export enum Info {
+
+    OFFICE = 1,
+    SICKNESS = 2,
+    HOLIDAY = 3,
+    WORK_TRIP = 4,
+    SMARTWORKING = 5,
+    PERMIT = 6
+}
+
+export enum InfoGroup {
+
+    INFO_WORK = 1,
+    INFO_NOT_WORK = 2,
+    INFO_PERMIT = 3
+}
+
 export enum WorkingInfo {
 
     OFFICE = 1,

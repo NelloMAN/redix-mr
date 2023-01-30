@@ -9,7 +9,7 @@ export interface ISaveWDButtonProps {
 	nwd : IWorkDay [],
     changewd: IWorkDay [],
     deleteWdIDList: number [],
-    OnSaveWDButtonClick(a: IAlert[]) : any
+    OnSaveWDButtonClick(a: IAlert[], wd: IWorkDay []) : any
 }
 
 const SaveWDButton: React.FC<ISaveWDButtonProps> = (props:ISaveWDButtonProps) => {
@@ -33,7 +33,9 @@ const SaveWDButton: React.FC<ISaveWDButtonProps> = (props:ISaveWDButtonProps) =>
     
                 //errWar è la lista contenente errori e warnings che il check lato server trova. Se è undefined allora non ce ne sono
                 if (alert !== undefined) {
-                    props.OnSaveWDButtonClick(alert);
+
+                    const wdToSave : IWorkDay [] = response.data.wdToSave;
+                    props.OnSaveWDButtonClick(alert, wdToSave);
                 }
                 
             }).catch(err => console.log(err)
