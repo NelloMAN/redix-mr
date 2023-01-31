@@ -1,9 +1,9 @@
 /* 
 Questa classe contiene i check lato server
 ovvero vengono controllati i dati inseriti dall'utente secondo alcuni criteri 
-  - la presenza di sabati, domeniche e festività inserite
-  - la presenza di ore in piu o in meno per un determinato giorno
-  - la presenza di specifiche incogruenti (es. trasferta e malattia) 
+  - [DONE] la presenza di sabati, domeniche e festività inserite
+  - [DONE] la presenza di ore in piu o in meno per un determinato giorno
+  - [DONE] la presenza di specifiche incogruenti (es. trasferta e malattia) 
 */ 
 
 import Enumerable from "linq";
@@ -12,6 +12,7 @@ import { DayType, WorkingInfo, ErrorEnum, WarnEnum, Info, InfoGroup } from './mr
 import { WarningInfo } from "./class/WarningInfo.js";
 import { ErrorInfo } from "./class/ErrorInfo.js";
 import dateHolidays from 'date-holidays';
+import { mrSingleton } from "./mrSingleton.js";
 
 
     //Libreria per recuperare i giorni di festività
@@ -24,8 +25,18 @@ export function checkWorkItem(workDaysArray : IWorkDay[]) : IAlert [] {
     //Array contenente errori e wanings
     let err_war : IAlert [] = [];
 
+    //Recupero le attività già esistenti
+    const lastSavedWD : IWorkDay [] = mrSingleton.getInstance().getLastSavedWD();
+
+    //Rimuovo dall'array recuperato dal singleton gli elementi che sono stati modificati in questa richiesta
+    const lastWD_NOCHANGES = Enumerable.from(lastSavedWD)
+                          .where(x => !Enumerable.from(workDaysArray).any(y => y.wrkdID === x.wrkdID))
+                          .toArray();
+
+    const finalWdToCheck : IWorkDay [] = lastWD_NOCHANGES.concat(workDaysArray);
+
     //Array con le ore totali per ogni giorno con info lavorative
-    var hoursPerDay = Enumerable.from(workDaysArray).where(i => workingInfo.includes(i.wrkdInfoID)).groupBy( g =>
+    var hoursPerDay = Enumerable.from(finalWdToCheck).where(i => workingInfo.includes(i.wrkdInfoID)).groupBy( g =>
         g.wrkdDay,
         element => element,
         function (key, h) {
@@ -96,16 +107,10 @@ export function checkWorkItem(workDaysArray : IWorkDay[]) : IAlert [] {
             }
 
             err_war.push(warnAlert);
-               
         }
 
         //#region Check sulle specifiche 
-        // const unique = (value, index, self) => {
-        //     return self.indexOf(value) === index
-        // }
-        let distinctSpec = Enumerable.from(workDaysArray).where(i => i.wrkdDay === wi.day).select(r => r.wrkdInfoID).distinct().toArray();
-        // let distinctSpec = infos.filter(unique);
-
+        let distinctSpec = Enumerable.from(finalWdToCheck).where(i => i.wrkdDay === wi.day).select(r => r.wrkdInfoID).distinct().toArray();
 
         if (distinctSpec.length > 2) {
             
@@ -121,7 +126,12 @@ export function checkWorkItem(workDaysArray : IWorkDay[]) : IAlert [] {
 
         } else if (distinctSpec.length === 2) {
 
-            //Check delle coppie permesse di specifiche (leggere checkList)
+            /*
+            Check delle coppie permesse di specifiche (leggere checkList)
+            smartworking - permesso
+            trasferta - permesso
+            ufficio - permesso
+            */
             if ( 
                 (distinctSpec[0] === 1 &&  distinctSpec[1] === 6)|| 
                 (distinctSpec[0] === 6 &&  distinctSpec[1] === 1)|| 
@@ -146,7 +156,7 @@ export function checkWorkItem(workDaysArray : IWorkDay[]) : IAlert [] {
     });
 
     //verifico che per i giorni festivi segnati ci siano info compatibili
-    workDaysArray.forEach(wi => {
+    finalWdToCheck.forEach(wi => {
 
         let wDate = new Date(wi.wrkdDay);
         let workDayType = getDayType(wDate);

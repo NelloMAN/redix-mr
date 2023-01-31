@@ -1,6 +1,7 @@
 import { RequestHandler, Request, Response } from "express";
 import { IUser, IDateWorkDay, ISquad, IUsrMonth, IWorkDay } from "./interface/MRServerInterface.js";
 import * as mrServices from './mrServices.js';
+import { mrSingleton } from "./mrSingleton.js";
 
 export const getUsrInfo: RequestHandler = async (req: Request, res: Response) => {
     try {
@@ -19,9 +20,13 @@ export const getUsrInfo: RequestHandler = async (req: Request, res: Response) =>
 
 export const getUsrWorkDay: RequestHandler = async (req: Request, res: Response) => {
   try {
+
     const workDay:IWorkDay[] = await mrServices.getUserWorkDay(parseInt(req.params.usrID), parseInt(req.params.month));
 
-    let processedDate = new Map<Date,IWorkDay[]>();
+    //Salvo il valore degli ultimi record salvati in modo da averli sempre a disposizione
+    mrSingleton.getInstance().setLastSavedWD(workDay);
+
+    let processedDate : Map<Date, IWorkDay[]> = new Map<Date,IWorkDay[]>();
 
     workDay.forEach( (row: IWorkDay) => {
 

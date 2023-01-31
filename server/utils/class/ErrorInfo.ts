@@ -21,6 +21,12 @@ export class ErrorInfo implements IInfo {
             case ErrorEnum.MULTIPLE_INFO:
                 this.message = 'Aggiunte troppe specifiche per un singolo giorno';
                 break;
+            case ErrorEnum.EIGHT_HOUR_PERMIT:
+                this.message = 'Le ore di permesso per un giorno non possono essere uguali o maggiori a 8';
+                break;
+            case ErrorEnum.PERMIT_AND_WORK_OVER_EIGHT:
+                this.message = 'la somma delle ore tra permesso e lavoro non può essere maggiore di 8';
+                break;
             default:
                 this.message = 'Warning non gestito';
                 break;

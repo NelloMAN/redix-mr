@@ -70,7 +70,7 @@ app.post('/saveWorkDays', (req: Request, res: Response) => {
   let deletedWorkDaysID : number [] = req.body.deletedWorkDaysID
 
   /*
-  /verifico se all'interno della lista degli id dei record cancellati c'è qualche record anche modificato. 
+  Verifico se all'interno della lista degli id dei record cancellati c'è qualche record anche modificato. 
   Se si rimuovo il record dagli elementi modificati per poi cancellarlo definitivamente
   */
   let changeWorkDaysDef : IWorkDay [] = changeWorkDays.filter(x => deletedWorkDaysID.indexOf(x.wrkdID) === -1);

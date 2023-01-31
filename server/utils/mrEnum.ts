@@ -31,9 +31,12 @@ export enum WorkingInfo {
 }
 
 export enum ErrorEnum {
-    MULTIPLE_INFO = 0,        //numero di specifiche per un singolo giorno maggiore di 2
-    INC_INFO = 1,             //coppia di specifiche incompatibili
-    HOLIDAYS_INC_INFO = 2     //info non compatibili per i giorni festivi
+
+    MULTIPLE_INFO = 0,              //numero di specifiche per un singolo giorno maggiore di 2
+    INC_INFO = 1,                   //coppia di specifiche incompatibili
+    HOLIDAYS_INC_INFO = 2,          //info non compatibili per i giorni festivi
+    EIGHT_HOUR_PERMIT = 3,          //aggiunto un permesso di 8 ore
+    PERMIT_AND_WORK_OVER_EIGHT = 4  //la somma tra permessi e ore supera le 8 ore
 }
 
 export enum WarnEnum {
