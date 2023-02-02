@@ -110,10 +110,14 @@ export function checkWorkItem(workDaysArray : IWorkDay[]) : IAlert [] {
         }
 
         //#region Check sulle specifiche 
-        let distinctSpec = Enumerable.from(finalWdToCheck).where(i => i.wrkdDay === wi.day).select(r => r.wrkdInfoID).distinct().toArray();
+
+        
+        //Recupero le info di ogni giorno
+        let distinctSpec : EInfo [] = Enumerable.from(finalWdToCheck).where(i => i.wrkdDay === wi.day).select(r => r.wrkdInfoID).distinct().toArray();
 
         if (distinctSpec.length === 1) {
 
+            //Non può esistere una sola info di tipo PERMESSO per un giorno
             if (distinctSpec[0] === EInfo.PERMIT) {
 
                 errorInfo = new ErrorInfo(EError.PERMIT_ONLY);
@@ -128,6 +132,8 @@ export function checkWorkItem(workDaysArray : IWorkDay[]) : IAlert [] {
             }
 
         } else if (distinctSpec.length > 2) {
+
+            //Non ci possono essere più di 2 info per uno stesso giorno
             
             errorInfo = new ErrorInfo(EError.MULTIPLE_INFO);
             errorAlert = {
@@ -167,6 +173,34 @@ export function checkWorkItem(workDaysArray : IWorkDay[]) : IAlert [] {
                 err_war.push(errorAlert); 
             } 
         }
+
+        //Recupero le info con le relative ore per il giorno che sto processando
+        var infoHours : {info: number, totalH: number} [] = Enumerable.from(finalWdToCheck).where(i => i.wrkdDay === wi.day).groupBy( g =>
+            g.wrkdInfoID,
+            element => element,
+            function (key, h) {
+                var result = {
+                    info: key,
+                    totalH: h.sum(w => w.wrkdActivityHour)
+                }
+                return result;
+            }
+        ).toArray();
+
+        //Verifico che, per i giorni per i quali è stato inserito un permesso, il totale delle ore non superi le 8 ore
+        if (infoHours.some(ih => ih.info === EInfo.PERMIT) && Enumerable.from(infoHours).sum(ih => ih.totalH) > 8) {
+
+            errorInfo = new ErrorInfo(EError.PERMIT_AND_WORK_OVER_EIGHT);
+
+            errorAlert = {
+                day: wDate, 
+                info: errorInfo, 
+                delta: ''
+            }
+            
+            err_war.push(errorAlert); 
+        }
+
         //#endregion        
     });
 
