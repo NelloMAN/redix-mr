@@ -28,7 +28,8 @@ export class ErrorInfo implements IInfo {
                 this.message = 'La somma delle ore tra permesso e lavoro non può essere maggiore di 8';
                 break;
             case EError.PERMIT_ONLY:
-                this.message = 'Non è possibile inserire solo un permesso per un intero giorno';
+                this.message = 'Una info di tipo permesso non puo coprire un intero giorno';
+                break;
             default:
                 this.message = 'Warning non gestito';
                 break;

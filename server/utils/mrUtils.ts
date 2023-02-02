@@ -15,7 +15,7 @@ import dateHolidays from 'date-holidays';
 import { mrSingleton } from "./mrSingleton.js";
 
 
-    //Libreria per recuperare i giorni di festività
+//Libreria per recuperare i giorni di festività
 var holidays = new dateHolidays('IT');
 let workingInfo = [EWorkingInfo.OFFICE, EWorkingInfo.SMARTWORKING, EWorkingInfo.WORK_TRIP];
 
@@ -35,8 +35,8 @@ export function checkWorkItem(workDaysArray : IWorkDay[]) : IAlert [] {
 
     const finalWdToCheck : IWorkDay [] = lastWD_NOCHANGES.concat(workDaysArray);
 
-    //Array con le ore totali per ogni giorno con info lavorative
-    var hoursPerDay = Enumerable.from(finalWdToCheck).where(i => workingInfo.includes(i.wrkdInfoID)).groupBy( g =>
+    //Array con le ore totali per ogni giorno
+    var hoursPerDay = Enumerable.from(finalWdToCheck).groupBy( g =>
         g.wrkdDay,
         element => element,
         function (key, h) {
@@ -228,6 +228,7 @@ export function checkWorkItem(workDaysArray : IWorkDay[]) : IAlert [] {
     return err_war;
 }
 
+//Applicazione delle correzioni
 export function applyCorrection(iaArray : IAlert[], wdArray : IWorkDay[]) : IWorkDay[] {
 
     let wdCorrected : IWorkDay [] = wdArray;
@@ -257,7 +258,6 @@ export function applyCorrection(iaArray : IAlert[], wdArray : IWorkDay[]) : IWor
     })
     return wdCorrected;
 }
-
 
 //Metodo per la determinare se il dato giorno è weekend o festivo
 function getDayType(date : Date) {
