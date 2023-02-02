@@ -8,7 +8,7 @@ ovvero vengono controllati i dati inseriti dall'utente secondo alcuni criteri
 
 import Enumerable from "linq";
 import { IWorkDay, IAlert } from "./interface/MRServerInterface.js";
-import { DayType, WorkingInfo, ErrorEnum, WarnEnum, Info, InfoGroup } from './mrEnum.js';
+import { EDayType, EWorkingInfo, EError, EWarn, EInfo, EInfoGroup } from './mrEnum.js';
 import { WarningInfo } from "./class/WarningInfo.js";
 import { ErrorInfo } from "./class/ErrorInfo.js";
 import dateHolidays from 'date-holidays';
@@ -17,7 +17,7 @@ import { mrSingleton } from "./mrSingleton.js";
 
     //Libreria per recuperare i giorni di festività
 var holidays = new dateHolidays('IT');
-let workingInfo = [WorkingInfo.OFFICE, WorkingInfo.SMARTWORKING, WorkingInfo.WORK_TRIP];
+let workingInfo = [EWorkingInfo.OFFICE, EWorkingInfo.SMARTWORKING, EWorkingInfo.WORK_TRIP];
 
 // Check di validità delle attività inserite
 export function checkWorkItem(workDaysArray : IWorkDay[]) : IAlert [] {
@@ -52,7 +52,7 @@ export function checkWorkItem(workDaysArray : IWorkDay[]) : IAlert [] {
     hoursPerDay.forEach(wi => {
         
         let wDate = new Date(wi.day);
-        let iwdWarn = DayType.WORK;
+        let iwdWarn = EDayType.WORK;
 
         let warnInfo : WarningInfo;
         let errorInfo : ErrorInfo;
@@ -64,13 +64,13 @@ export function checkWorkItem(workDaysArray : IWorkDay[]) : IAlert [] {
         iwdWarn = getDayType(wDate);
 
         //Se il giorno non è weekend o festivo, verifico il numero di ore salvate in modo tale da inserire straordinari o ore di permesso automaticamente
-        if (iwdWarn === DayType.WORK) {
+        if (iwdWarn === EDayType.WORK) {
             
             if (wi.totalH > 8) {
 
                 let straoHours = wi.totalH - 8;
 
-                warnInfo =  new WarningInfo(WarnEnum.OVERTIME_HOURS) 
+                warnInfo =  new WarningInfo(EWarn.OVERTIME_HOURS) 
 
                 warnAlert = {
 
@@ -85,7 +85,7 @@ export function checkWorkItem(workDaysArray : IWorkDay[]) : IAlert [] {
 
                 let permHours = 8 - wi.totalH;
 
-                warnInfo =  new WarningInfo(WarnEnum.PERMITS_HOURS);
+                warnInfo =  new WarningInfo(EWarn.PERMITS_HOURS);
 
                 warnAlert = {
                     day: wDate, 
@@ -98,7 +98,7 @@ export function checkWorkItem(workDaysArray : IWorkDay[]) : IAlert [] {
 
         } else {
 
-            warnInfo =  new WarningInfo(WarnEnum.WORK_HOLIDAYS) 
+            warnInfo =  new WarningInfo(EWarn.WORK_HOLIDAYS) 
 
             warnAlert = {
                 day: wDate, 
@@ -112,9 +112,24 @@ export function checkWorkItem(workDaysArray : IWorkDay[]) : IAlert [] {
         //#region Check sulle specifiche 
         let distinctSpec = Enumerable.from(finalWdToCheck).where(i => i.wrkdDay === wi.day).select(r => r.wrkdInfoID).distinct().toArray();
 
-        if (distinctSpec.length > 2) {
+        if (distinctSpec.length === 1) {
+
+            if (distinctSpec[0] === EInfo.PERMIT) {
+
+                errorInfo = new ErrorInfo(EError.PERMIT_ONLY);
+                errorAlert = {
+    
+                    day: wDate, 
+                    info: errorInfo, 
+                    delta: ''
+                }
+                
+                err_war.push(errorAlert); 
+            }
+
+        } else if (distinctSpec.length > 2) {
             
-            errorInfo = new ErrorInfo(ErrorEnum.MULTIPLE_INFO);
+            errorInfo = new ErrorInfo(EError.MULTIPLE_INFO);
             errorAlert = {
 
                 day: wDate, 
@@ -141,7 +156,7 @@ export function checkWorkItem(workDaysArray : IWorkDay[]) : IAlert [] {
                 (distinctSpec[0] === 6 &&  distinctSpec[1] === 5) 
             ) {} else {
 
-                errorInfo = new ErrorInfo(ErrorEnum.INC_INFO);
+                errorInfo = new ErrorInfo(EError.INC_INFO);
 
                 errorAlert = {
                     day: wDate, 
@@ -161,7 +176,7 @@ export function checkWorkItem(workDaysArray : IWorkDay[]) : IAlert [] {
         let wDate = new Date(wi.wrkdDay);
         let workDayType = getDayType(wDate);
 
-        let errorInfo = new ErrorInfo(ErrorEnum.HOLIDAYS_INC_INFO);
+        let errorInfo = new ErrorInfo(EError.HOLIDAYS_INC_INFO);
 
         let errorAlert = {
             day: wDate, 
@@ -169,7 +184,7 @@ export function checkWorkItem(workDaysArray : IWorkDay[]) : IAlert [] {
             delta: ''+wDate
         }
 
-        if (workDayType !== DayType.WORK && !workingInfo.includes(wi.wrkdInfoID)) {
+        if (workDayType !== EDayType.WORK && !workingInfo.includes(wi.wrkdInfoID)) {
             err_war.push(errorAlert); 
         }
 
@@ -185,7 +200,7 @@ export function applyCorrection(iaArray : IAlert[], wdArray : IWorkDay[]) : IWor
 
     iaArray.forEach(ia => {
 
-        if (ia.info.code === WarnEnum.PERMITS_HOURS) {
+        if (ia.info.code === EWarn.PERMITS_HOURS) {
 
             const wd : IWorkDay = Enumerable.from(wdArray).firstOrDefault(x => x.wrkdDay === ia.day)!;
             
@@ -198,8 +213,8 @@ export function applyCorrection(iaArray : IAlert[], wdArray : IWorkDay[]) : IWor
                 wrkdActivityHour: parseInt(ia.delta),
                 wrkdActivityType: 'PERMESSO',
                 wrkdCdc: '',
-                wrkdInfoID: Info.PERMIT,
-                wrkdInfoGrpID: InfoGroup.INFO_PERMIT,
+                wrkdInfoID: EInfo.PERMIT,
+                wrkdInfoGrpID: EInfoGroup.INFO_PERMIT,
                 wrkdID: 0
             }
 
@@ -214,14 +229,14 @@ export function applyCorrection(iaArray : IAlert[], wdArray : IWorkDay[]) : IWor
 function getDayType(date : Date) {
 
     if ((date.getDay() === 0 || date.getDay() === 6) && holidays.isHoliday(date)) {
-        return DayType.BOTH_WEEKEND_HOLIDAY
+        return EDayType.BOTH_WEEKEND_HOLIDAY
     } else if (date.getDay() === 0) {
-        return DayType.SUNDAY;
+        return EDayType.SUNDAY;
     } else if (date.getDay() === 6) {
-        return DayType.SATURDAY;
+        return EDayType.SATURDAY;
     } else if (holidays.isHoliday(date)) {
-        return DayType.HOLIDAY;
+        return EDayType.HOLIDAY;
     } else {
-        return DayType.WORK;
+        return EDayType.WORK;
     }
 }

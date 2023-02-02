@@ -1,4 +1,4 @@
-import { WarnEnum } from "../mrEnum.js";
+import { EWarn } from "../mrEnum.js";
 import { IInfo } from "../interface/MRServerInterface.js";
 
 export class WarningInfo implements IInfo {
@@ -7,18 +7,18 @@ export class WarningInfo implements IInfo {
     public code: number;
     public message: string;
 
-    constructor(c:WarnEnum) {
+    constructor(c:EWarn) {
 
         this.code = c;
 
         switch(this.code) {
-            case WarnEnum.OVERTIME_HOURS:
+            case EWarn.OVERTIME_HOURS:
                 this.message = 'Hai superato le 8 ore di lavoro. Verranno aggiunte come straordinari';
                 break;
-            case WarnEnum.PERMITS_HOURS:
+            case EWarn.PERMITS_HOURS:
                 this.message = 'Non hai raggiunto le 8 ore di lavoro. Le rimanenti verranno inserite come ore di permesso';
                 break;
-            case WarnEnum.WORK_HOLIDAYS:
+            case EWarn.WORK_HOLIDAYS:
                 this.message = 'Giorno festivo. Le ore per questo giorno verranno inserite come straordinari';
                 break;
             default:
