@@ -1,9 +1,5 @@
 /* 
 Questa classe contiene i check lato server
-ovvero vengono controllati i dati inseriti dall'utente secondo alcuni criteri 
-  - [DONE] la presenza di sabati, domeniche e festività inserite
-  - [DONE] la presenza di ore in piu o in meno per un determinato giorno
-  - [DONE] la presenza di specifiche incogruenti (es. trasferta e malattia) 
 */ 
 
 import Enumerable from "linq";
@@ -28,15 +24,21 @@ export function checkWorkItem(workDaysArray : IWorkDay[]) : IAlert [] {
     //Recupero le attività già esistenti
     const lastSavedWD : IWorkDay [] = mrSingleton.getInstance().getLastSavedWD();
 
-    //Rimuovo dall'array recuperato dal singleton gli elementi che sono stati modificati in questa richiesta
-    const lastWD_NOCHANGES = Enumerable.from(lastSavedWD)
-                          .where(x => !Enumerable.from(workDaysArray).any(y => y.wrkdID === x.wrkdID))
-                          .toArray();
+    /*
+    Non è necessario verificare ogni volta i wd esistenti, ma basta 
+    controllare quelli con date uguale a nuovi record inseriti quindi
+    recupero dalla lista singleton quelli che hanno stessa data di 
+    nuovi record inseriti
+    */
+    const lastSavedWDToCheck : IWorkDay[] = Enumerable.from(lastSavedWD)
+                                            .where(l => Enumerable.from(workDaysArray).any(n => n.wrkdDay === l.wrkdDay))
+                                            .toArray()
 
-    const finalWdToCheck : IWorkDay [] = lastWD_NOCHANGES.concat(workDaysArray);
+
+    const finalWdToCheck : IWorkDay [] = lastSavedWDToCheck.concat(workDaysArray);
 
     //Array con le ore totali per ogni giorno
-    var hoursPerDay = Enumerable.from(finalWdToCheck).groupBy( g =>
+    var hoursPerDay : {day:Date, totalH: number} [] = Enumerable.from(finalWdToCheck).groupBy( g =>
         g.wrkdDay,
         element => element,
         function (key, h) {
@@ -70,12 +72,10 @@ export function checkWorkItem(workDaysArray : IWorkDay[]) : IAlert [] {
 
                 let straoHours = wi.totalH - 8;
 
-                warnInfo =  new WarningInfo(EWarn.OVERTIME_HOURS) 
-
                 warnAlert = {
 
                     day : wDate, 
-                    info : warnInfo, 
+                    info : new WarningInfo(EWarn.OVERTIME_HOURS) , 
                     delta : ''+straoHours
                 }
 
@@ -84,12 +84,10 @@ export function checkWorkItem(workDaysArray : IWorkDay[]) : IAlert [] {
             else if (wi.totalH < 8) {
 
                 let permHours = 8 - wi.totalH;
-
-                warnInfo =  new WarningInfo(EWarn.PERMITS_HOURS);
-
+                
                 warnAlert = {
                     day: wDate, 
-                    info: warnInfo, 
+                    info: new WarningInfo(EWarn.PERMITS_HOURS), 
                     delta: ''+permHours
                 };
 
@@ -98,11 +96,9 @@ export function checkWorkItem(workDaysArray : IWorkDay[]) : IAlert [] {
 
         } else {
 
-            warnInfo =  new WarningInfo(EWarn.WORK_HOLIDAYS) 
-
             warnAlert = {
                 day: wDate, 
-                info: warnInfo, 
+                info: new WarningInfo(EWarn.WORK_HOLIDAYS), 
                 delta: ''
             }
 
@@ -120,11 +116,10 @@ export function checkWorkItem(workDaysArray : IWorkDay[]) : IAlert [] {
             //Non può esistere una sola info di tipo PERMESSO per un giorno
             if (distinctSpec[0] === EInfo.PERMIT) {
 
-                errorInfo = new ErrorInfo(EError.PERMIT_ONLY);
                 errorAlert = {
     
                     day: wDate, 
-                    info: errorInfo, 
+                    info: new ErrorInfo(EError.PERMIT_ONLY), 
                     delta: ''
                 }
                 
@@ -134,12 +129,10 @@ export function checkWorkItem(workDaysArray : IWorkDay[]) : IAlert [] {
         } else if (distinctSpec.length > 2) {
 
             //Non ci possono essere più di 2 info per uno stesso giorno
-            
-            errorInfo = new ErrorInfo(EError.MULTIPLE_INFO);
             errorAlert = {
 
                 day: wDate, 
-                info: errorInfo, 
+                info: new ErrorInfo(EError.MULTIPLE_INFO), 
                 delta: ''+wDate
             }
             
@@ -162,11 +155,9 @@ export function checkWorkItem(workDaysArray : IWorkDay[]) : IAlert [] {
                 (distinctSpec[0] === 6 &&  distinctSpec[1] === 5) 
             ) {} else {
 
-                errorInfo = new ErrorInfo(EError.INC_INFO);
-
                 errorAlert = {
                     day: wDate, 
-                    info: errorInfo, 
+                    info: new ErrorInfo(EError.INC_INFO), 
                     delta: ''+wDate
                 }
                 
@@ -190,11 +181,9 @@ export function checkWorkItem(workDaysArray : IWorkDay[]) : IAlert [] {
         //Verifico che, per i giorni per i quali è stato inserito un permesso, il totale delle ore non superi le 8 ore
         if (infoHours.some(ih => ih.info === EInfo.PERMIT) && Enumerable.from(infoHours).sum(ih => ih.totalH) > 8) {
 
-            errorInfo = new ErrorInfo(EError.PERMIT_AND_WORK_OVER_EIGHT);
-
             errorAlert = {
                 day: wDate, 
-                info: errorInfo, 
+                info: new ErrorInfo(EError.PERMIT_AND_WORK_OVER_EIGHT), 
                 delta: ''
             }
             
@@ -210,11 +199,9 @@ export function checkWorkItem(workDaysArray : IWorkDay[]) : IAlert [] {
         let wDate = new Date(wi.wrkdDay);
         let workDayType = getDayType(wDate);
 
-        let errorInfo = new ErrorInfo(EError.HOLIDAYS_INC_INFO);
-
         let errorAlert = {
             day: wDate, 
-            info: errorInfo, 
+            info: new ErrorInfo(EError.HOLIDAYS_INC_INFO), 
             delta: ''+wDate
         }
 
