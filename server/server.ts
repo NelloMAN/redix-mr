@@ -77,7 +77,7 @@ app.post('/saveWorkDays', (req: Request, res: Response) => {
 
   let wdToCheck : IWorkDay [] = newZeroIdWD.concat(changeWorkDaysDef);
 
-  let err_war : IAlert[] = mrUtils.checkWorkItem(wdToCheck);
+  let err_war : IAlert[] = mrUtils.checkWorkItem(newZeroIdWD, changeWorkDaysDef);
 
   if (err_war.length > 0) {
 
