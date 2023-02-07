@@ -16,7 +16,7 @@ export const mrQuery = {
         where wrkdUsrID = ? and month(wrkdDay) = ? 
         order by wrkdDay asc
     `,
-  
+
     GetUsrInfo: `
       select 
         usrID, 
@@ -31,7 +31,7 @@ export const mrQuery = {
 
     SetTimeName: `SET lc_time_names = 'it_IT'`,
 
-    GetSquad : `select sqdID, sqdName from squad`,
+    GetSquad: `select sqdID, sqdName from squad`,
 
     GetUsrMonth: `
       select 
@@ -47,7 +47,13 @@ export const mrQuery = {
       from work_day 
       where wrkdUsrID = ?
     `,
-  
+
+    AddNewWD: `
+        insert into work_day
+        ()
+        values ?
+    `,
+
     UpdateTeamById: `
     UPDATE teams_system.teams
     SET name = ?,
@@ -55,11 +61,11 @@ export const mrQuery = {
     WHERE
       id = ?
     `,
-  
+
     DeleteTeamById: `
     UPDATE teams_system.teams
     SET isActive = false
     WHERE
       id = ?
     `
-  };
+};

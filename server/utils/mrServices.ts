@@ -32,3 +32,7 @@ export const getSquad = async () : Promise<ISquad[]> => {
 export const getFirstWDIDAvailable = async (usrID: number) : Promise<number> => {
     return execute<number>(mrQuery.GetFirstWDIDAvailable, [usrID]);
 };
+
+export const AddNewWD = async (newWD : IWorkDay []) : Promise<number> => {
+    return execute<number>(mrQuery.AddNewWD, [newWD]);
+}
