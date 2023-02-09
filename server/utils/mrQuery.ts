@@ -22,7 +22,7 @@ export const mrQuery = {
         usrID, 
         usrEmail, 
         usrName, 
-        max(month(wrkdDay)) as lastWorkedMonth 
+        month(max(wrkdDay)) as lastWorkedMonth 
       from usr u 
         left join work_day wd on wd.wrkdUsrID = u.usrID 
         where usrEmail = ? and usrPwd = ?
