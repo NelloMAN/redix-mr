@@ -41,7 +41,7 @@ const AddSingleWDButton: React.FC<IAddSingleWDButtonProps> = (props:IAddSingleWD
             wrkdSqdID: 1,
             wrkdActivityType: '',
             wrkdCdc: '',
-            wrkdUsrID: 0
+            wrkdUsrID: props.usrID
         };
 
         setFirstWDIDAvailable(lid + 1);

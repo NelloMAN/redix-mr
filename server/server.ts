@@ -55,61 +55,7 @@ app.get('/getFirstWDIDAvailable/:usrID', (req: Request, res: Response, n: NextFu
 
 // saveWorkDays: inserimento nuove righe
 app.post('/saveWorkDays', (req: Request, res: Response, n: NextFunction) => {
-
-    let newWorkDays: IWorkDay[] = req.body.newWorkDays;
-
-    /*
-    Setto la proprietà wrkdID di tutti gli elementi della lista
-    newWorkDays(creandone una nuova ovvero newZeroIdWD) in modo tale 
-    da distingure i record da inserire da quelli da updateare prima
-    che vengano concatenati per fare il check
-    */
-    let newZeroIdWD: IWorkDay[] = newWorkDays.map((item) => ({ ...item, value: item.wrkdID * 0, }));
-
-    let changeWorkDays: IWorkDay[] = req.body.changeWorkDays;
-    let deletedWorkDaysID: number[] = req.body.deletedWorkDaysID
-
-    /*
-    Verifico se all'interno della lista degli id dei record cancellati c'è qualche record anche modificato. 
-    Se si rimuovo il record dagli elementi modificati per poi cancellarlo definitivamente
-    */
-    let changeWorkDaysDef: IWorkDay[] = changeWorkDays.filter(x => deletedWorkDaysID.indexOf(x.wrkdID) === -1);
-
-    let wdToCheck: IWorkDay[] = newZeroIdWD.concat(changeWorkDaysDef);
-
-    let err_war: IAlert[] = mrUtils.checkWorkItem(newZeroIdWD, changeWorkDaysDef);
-
-    if (err_war.length > 0) {
-
-        let toJson = {
-            typo: 'err_war',
-            errWar: err_war,
-            wdToSave: wdToCheck
-        }
-
-        res.send(JSON.stringify(toJson));
-
-    } else {
-
-        if (newZeroIdWD.length > 0) {
-            mrController.AddNewWD(req, res, n);
-        }
-        // Array.from(data).forEach(wd => {
-
-        //     values.push([
-        //         wd.wrkdUsrID, wd.wrkdDay, wd.wrkdInfoID, wd.wrkdActivity, wd.wrkdActivityType, wd.wrkdActivityHour, wd.wrkdSqdID, wd.wrkdCdc
-        //     ]);
-        // });
-
-        // console.log(values);
-
-        // pool.query(query, [values], function (err, result) {
-        //     if (err) throw err;
-        //     console.log("Number of records inserted: " + result.affectedRows);
-        // });
-
-    }
-
+    mrController.saveWD(req, res, n);
 });
 
 app.post('/applyCorrection', (req: Request, res: Response) => {

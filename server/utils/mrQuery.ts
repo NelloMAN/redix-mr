@@ -50,7 +50,7 @@ export const mrQuery = {
 
     AddNewWD: `
         insert into work_day
-        ()
+        (wrkdDay, wrkdInfoID, wrkdUsrID, wrkdActivity, wrkdActivityType, wrkdActivityHour, wrkdSqdID, wrkdCdc)
         values ?
     `,
 

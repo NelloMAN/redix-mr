@@ -1,6 +1,8 @@
 import { execute } from './mysql_utils/mysql.connector.js';
 import {ISquad, IUser, IUsrMonth, IWorkDay} from './interface/MRServerInterface.js';
 import {mrQuery} from './mrQuery.js';
+import moment from 'moment';
+
 
 /**
  * Get active team records
@@ -34,5 +36,17 @@ export const getFirstWDIDAvailable = async (usrID: number) : Promise<number> => 
 };
 
 export const AddNewWD = async (newWD : IWorkDay []) : Promise<number> => {
-    return execute<number>(mrQuery.AddNewWD, [newWD]);
+
+    const values = newWD.map(nwd => [
+        moment(nwd.wrkdDay).format('YYYY-MM-DD HH:mm:ss'),
+        nwd.wrkdInfoID,
+        nwd.wrkdUsrID,
+        nwd.wrkdActivity,
+        nwd.wrkdActivityType,
+        nwd.wrkdActivityHour,
+        nwd.wrkdSqdID,
+        nwd.wrkdCdc 
+    ]);
+
+    return execute<number>(mrQuery.AddNewWD, [values]);
 }
