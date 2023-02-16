@@ -9,6 +9,7 @@ import {useNavigate} from 'react-router-dom';
 import {IoMdLogIn} from 'react-icons/io';
 import axios from 'axios';
 import { IUser } from '../utils/interface/MRInterface';
+import { DialogType } from '../utils/MREnum';
 
 export interface ILoginPanel {}
 
@@ -37,6 +38,10 @@ const LoginPanel: React.FunctionComponent<ILoginPanel> = (props) => {
 
         fetchUsr();
         event.preventDefault();
+    }
+
+    function handleDialogClose() {
+
     }
 
      async function fetchUsr(){
@@ -112,7 +117,10 @@ const LoginPanel: React.FunctionComponent<ILoginPanel> = (props) => {
                     </div>
                 </div>
             </div>
-        <DialogBox ref={refDialog} />
+        <DialogBox 
+            ref={refDialog} 
+            type={DialogType.INFO}
+            OnActionDialogClose={handleDialogClose}/>
         </div>
         
     );

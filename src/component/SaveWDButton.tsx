@@ -9,7 +9,7 @@ export interface ISaveWDButtonProps {
 	nwd : IWorkDay [],
     changewd: IWorkDay [],
     deleteWdIDList: number [],
-    OnSaveWDButtonClick(a: IAlert[], wd: IWorkDay []) : any
+    OnSaveWDButtonClick(a?: IAlert[], wd?: IWorkDay []) : any
 }
 
 const SaveWDButton: React.FC<ISaveWDButtonProps> = (props:ISaveWDButtonProps) => {
@@ -36,8 +36,10 @@ const SaveWDButton: React.FC<ISaveWDButtonProps> = (props:ISaveWDButtonProps) =>
 
                     const wdToSave : IWorkDay [] = response.data.wdToSave;
                     props.OnSaveWDButtonClick(alert, wdToSave);
-                }
-                
+
+                } else {
+                    props.OnSaveWDButtonClick();
+                }       
             }).catch(err => console.log(err)
         )
     }

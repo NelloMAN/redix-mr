@@ -56,16 +56,13 @@ export function checkWorkItem(newWD : IWorkDay[], modWD : IWorkDay []) : IAlert 
     hoursPerDay.forEach(wi => {
         
         let wDate = new Date(wi.day);
-        let iwdWarn = EDayType.WORK;
-
-        let warnInfo : WarningInfo;
-        let errorInfo : ErrorInfo;
+        let dateWorkType = EDayType.WORK;
 
         let warnAlert : IAlert;
         let errorAlert : IAlert;
 
         //se è un sabato, una domenica o un giorno festivo iwdWarn viene valorizzato
-        iwdWarn = getDayType(wDate);
+        dateWorkType = getDayType(wDate);
 
         //#region Check ERROR 
         //Recupero le info con le relative ore per il giorno che sto processando
@@ -135,12 +132,12 @@ export function checkWorkItem(newWD : IWorkDay[], modWD : IWorkDay []) : IAlert 
             ufficio - permesso
             */
             if ( 
-                (distinctSpec[0] === 1 &&  distinctSpec[1] === 6)|| 
-                (distinctSpec[0] === 6 &&  distinctSpec[1] === 1)|| 
-                (distinctSpec[0] === 4 &&  distinctSpec[1] === 6)|| 
-                (distinctSpec[0] === 6 &&  distinctSpec[1] === 4)|| 
-                (distinctSpec[0] === 5 &&  distinctSpec[1] === 6)|| 
-                (distinctSpec[0] === 6 &&  distinctSpec[1] === 5) 
+                (distinctSpec[0] === EInfo.OFFICE &&  distinctSpec[1] === EInfo.PERMIT)|| 
+                (distinctSpec[0] === EInfo.PERMIT &&  distinctSpec[1] === EInfo.OFFICE)|| 
+                (distinctSpec[0] === EInfo.WORK_TRIP &&  distinctSpec[1] === EInfo.PERMIT)|| 
+                (distinctSpec[0] === EInfo.PERMIT &&  distinctSpec[1] === EInfo.WORK_TRIP)|| 
+                (distinctSpec[0] === EInfo.SMARTWORKING &&  distinctSpec[1] === EInfo.PERMIT)|| 
+                (distinctSpec[0] === EInfo.PERMIT &&  distinctSpec[1] === EInfo.SMARTWORKING) 
             ) {} else {
 
                 errorAlert = {
@@ -157,37 +154,41 @@ export function checkWorkItem(newWD : IWorkDay[], modWD : IWorkDay []) : IAlert 
         //#endregion           
 
         //#region Check WARNING
-        /*Se il giorno non è weekend o festivo, 
-        verifico il numero di ore salvate in modo tale 
-        da inserire straordinari o ore di permesso automaticamente
-        WARNING
+        /*
+            Se il giorno non è weekend o festivo, 
+            verifico il numero di ore salvate in modo tale 
+            da inserire straordinari o ore di permesso automaticamente
+            WARNING
         */
-        if (iwdWarn === EDayType.WORK) {
-            
-            if (wi.totalH > 8) {
+        if (dateWorkType === EDayType.WORK) {
 
-                let straoHours = wi.totalH - 8;
+            if (distinctSpec[0] !== EInfo.SICKNESS && distinctSpec[0] !== EInfo.HOLIDAY) {
 
-                warnAlert = {
+                if (wi.totalH > 8) {
 
-                    day : wDate, 
-                    info : new WarningInfo(EWarn.OVERTIME_HOURS) , 
-                    delta : ''+straoHours
+                    let straoHours = wi.totalH - 8;
+
+                    warnAlert = {
+
+                        day : wDate, 
+                        info : new WarningInfo(EWarn.OVERTIME_HOURS) , 
+                        delta : ''+straoHours
+                    }
+
+                    err_war.push(warnAlert);   
                 }
+                else if (wi.totalH < 8) {
 
-                err_war.push(warnAlert);   
-            }
-            else if (wi.totalH < 8) {
+                    let permHours = 8 - wi.totalH;
+                    
+                    warnAlert = {
+                        day: wDate, 
+                        info: new WarningInfo(EWarn.PERMITS_HOURS), 
+                        delta: ''+permHours
+                    };
 
-                let permHours = 8 - wi.totalH;
-                
-                warnAlert = {
-                    day: wDate, 
-                    info: new WarningInfo(EWarn.PERMITS_HOURS), 
-                    delta: ''+permHours
-                };
-
-                err_war.push(warnAlert);   
+                    err_war.push(warnAlert);   
+                }
             }
 
         } else {

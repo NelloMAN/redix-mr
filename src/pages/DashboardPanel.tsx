@@ -5,7 +5,7 @@ import Hamburger from 'hamburger-react'
 import MonthComboBox from '../component/MonthComboBox';
 import {useLocation} from 'react-router-dom';
 import WorkTable from '../component/data-table/WorkTable';
-import DialogBox from '../component/DialogBox';
+import DialogBox, { IDialogBox } from '../component/DialogBox';
 import AddSingleWDButton from '../component/AddSingleWDButton';
 import AddMultipleWDButton from '../component/AddMultipleWDButton';
 import SaveWDButton from '../component/SaveWDButton';
@@ -13,6 +13,7 @@ import ExportWDButton from '../component/ExportWDButton';
 import axios from "axios";
 import {IWorkDay, DateWorkDay, IUser, IAlert} from '../utils/interface/MRInterface';
 import DialogInfoBox, { IDialogInfoBox } from '../component/DialogInfoBox';
+import { DialogType } from '../utils/MREnum';
 
 
 export interface IDashboardPanel {}
@@ -21,6 +22,7 @@ const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
 
     const location = useLocation();
     const refInfoDialog = React.useRef<IDialogInfoBox | null>(null);
+    const refDialog = React.useRef<IDialogBox | null>(null);
 
     const [usr, setMonth] = React.useState<IUser>(location.state.stateToDashboard);
 
@@ -37,7 +39,10 @@ const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
             });
         }
 
-    },[usr.usrID, usr.selectedMonth]);
+    },[
+        usr.usrID, 
+        usr.selectedMonth,
+    ]);
 
     const [changewd, setModifiedRecords] = useState<IWorkDay[]>([]); //array con la lista dei record esistenti e modificati
 
@@ -96,7 +101,7 @@ const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
         }
     }
 
-    function ManageSavedResult(ialert : IAlert [], wdts : IWorkDay []) {
+    function ManageSavedResult(ialert : IAlert [] = [], wdts : IWorkDay [] = []) {
         //TODO
         //Gestione dell'esito dopo il salvataggio
 
@@ -105,8 +110,20 @@ const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
             setWorkDayToSave(wdts);
             refInfoDialog.current?.handleShow(ialert);
         } else {
-            alert('Non ci sono alert');
+            refDialog.current?.handleShow('Salvataggio dati','Salvataggio avvenuto con successo');
         }
+    }
+
+    function onDialogHide() {
+
+        axios.get('http://localhost:3001/getUsrWrkDay/' +usr.usrID +'/' + usr.selectedMonth)
+        .then(res => {
+            setDateWorkDays(res.data.dateWorkDay);
+        });
+
+        setNewWorkDays([]);
+        setModifiedRecords([]);
+        setDeleteWdIDList([]);
     }
 
     return (
@@ -197,6 +214,10 @@ const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
                 ref={refInfoDialog} 
                 wdToSave={wdToSave}
                 wdToDel={deleteWdID}/>
+            <DialogBox 
+                ref={refDialog}
+                type={DialogType.ACTION_AFTER_CLOSE} 
+                OnActionDialogClose={onDialogHide}/>
         </div>   
     );
 }

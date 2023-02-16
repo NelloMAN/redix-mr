@@ -2,12 +2,18 @@ import '../global-css/_color.scss';
 import React, { forwardRef, useImperativeHandle, FC, useState } from 'react';
 import './css/DialogBox.css';
 import { Modal } from 'react-bootstrap';
+import { DialogType } from '../utils/MREnum'; 
 
 export interface IDialogBox {
     handleShow(title:string, body:string):null;
 }
 
-const DialogBox = forwardRef((props, ref) => {
+export interface IDialogBoxProps {
+    type : number;
+    OnActionDialogClose() : any;
+}
+
+const DialogBox = forwardRef((props : IDialogBoxProps, ref) => {
 
     const [showModal, setShowModal] = useState(false);
     const [title, setTitle] = useState('');
@@ -24,6 +30,10 @@ const DialogBox = forwardRef((props, ref) => {
     }));
 
     function handleClose () {
+
+        if (props.type === DialogType.ACTION_AFTER_CLOSE) {
+            props.OnActionDialogClose();
+        } 
         setShowModal(false);
     }
 

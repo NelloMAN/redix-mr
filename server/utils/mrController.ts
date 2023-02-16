@@ -189,6 +189,10 @@ export const saveWD: RequestHandler = async (req: Request, res: Response) => {
                 rowsAdded = await mrServices.AddNewWD(newZeroIdWD);
             }
 
+            res.status(200).json(
+                rowsAdded
+            );
+
             // if (changeWorkDaysDef.length > 0) {
             //     rowsModified = await mrServices.AddNewWD(req.body.newZeroIdWD);
             // }
@@ -197,10 +201,6 @@ export const saveWD: RequestHandler = async (req: Request, res: Response) => {
             //     rowsDeleted = await mrServices.AddNewWD(req.body.newZeroIdWD);
             // }
         }
-
-        res.status(200).json(
-            rowsAdded
-        );
         
     } catch (error) {
         console.error('[mrController][AddNewWD][Error] ', typeof error === 'object' ? JSON.stringify(error) : error);
