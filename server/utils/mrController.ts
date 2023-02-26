@@ -7,7 +7,7 @@ import Enumerable from "linq";
 
 export const getUsrInfo: RequestHandler = async (req: Request, res: Response) => {
     try {
-        const user: IUser = await mrServices.getUserInfo(req.params.email, req.params.pwd);
+        const user: IUser [] = await mrServices.getUserInfo(req.params.email, req.params.pwd);
 
         res.status(200).json({
             user
@@ -23,44 +23,9 @@ export const getUsrInfo: RequestHandler = async (req: Request, res: Response) =>
 export const getUsrWorkDay: RequestHandler = async (req: Request, res: Response) => {
     try {
 
-        const workDay: IWorkDay[] = await mrServices.getUserWorkDay(parseInt(req.params.usrID), parseInt(req.params.month));
-
-        //Salvo il valore degli ultimi record salvati in modo da averli sempre a disposizione
-        mrSingleton.getInstance().setLastSavedWD(workDay);
-
-        let processedDate: Map<Date, IWorkDay[]> = new Map<Date, IWorkDay[]>();
-
-        workDay.forEach((row: IWorkDay) => {
-
-            if (!processedDate.has(row.wrkdDay)) {
-
-                let dayTable: IWorkDay[] = [];
-                dayTable.push(row);
-
-                processedDate.set(row.wrkdDay, dayTable);
-            } else {
-
-                let tempArray: IWorkDay[] = processedDate.get(row.wrkdDay)!;
-                tempArray.push(row);
-                processedDate.set(row.wrkdDay, tempArray);
-            }
-        })
-
-        let dateWorkDay: IDateWorkDay[] = [];
-        processedDate.forEach((value, key) => {
-
-            let dwdItem: IDateWorkDay = {
-                dwdDate: new Date(),
-                wdArray: []
-            };
-
-            dwdItem.dwdDate = key
-            dwdItem.wdArray = value
-            dateWorkDay.push(dwdItem)
-        });
-
+        const dwd: IDateWorkDay[] = await mrServices.getUserWorkDay(parseInt(req.params.usrID), parseInt(req.params.month));
         res.status(200).json({
-            dateWorkDay
+            dwd
         });
 
     } catch (error) {
