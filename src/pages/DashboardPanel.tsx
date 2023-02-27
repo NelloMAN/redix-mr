@@ -35,7 +35,7 @@ const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
         if (usr.selectedMonth !== 0) {
             axios.get('http://localhost:3001/getUsrWrkDay/' +usr.usrID +'/' + usr.selectedMonth)
             .then(res => {
-                setDateWorkDays(res.data.dateWorkDay);
+                setDateWorkDays(res.data.dwd);
             });
         }
 

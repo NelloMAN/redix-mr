@@ -28,7 +28,6 @@ Info.init({
     tableName: 'info'
 });
 
-Info.belongsTo(WorkDay, {foreignKey:'wrkdInfoID'})
 Info.sync();
 
 export default Info;

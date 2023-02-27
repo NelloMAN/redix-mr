@@ -68,9 +68,9 @@ export const getUserWorkDay = async (usrID: Number, month: Number)  => {
     workDay = await WorkDay.findAll({
         attributes:[
             'wrkdID',
-            'wrkdDay',
+            [Sequelize.literal('DATE_FORMAT(wrkdDay, "%Y-%m-%d")'), 'wrkdDay'],
             'wrkdInfoID',
-            ['Info.infoGrpID', 'wrkdInfoGrpID'],
+            [Sequelize.literal('`Info`.`infoGrpID`'), 'wrkdInfoGrpID'],
             'wrkdUsrID',
             'wrkdActivity',
             'wrkdActivityType',
@@ -78,7 +78,8 @@ export const getUserWorkDay = async (usrID: Number, month: Number)  => {
             'wrkdSqdID'],
         include: [{
                 model: Info,
-                attributes: [] 
+                required: true,
+                attributes: ['infoGrpID']
             }],
         where: {
             wrkdUsrID: {
@@ -91,7 +92,7 @@ export const getUserWorkDay = async (usrID: Number, month: Number)  => {
             }
         }
     })
-
+    
     workDay.forEach( w => {
 
         iwd.push({
@@ -145,11 +146,22 @@ export const getUserWorkDay = async (usrID: Number, month: Number)  => {
 };
 
 export const setTimeName = async () => {
-    return execute(mrQuery.SetTimeName, []);
+
+    const sequelize = new Sequelize();
+
+    sequelize.query("SET lc_time_names = 'it_IT'")
+    .then(() => {
+        return('IT')
+    })
+    .catch((err) => {
+       return("Errore nell'impostazione del locale: "+ err);
+    });
 };
 
 export const getUsrMonth = async (usrID: Number) : Promise<IUsrMonth[]> => {
     return execute<IUsrMonth[]>(mrQuery.GetUsrMonth, [usrID]);
+
+    
 };
 
 

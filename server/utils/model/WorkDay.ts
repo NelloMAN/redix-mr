@@ -1,5 +1,6 @@
 import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../mysql_utils/vars.config.js';
+import Info from './Info.js';
 
 class WorkDay extends Model {
     public wrkdID!: number;
@@ -57,6 +58,7 @@ WorkDay.init({
     tableName: 'work_day'
 });
 
+WorkDay.belongsTo(Info, {foreignKey:'wrkdInfoID'})
 WorkDay.sync();
 
 export default WorkDay;
