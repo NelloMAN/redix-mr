@@ -1,7 +1,6 @@
 import { RequestHandler, Request, Response } from "express";
 import { IUser, IDateWorkDay, ISquad, IUsrMonth, IWorkDay, IAlert } from "./interface/MRServerInterface.js";
 import * as mrServices from './mrServices.js';
-import { mrSingleton } from "./mrSingleton.js";
 import * as mrUtils from "./mrUtils.js"
 import Enumerable from "linq";
 
@@ -32,21 +31,6 @@ export const getUsrWorkDay: RequestHandler = async (req: Request, res: Response)
         console.error('[mrController][getUserWorkDay][Error] ', typeof error === 'object' ? JSON.stringify(error) : error);
         res.status(500).json({
             message: 'There was an error when fetching user WorkDay'
-        });
-    }
-};
-
-export const setTimeName: RequestHandler = async (req: Request, res: Response) => {
-    try {
-        await mrServices.setTimeName();
-
-        res.status(200).json({
-            result: 'ok'
-        });
-    } catch (error) {
-        console.error('[mrController][setTimeName][Error] ', typeof error === 'object' ? JSON.stringify(error) : error);
-        res.status(500).json({
-            message: 'There was an error when setting italian time system'
         });
     }
 };

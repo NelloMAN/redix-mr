@@ -2,7 +2,19 @@ import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../mysql_utils/vars.config.js';
 import Info from './Info.js';
 
-class WorkDay extends Model {
+export interface IWorkDayModel {
+    wrkdID: number;
+    wrkdDay: Date;
+    wrkdInfoID: number;
+    wrkdUsrID: number;
+    wrkdActivity: string;
+    wrkdActivityType: string;
+    wrkdActivityHour: number;
+    wrkdSqdID: number;
+    wrkdCdc: string;
+}
+
+class WorkDay extends Model<IWorkDayModel> implements IWorkDayModel {
     public wrkdID!: number;
     public wrkdDay!: Date;
     public wrkdInfoID!: number;

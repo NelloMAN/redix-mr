@@ -16,20 +16,9 @@ const MonthComboBox: React.FC<IMonthComboBoxProps> = (props:IMonthComboBoxProps)
     useEffect(() => {
 
         setSelectedMonth(props.month);
-        setTimeName();
+        fetchMonths();
     }, []);
-
-
-    async function setTimeName() {
-
-        await fetch('http://localhost:3001/setTimeName')
-        .then(response => response.json())
-        .then (response => {
-            fetchMonths();
-        })
-        .catch();
-    }
-
+    
     async function fetchMonths() {
 
         await fetch('http://localhost:3001/getUsrMonths/'+props.usrID)

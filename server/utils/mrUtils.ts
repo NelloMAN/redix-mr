@@ -1,6 +1,6 @@
 /* 
 Questa classe contiene i check lato server
-*/ 
+*/
 
 import Enumerable from "linq";
 import { IWorkDay, IAlert } from "./interface/MRServerInterface.js";
@@ -16,13 +16,13 @@ var holidays = new dateHolidays('IT');
 let workingInfo = [EWorkingInfo.OFFICE, EWorkingInfo.SMARTWORKING, EWorkingInfo.WORK_TRIP];
 
 // Check di validità delle attività inserite
-export function checkWorkItem(newWD : IWorkDay[], modWD : IWorkDay []) : IAlert [] {
+export function checkWorkItem(newWD: IWorkDay[], modWD: IWorkDay[]): IAlert[] {
 
     //Array contenente errori e wanings
-    let err_war : IAlert [] = [];
+    let err_war: IAlert[] = [];
 
     //Recupero le attività già esistenti
-    const lastSavedWD : IWorkDay [] = mrSingleton.getInstance().getLastSavedWD();
+    const lastSavedWD: IWorkDay[] = mrSingleton.getInstance().getLastSavedWD();
 
     /*
     Non è necessario verificare ogni volta i wd esistenti, ma basta 
@@ -31,42 +31,42 @@ export function checkWorkItem(newWD : IWorkDay[], modWD : IWorkDay []) : IAlert 
     nuovi record inseriti e rimuovo quelli che sono stati modificati
     in questa richiesta
     */
-    const lastSavedWDToCheck : IWorkDay[] = Enumerable.from(lastSavedWD)
-                                            .where(l => newWD.some(w => new Date(l.wrkdDay).getTime() === new Date(w.wrkdDay).getTime()))
-                                            .where(x => !Enumerable.from(modWD).any(y => y.wrkdID === x.wrkdID))
-                                            .toArray()
+    const lastSavedWDToCheck: IWorkDay[] = Enumerable.from(lastSavedWD)
+        .where(l => newWD.some(w => new Date(l.wrkdDay).getTime() === new Date(w.wrkdDay).getTime()))
+        .where(x => !Enumerable.from(modWD).any(y => y.wrkdID === x.wrkdID))
+        .toArray()
 
-    const finalWdToCheck : IWorkDay [] = lastSavedWDToCheck.concat(newWD).concat(modWD);
+    const finalWdToCheck: IWorkDay[] = lastSavedWDToCheck.concat(newWD).concat(modWD);
 
     //Array con le ore totali per ogni giorno
-    var hoursPerDay : {day:Date, totalH: number} [] = 
-    Enumerable.from(finalWdToCheck).groupBy( g =>
-        new Date(g.wrkdDay).getTime(),
-        element => element,
-        function (key, h) {
-            var result = {
-                day: new Date(key),
-                totalH: h.sum(w => w.wrkdActivityHour)
+    var hoursPerDay: { day: Date, totalH: number }[] =
+        Enumerable.from(finalWdToCheck).groupBy(g =>
+            new Date(g.wrkdDay).getTime(),
+            element => element,
+            function (key, h) {
+                var result = {
+                    day: new Date(key),
+                    totalH: h.sum(w => w.wrkdActivityHour)
+                }
+                return result;
             }
-            return result;
-        }
-    ).toArray();
-   
+        ).toArray();
+
     //#region Check warning per sabato, domenica e festivi per assegnare eventuali straordinari e permessi
     hoursPerDay.forEach(wi => {
-        
+
         let wDate = new Date(wi.day);
         let dateWorkType = EDayType.WORK;
 
-        let warnAlert : IAlert;
-        let errorAlert : IAlert;
+        let warnAlert: IAlert;
+        let errorAlert: IAlert;
 
         //se è un sabato, una domenica o un giorno festivo iwdWarn viene valorizzato
         dateWorkType = getDayType(wDate);
 
         //#region Check ERROR 
         //Recupero le info con le relative ore per il giorno che sto processando
-        var infoHours : {info: number, totalH: number} [] = Enumerable.from(finalWdToCheck).where(i => new Date(i.wrkdDay).getTime() === new Date(wi.day).getTime()).groupBy( g =>
+        var infoHours: { info: number, totalH: number }[] = Enumerable.from(finalWdToCheck).where(i => new Date(i.wrkdDay).getTime() === new Date(wi.day).getTime()).groupBy(g =>
             g.wrkdInfoID,
             element => element,
             function (key, h) {
@@ -82,17 +82,17 @@ export function checkWorkItem(newWD : IWorkDay[], modWD : IWorkDay []) : IAlert 
         if (infoHours.some(ih => ih.info === EInfo.PERMIT) && Enumerable.from(infoHours).sum(ih => ih.totalH) > 8) {
 
             errorAlert = {
-                day: wDate, 
-                info: new ErrorInfo(EError.PERMIT_AND_WORK_OVER_EIGHT), 
+                day: wDate,
+                info: new ErrorInfo(EError.PERMIT_AND_WORK_OVER_EIGHT),
                 delta: ''
             }
-            
-            err_war.push(errorAlert); 
+
+            err_war.push(errorAlert);
             return;
-        }    
+        }
 
         //Recupero le info di ogni giorno
-        let distinctSpec : EInfo [] = Enumerable.from(finalWdToCheck).where(i => new Date(i.wrkdDay).getTime() === new Date(wi.day).getTime()).select(r => r.wrkdInfoID).distinct().toArray();
+        let distinctSpec: EInfo[] = Enumerable.from(finalWdToCheck).where(i => new Date(i.wrkdDay).getTime() === new Date(wi.day).getTime()).select(r => r.wrkdInfoID).distinct().toArray();
 
         if (distinctSpec.length === 1) {
 
@@ -100,13 +100,13 @@ export function checkWorkItem(newWD : IWorkDay[], modWD : IWorkDay []) : IAlert 
             if (distinctSpec[0] === EInfo.PERMIT) {
 
                 errorAlert = {
-    
-                    day: wDate, 
-                    info: new ErrorInfo(EError.PERMIT_ONLY), 
+
+                    day: wDate,
+                    info: new ErrorInfo(EError.PERMIT_ONLY),
                     delta: ''
                 }
-                
-                err_war.push(errorAlert); 
+
+                err_war.push(errorAlert);
                 return;
             }
 
@@ -115,12 +115,12 @@ export function checkWorkItem(newWD : IWorkDay[], modWD : IWorkDay []) : IAlert 
             //Non ci possono essere più di 2 info per uno stesso giorno
             errorAlert = {
 
-                day: wDate, 
-                info: new ErrorInfo(EError.MULTIPLE_INFO), 
-                delta: ''+wDate
+                day: wDate,
+                info: new ErrorInfo(EError.MULTIPLE_INFO),
+                delta: '' + wDate
             }
-            
-            err_war.push(errorAlert); 
+
+            err_war.push(errorAlert);
             return;
 
         } else if (distinctSpec.length === 2) {
@@ -131,24 +131,24 @@ export function checkWorkItem(newWD : IWorkDay[], modWD : IWorkDay []) : IAlert 
             trasferta - permesso
             ufficio - permesso
             */
-            if ( 
-                (distinctSpec[0] === EInfo.OFFICE &&  distinctSpec[1] === EInfo.PERMIT)|| 
-                (distinctSpec[0] === EInfo.PERMIT &&  distinctSpec[1] === EInfo.OFFICE)|| 
-                (distinctSpec[0] === EInfo.WORK_TRIP &&  distinctSpec[1] === EInfo.PERMIT)|| 
-                (distinctSpec[0] === EInfo.PERMIT &&  distinctSpec[1] === EInfo.WORK_TRIP)|| 
-                (distinctSpec[0] === EInfo.SMARTWORKING &&  distinctSpec[1] === EInfo.PERMIT)|| 
-                (distinctSpec[0] === EInfo.PERMIT &&  distinctSpec[1] === EInfo.SMARTWORKING) 
-            ) {} else {
+            if (
+                (distinctSpec[0] === EInfo.OFFICE && distinctSpec[1] === EInfo.PERMIT) ||
+                (distinctSpec[0] === EInfo.PERMIT && distinctSpec[1] === EInfo.OFFICE) ||
+                (distinctSpec[0] === EInfo.WORK_TRIP && distinctSpec[1] === EInfo.PERMIT) ||
+                (distinctSpec[0] === EInfo.PERMIT && distinctSpec[1] === EInfo.WORK_TRIP) ||
+                (distinctSpec[0] === EInfo.SMARTWORKING && distinctSpec[1] === EInfo.PERMIT) ||
+                (distinctSpec[0] === EInfo.PERMIT && distinctSpec[1] === EInfo.SMARTWORKING)
+            ) { } else {
 
                 errorAlert = {
-                    day: wDate, 
-                    info: new ErrorInfo(EError.INC_INFO), 
-                    delta: ''+wDate
+                    day: wDate,
+                    info: new ErrorInfo(EError.INC_INFO),
+                    delta: '' + wDate
                 }
-                
+
                 err_war.push(errorAlert);
                 return;
-            } 
+            }
         }
 
         //#endregion           
@@ -170,32 +170,32 @@ export function checkWorkItem(newWD : IWorkDay[], modWD : IWorkDay []) : IAlert 
 
                     warnAlert = {
 
-                        day : wDate, 
-                        info : new WarningInfo(EWarn.OVERTIME_HOURS) , 
-                        delta : ''+straoHours
+                        day: wDate,
+                        info: new WarningInfo(EWarn.OVERTIME_HOURS),
+                        delta: '' + straoHours
                     }
 
-                    err_war.push(warnAlert);   
+                    err_war.push(warnAlert);
                 }
                 else if (wi.totalH < 8) {
 
                     let permHours = 8 - wi.totalH;
-                    
+
                     warnAlert = {
-                        day: wDate, 
-                        info: new WarningInfo(EWarn.PERMITS_HOURS), 
-                        delta: ''+permHours
+                        day: wDate,
+                        info: new WarningInfo(EWarn.PERMITS_HOURS),
+                        delta: '' + permHours
                     };
 
-                    err_war.push(warnAlert);   
+                    err_war.push(warnAlert);
                 }
             }
 
         } else {
 
             warnAlert = {
-                day: wDate, 
-                info: new WarningInfo(EWarn.WORK_HOLIDAYS), 
+                day: wDate,
+                info: new WarningInfo(EWarn.WORK_HOLIDAYS),
                 delta: ''
             }
 
@@ -212,34 +212,34 @@ export function checkWorkItem(newWD : IWorkDay[], modWD : IWorkDay []) : IAlert 
         let workDayType = getDayType(wDate);
 
         let errorAlert = {
-            day: wDate, 
-            info: new ErrorInfo(EError.HOLIDAYS_INC_INFO), 
-            delta: ''+wDate
+            day: wDate,
+            info: new ErrorInfo(EError.HOLIDAYS_INC_INFO),
+            delta: '' + wDate
         }
 
         if (workDayType !== EDayType.WORK && !workingInfo.includes(wi.wrkdInfoID)) {
-            err_war.push(errorAlert); 
+            err_war.push(errorAlert);
             return;
         }
 
-    });       
+    });
 
     console.log(err_war);
     return err_war;
 }
 
 //Applicazione delle correzioni
-export function applyCorrection(iaArray : IAlert[], wdArray : IWorkDay[]) : IWorkDay[] {
+export function applyCorrection(iaArray: IAlert[], wdArray: IWorkDay[]): IWorkDay[] {
 
-    let wdCorrected : IWorkDay [] = wdArray;
+    let wdCorrected: IWorkDay[] = wdArray;
 
     iaArray.forEach(ia => {
 
         if (ia.info.code === EWarn.PERMITS_HOURS) {
 
-            const wd : IWorkDay = Enumerable.from(wdArray).firstOrDefault(x => x.wrkdDay === ia.day)!;
-            
-            const permitWD : IWorkDay = {
+            const wd: IWorkDay = Enumerable.from(wdArray).firstOrDefault(x => x.wrkdDay === ia.day)!;
+
+            const permitWD: IWorkDay = {
 
                 wrkdUsrID: wd.wrkdUsrID,
                 wrkdSqdID: 1,
@@ -260,7 +260,7 @@ export function applyCorrection(iaArray : IAlert[], wdArray : IWorkDay[]) : IWor
 }
 
 //Metodo per la determinare se il dato giorno è weekend o festivo
-function getDayType(date : Date) {
+function getDayType(date: Date) {
 
     if ((date.getDay() === 0 || date.getDay() === 6) && holidays.isHoliday(date)) {
         return EDayType.BOTH_WEEKEND_HOLIDAY
@@ -273,4 +273,51 @@ function getDayType(date : Date) {
     } else {
         return EDayType.WORK;
     }
+}
+
+export function toItaMonth(monthName: string): string {
+
+    let translatedMonth : string = ''
+
+    switch (monthName.toUpperCase()) {
+        case 'JANUARY':
+            translatedMonth = 'GENNAIO';
+            break;
+        case 'FEBRUARY':
+            translatedMonth = 'FEBBRAIO';
+            break;
+        case 'MARCH':
+            translatedMonth = 'MARZO';
+            break;
+        case 'APRIL':
+            translatedMonth = 'APRILE';
+            break;
+        case 'MAY':
+            translatedMonth = 'MAGGIO';
+            break;
+        case 'JUNE':
+            translatedMonth = 'GIUGNO';
+            break;
+        case 'JULY':
+            translatedMonth = 'LUGLIO';
+            break;
+        case 'AUGUST':
+            translatedMonth = 'AGOSTO';
+            break;
+        case 'SEPTEMBER':
+            translatedMonth = 'SETTEMBRE';
+            break;
+        case 'OCTOBER':
+            translatedMonth = 'OTTOBRE';
+            break;
+        case 'NOVEMBER':
+            translatedMonth = 'NOVEMBRE';
+            break;
+        case 'DECEMBER':
+            translatedMonth = 'DICEMBRE';
+            break;
+        default:
+            break;
+    }
+    return translatedMonth;
 }

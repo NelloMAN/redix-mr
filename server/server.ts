@@ -34,11 +34,6 @@ app.get('/getUsrWrkDay/:usrID/:month', (req: Request, res: Response, n: NextFunc
     mrController.getUsrWorkDay(req, res, n);
 })
 
-// setTimeName: setto le impostazioni delle date del db in italiano (per avere il nome del mese)
-app.get('/setTimeName', (req: Request, res: Response, n: NextFunction) => {
-    mrController.setTimeName(req, res, n);
-});
-
 // getMonth: recupero i mesi in cui l'utente ha registrato delle attività per il componente MonthComboBox
 app.get('/getUsrMonths/:usrID', (req: Request, res: Response, n: NextFunction) => {
     mrController.getUsrMonth(req, res, n);

@@ -29,8 +29,6 @@ GetUsrInfo: `
     group by usrID
 `,
 
-    SetTimeName: `SET lc_time_names = 'it_IT'`,
-
     GetSquad: `select sqdID, sqdName from squad`,
 
     GetUsrMonth: `
