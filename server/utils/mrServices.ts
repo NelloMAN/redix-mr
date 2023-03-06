@@ -165,17 +165,16 @@ export const getUsrMonth = async (usrID: Number) : Promise<IUsrMonth[]> => {
             ],
             [Sequelize.fn('MONTHNAME', Sequelize.col('wrkdDay')), 'monthName']
         ],
-        where:{
-            wrkdUsrID : {
-                [Op.eq] : usrID
-            }
+        where : {
+            wrkdUsrID : usrID
+            
         }
     }).then ( result => {
 
         iUsrMonth = result.map(r => {
             return {
-                monthName: mrUtils.toItaMonth(r.getDataValue('monthName').toString()),
-                monthNumb: parseInt(r.getDataValue('monthNumb').toString())
+                monthName: mrUtils.toItaMonth(r.getDataValue('monthName')!.toString()),
+                monthNumb: parseInt(r.getDataValue('monthNumb')!.toString())
             }
         });
     })
@@ -203,7 +202,7 @@ export const getFirstWDIDAvailable = async (usrID: number) : Promise<number> => 
         },
         group: ['wrkdID']
     }).then( result => {
-        firstWD_IDAvailable = 1 + parseInt(result[0].getDataValue('firstWDIDAvailable').toString())
+        firstWD_IDAvailable = 1 + parseInt(result[0].getDataValue("firstWDIDAvailable")!.toString())
     })
 
     return firstWD_IDAvailable;

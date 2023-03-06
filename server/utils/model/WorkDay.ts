@@ -12,6 +12,10 @@ export interface IWorkDayModel {
     wrkdActivityHour: number;
     wrkdSqdID: number;
     wrkdCdc: string;
+    //campi opzionali
+    firstWDIDAvailable?:number;
+    monthName?:string;
+    monthNumb?:number;
 }
 
 class WorkDay extends Model<IWorkDayModel> implements IWorkDayModel {
