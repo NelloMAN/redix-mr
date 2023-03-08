@@ -3,6 +3,7 @@ import { IUser, IDateWorkDay, ISquad, IUsrMonth, IWorkDay, IAlert } from "./inte
 import * as mrServices from './mrServices.js';
 import * as mrUtils from "./mrUtils.js"
 import Enumerable from "linq";
+import WorkDay from "./model/WorkDay.js";
 
 export const getUsrInfo: RequestHandler = async (req: Request, res: Response) => {
     try {
@@ -84,7 +85,7 @@ export const saveWD: RequestHandler = async (req: Request, res: Response) => {
     try {
 
         let newWorkDays: IWorkDay[] = req.body.newWorkDays;
-        let rowsAdded: number = 0;
+        let rowsAdded: WorkDay[] = [];
         let rowsModified: number = 0;
         let rowsDeleted: number = 0;
 

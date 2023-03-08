@@ -1,16 +1,11 @@
 import { execute } from './mysql_utils/mysql.connector.js';
 import {ISquad, IUser, IUsrMonth, IWorkDay, IDateWorkDay} from './interface/MRServerInterface.js';
 import {mrQuery} from './mrQuery.js';
-import moment from 'moment';
-import { FindOptions, IncrementDecrementOptionsWithBy, InstanceDestroyOptions, InstanceRestoreOptions, InstanceUpdateOptions, Model, Op, SaveOptions, Sequelize, SetOptions } from 'sequelize';
+import {Op, Sequelize, WhereOperators } from 'sequelize';
 import Usr from './model/Usr.js';
 import WorkDay, { IWorkDayModel } from './model/WorkDay.js';
 import * as mrUtils from "./mrUtils.js"
 import Info from './model/Info.js';
-import { sequelize } from './mysql_utils/vars.config.js';
-import { group } from 'console';
-import { SequelizeHooks } from 'sequelize/types/hooks.js';
-import { ValidationOptions } from 'sequelize/types/instance-validator.js';
 
 /**
  * Get active team records
@@ -86,10 +81,10 @@ export const getUserWorkDay = async (usrID: Number, month: Number) : Promise<IDa
                 attributes: ['infoGrpID']
             }],
         where: {
-            wrkdUsrID: {
+            wrkdUsrID: <WhereOperators>{
                 [Op.eq] : usrID
             },
-            wrkDay: {
+            wrkdDay: <WhereOperators>{
                 [Op.and] :[
                     Sequelize.where(Sequelize.fn('MONTH', Sequelize.col('wrkdDay')), month)
                 ]
@@ -108,7 +103,7 @@ export const getUserWorkDay = async (usrID: Number, month: Number) : Promise<IDa
             wrkdActivityType: w.wrkdActivityType,
             wrkdActivityHour: w.wrkdActivityHour,
             wrkdSqdID: w.wrkdSqdID,
-            wrkdInfoGrpID: w.getDataValue("wrkdInfoGrpID"),
+            wrkdInfoGrpID: w.getDataValue("wrkdInfoGrpID")!,
             wrkdCdc: w.wrkdCdc
         });
     });
@@ -166,8 +161,9 @@ export const getUsrMonth = async (usrID: Number) : Promise<IUsrMonth[]> => {
             [Sequelize.fn('MONTHNAME', Sequelize.col('wrkdDay')), 'monthName']
         ],
         where : {
-            wrkdUsrID : usrID
-            
+            wrkdUsrID : <WhereOperators> {
+                [Op.eq] : usrID
+            }
         }
     }).then ( result => {
 

@@ -13,6 +13,7 @@ export interface IWorkDayModel {
     wrkdSqdID: number;
     wrkdCdc: string;
     //campi opzionali
+    wrkdInfoGrpID?:number;
     firstWDIDAvailable?:number;
     monthName?:string;
     monthNumb?:number;
