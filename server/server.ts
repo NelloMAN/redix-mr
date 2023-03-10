@@ -55,5 +55,4 @@ app.post('/saveWorkDays', (req: Request, res: Response, n: NextFunction) => {
 
 app.post('/applyCorrection', (req: Request, res: Response) => {
 
-
 })
