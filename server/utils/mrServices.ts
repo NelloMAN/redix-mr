@@ -7,6 +7,7 @@ import WorkDay, { IWorkDayModel } from './model/WorkDay.js';
 import * as mrUtils from "./mrUtils.js"
 import Info from './model/Info.js';
 import Enumerable from 'linq';
+import Squad from './model/Squad.js';
 
 /**
  * Get active team records
@@ -181,7 +182,22 @@ export const getUsrMonth = async (usrID: Number) : Promise<IUsrMonth[]> => {
 
 
 export const getSquad = async () : Promise<ISquad[]> => {
-    return execute<ISquad[]>(mrQuery.GetSquad, []);
+
+    let isqd : ISquad [] = [];
+
+    await Squad.findAll({
+        attributes: { exclude: ['createdAt', 'updatedAt'] }
+    }).then(result => {
+        isqd = result.map(r=> {
+            return {
+                sqdID: r.sqdID,
+                sqdName: r.sqdName
+            }
+        })
+    });
+
+    return isqd;
+    //return execute<ISquad[]>(mrQuery.GetSquad, []);
 };
 
 export const getFirstWDIDAvailable = async (usrID: number) : Promise<number> => {
