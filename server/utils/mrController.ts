@@ -85,72 +85,15 @@ export const saveWD: RequestHandler = async (req: Request, res: Response) => {
     try {
 
         let newWorkDays: IWorkDay[] = req.body.newWorkDays;
-        let rowsAdded: WorkDay[] = [];
-        let rowsModified: number = 0;
-        let rowsDeleted: number = 0;
-
-        /*
-        Setto la proprietà wrkdID di tutti gli elementi della lista
-        newWorkDays(creandone una nuova ovvero newZeroIdWD) in modo tale 
-        da distingure i record da inserire da quelli da updateare prima
-        che vengano concatenati per fare il check
-        */
-        let newZeroIdWD: IWorkDay[] = Enumerable.from(newWorkDays).select(function(x) { 
-            return { 
-                wrkdActivity:       x.wrkdActivity, 
-                wrkdActivityHour:   x.wrkdActivityHour,
-                wrkdActivityType:   x.wrkdActivityType,
-                wrkdCdc:            x.wrkdCdc,
-                wrkdDay:            x.wrkdDay,
-                wrkdID:             0,
-                wrkdInfoID:         x.wrkdInfoID,
-                wrkdSqdID:          x.wrkdSqdID,
-                wrkdUsrID:          x.wrkdUsrID,
-                wrkdInfoGrpID:      x.wrkdInfoGrpID
-            }; 
-        }).toArray();
 
         let changeWorkDays: IWorkDay[] = req.body.changeWorkDays;
         let deletedWorkDaysID: number[] = req.body.deletedWorkDaysID
 
-        /*
-        Verifico se all'interno della lista degli id dei record cancellati c'è qualche record anche modificato. 
-        Se si rimuovo il record dagli elementi modificati per poi cancellarlo definitivamente
-        */
-        let changeWorkDaysDef: IWorkDay[] = changeWorkDays.filter(x => deletedWorkDaysID.indexOf(x.wrkdID) === -1);
+        const rowsAdded = await mrServices.AddNewWD(newWorkDays, changeWorkDays, deletedWorkDaysID);
 
-        let wdToCheck: IWorkDay[] = newZeroIdWD.concat(changeWorkDaysDef);
-
-        let err_war: IAlert[] = mrUtils.checkWorkItem(newZeroIdWD, changeWorkDaysDef);
-
-        if (err_war.length > 0) {
-
-            let toJson = {
-                typo: 'err_war',
-                errWar: err_war,
-                wdToSave: wdToCheck
-            }
-
-            res.send(JSON.stringify(toJson));
-
-        } else {
-
-            if (newZeroIdWD.length > 0) {
-                rowsAdded = await mrServices.AddNewWD(newZeroIdWD);
-            }
-
-            res.status(200).json(
-                rowsAdded
-            );
-
-            // if (changeWorkDaysDef.length > 0) {
-            //     rowsModified = await mrServices.AddNewWD(req.body.newZeroIdWD);
-            // }
-
-            // if (deletedWorkDaysID.length > 0) {
-            //     rowsDeleted = await mrServices.AddNewWD(req.body.newZeroIdWD);
-            // }
-        }
+        res.status(200).json(
+            rowsAdded
+        );
         
     } catch (error) {
         console.error('[mrController][AddNewWD][Error] ', typeof error === 'object' ? JSON.stringify(error) : error);
