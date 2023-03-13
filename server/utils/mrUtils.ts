@@ -8,7 +8,9 @@ import { EDayType, EWorkingInfo, EError, EWarn, EInfo, EInfoGroup } from './mrEn
 import { WarningInfo } from "./class/WarningInfo.js";
 import { ErrorInfo } from "./class/ErrorInfo.js";
 import dateHolidays from 'date-holidays';
-import { mrSingleton } from "./mrSingleton.js";
+import WorkDay from "./model/WorkDay.js";
+import {Op, Sequelize, WhereOperators } from 'sequelize';
+import Info from "./model/Info.js";
 
 
 //Libreria per recuperare i giorni di festività
@@ -16,25 +18,69 @@ var holidays = new dateHolidays('IT');
 let workingInfo = [EWorkingInfo.OFFICE, EWorkingInfo.SMARTWORKING, EWorkingInfo.WORK_TRIP];
 
 // Check di validità delle attività inserite
-export function checkWorkItem(newWD: IWorkDay[], modWD: IWorkDay[]): IAlert[] {
+export async function checkWorkItem(usrID: number, months: number [], newWD: IWorkDay[], modWD: IWorkDay[]): Promise<IAlert[]> {
 
     //Array contenente errori e wanings
     let err_war: IAlert[] = [];
 
     //Recupero le attività già esistenti
-    const lastSavedWD: IWorkDay[] = mrSingleton.getInstance().getLastSavedWD();
+    let lastSavedWD: IWorkDay[] = [];
+    await WorkDay.findAll({
+        attributes:[
+            'wrkdID',
+            [Sequelize.literal('DATE_FORMAT(wrkdDay, "%Y-%m-%d")'), 'wrkdDay'],
+            'wrkdInfoID',
+            [Sequelize.literal('`Info`.`infoGrpID`'), 'wrkdInfoGrpID'],
+            'wrkdUsrID',
+            'wrkdActivity',
+            'wrkdActivityType',
+            'wrkdActivityHour',
+            'wrkdSqdID'],
+        include: [{
+                model: Info,
+                required: true,
+                attributes: ['infoGrpID']
+            }],
+        where: {
+            wrkdUsrID: <WhereOperators>{
+                  [Op.eq]: usrID
+            },
+            [Op.and]: Sequelize.where(Sequelize.fn('MONTH', Sequelize.col('wrkdDay')), {
+                [Op.in]: months
+            })
+        }
+    })
+    .then(result => {
+
+        result.forEach(r => {
+           
+            lastSavedWD.push({
+                wrkdID: r.wrkdID,
+                wrkdDay: r.wrkdDay,
+                wrkdInfoID: r.wrkdInfoID,
+                wrkdUsrID: r.wrkdUsrID,
+                wrkdActivity: r.wrkdActivity,
+                wrkdActivityType: r.wrkdActivityType,
+                wrkdActivityHour: r.wrkdActivityHour,
+                wrkdSqdID: r.wrkdSqdID,
+                wrkdInfoGrpID: r.getDataValue("wrkdInfoGrpID")!,
+                wrkdCdc: r.wrkdCdc
+            });            
+        });
+    })
 
     /*
     Non è necessario verificare ogni volta i wd esistenti, ma basta 
     controllare quelli con date uguale a nuovi record inseriti quindi
-    recupero dalla lista singleton quelli che hanno stessa data di 
+    recupero dalla lista dei record esistenti quelli che hanno stessa data dei
     nuovi record inseriti e rimuovo quelli che sono stati modificati
     in questa richiesta
     */
-    const lastSavedWDToCheck: IWorkDay[] = Enumerable.from(lastSavedWD)
-        .where(l => newWD.some(w => new Date(l.wrkdDay).getTime() === new Date(w.wrkdDay).getTime()))
-        .where(x => !Enumerable.from(modWD).any(y => y.wrkdID === x.wrkdID))
-        .toArray()
+    const lastSavedWDToCheck: IWorkDay[] = 
+        Enumerable.from(lastSavedWD)
+            .where(l => newWD.some(w => new Date(l.wrkdDay).getTime() === new Date(w.wrkdDay).getTime()))
+            .where(x => !Enumerable.from(modWD).any(y => y.wrkdID === x.wrkdID))
+            .toArray()
 
     const finalWdToCheck: IWorkDay[] = lastSavedWDToCheck.concat(newWD).concat(modWD);
 
@@ -56,7 +102,7 @@ export function checkWorkItem(newWD: IWorkDay[], modWD: IWorkDay[]): IAlert[] {
     hoursPerDay.forEach(wi => {
 
         let wDate = new Date(wi.day);
-        let dateWorkType = EDayType.WORK;
+        let dateWorkType : EDayType = EDayType.WORK;
 
         let warnAlert: IAlert;
         let errorAlert: IAlert;

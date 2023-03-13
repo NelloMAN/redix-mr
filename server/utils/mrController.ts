@@ -89,10 +89,10 @@ export const saveWD: RequestHandler = async (req: Request, res: Response) => {
         let changeWorkDays: IWorkDay[] = req.body.changeWorkDays;
         let deletedWorkDaysID: number[] = req.body.deletedWorkDaysID
 
-        const rowsAdded = await mrServices.AddNewWD(newWorkDays, changeWorkDays, deletedWorkDaysID);
+        const saveResult = await mrServices.AddNewWD(newWorkDays, changeWorkDays, deletedWorkDaysID);
 
         res.status(200).json(
-            rowsAdded
+            saveResult
         );
         
     } catch (error) {

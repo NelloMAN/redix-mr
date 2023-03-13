@@ -109,8 +109,6 @@ export const getUserWorkDay = async (usrID: Number, month: Number) : Promise<IDa
             wrkdCdc: w.wrkdCdc
         });
     });
-    //Salvo il valore degli ultimi record salvati in modo da averli sempre a disposizione
-    //mrSingleton.getInstance().setLastSavedWD(workDay); questo non va fatto. Problemi di performance
 
     let processedDate: Map<Date, IWorkDay[]> = new Map<Date, IWorkDay[]>();
 
@@ -260,17 +258,38 @@ export const AddNewWD = async (nwd : IWorkDay[], cwd : IWorkDay[], dwdID : numbe
 
     let wdToCheck: IWorkDay[] = newZeroIdWD.concat(changeWorkDaysDef);
 
-    let err_war: IAlert[] = mrUtils.checkWorkItem(newZeroIdWD, changeWorkDaysDef);
+    let usrToCheck : number = 0;
+    let monthToCheck : number [] = [];
+
+    if (wdToCheck.length > 0) {
+
+        usrToCheck = wdToCheck[0].wrkdUsrID;
+
+        monthToCheck = Enumerable.from(wdToCheck).select(m => new Date(m.wrkdDay).getMonth()+1).distinct().toArray();
+    } 
+
+    let err_war: IAlert[] = []; 
+    
+    await mrUtils.checkWorkItem(usrToCheck, monthToCheck, newZeroIdWD, changeWorkDaysDef).then(result => {
+
+        result.forEach(r => {
+            err_war.push({
+                info: r.info,
+                day: r.day,
+                delta: r.delta
+            }) 
+        });
+    });
 
     if (err_war.length > 0) {
 
         let toJson = {
-            typo: 'err_war',
             errWar: err_war,
-            wdToSave: wdToCheck
+            wdToSave: wdToCheck,
+            rowsAffected: 0
         }
 
-        //res.send(JSON.stringify(toJson));
+        return toJson;
 
     } else {
 
@@ -307,5 +326,13 @@ export const AddNewWD = async (nwd : IWorkDay[], cwd : IWorkDay[], dwdID : numbe
         // if (deletedWorkDaysID.length > 0) {
         //     rowsDeleted = await mrServices.AddNewWD(req.body.newZeroIdWD);
         // }
+
+        let toJson = {
+            errWar: [],
+            wdToSave: [],
+            rowsAffected: affectedRecords
+        };
+
+        return toJson;
     }
 }
