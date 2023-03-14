@@ -1,9 +1,6 @@
 import { RequestHandler, Request, Response } from "express";
-import { IUser, IDateWorkDay, ISquad, IUsrMonth, IWorkDay, IAlert } from "./interface/MRServerInterface.js";
+import { IUser, IDateWorkDay, ISquad, IUsrMonth, IWorkDay} from "./interface/MRServerInterface.js";
 import * as mrServices from './mrServices.js';
-import * as mrUtils from "./mrUtils.js"
-import Enumerable from "linq";
-import WorkDay from "./model/WorkDay.js";
 
 export const getUsrInfo: RequestHandler = async (req: Request, res: Response) => {
     try {
@@ -89,7 +86,7 @@ export const saveWD: RequestHandler = async (req: Request, res: Response) => {
         let changeWorkDays: IWorkDay[] = req.body.changeWorkDays;
         let deletedWorkDaysID: number[] = req.body.deletedWorkDaysID
 
-        const saveResult = await mrServices.AddNewWD(newWorkDays, changeWorkDays, deletedWorkDaysID);
+        const saveResult = await mrServices.SaveWD(newWorkDays, changeWorkDays, deletedWorkDaysID);
 
         res.status(200).json(
             saveResult

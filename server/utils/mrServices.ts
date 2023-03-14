@@ -1,6 +1,4 @@
-import { execute } from './mysql_utils/mysql.connector.js';
 import {ISquad, IUser, IUsrMonth, IWorkDay, IDateWorkDay, IAlert} from './interface/MRServerInterface.js';
-import {mrQuery} from './mrQuery.js';
 import {Op, Sequelize, WhereOperators } from 'sequelize';
 import Usr from './model/Usr.js';
 import WorkDay, { IWorkDayModel } from './model/WorkDay.js';
@@ -8,13 +6,9 @@ import * as mrUtils from "./mrUtils.js"
 import Info from './model/Info.js';
 import Enumerable from 'linq';
 import Squad from './model/Squad.js';
+import { sequelize } from './mysql_utils/vars.config.js';
 
-/**
- * Get active team records
- *
- * @param req Express Request
- * @param res Express Response
- */
+
 export const getUserInfo = async (email: IUser['usrEmail'], pwd: IUser['usrPwd'])=> {
     
     //return execute<IUser>(mrQuery.GetUsrInfo, [email, pwd]);
@@ -46,7 +40,7 @@ export const getUserInfo = async (email: IUser['usrEmail'], pwd: IUser['usrPwd']
     let iuser : IUser[] = [];
 
     qUsr.forEach(qu => {
-        
+
         iuser.push({
             usrID: qu.usrID,
             usrEmail: qu.usrEmail,
@@ -178,7 +172,6 @@ export const getUsrMonth = async (usrID: Number) : Promise<IUsrMonth[]> => {
     return iUsrMonth;
 };
 
-
 export const getSquad = async () : Promise<ISquad[]> => {
 
     let isqd : ISquad [] = [];
@@ -219,12 +212,11 @@ export const getFirstWDIDAvailable = async (usrID: number) : Promise<number> => 
     return firstWD_IDAvailable;
 };
 
-export const AddNewWD = async (nwd : IWorkDay[], cwd : IWorkDay[], dwdID : number[]) => {
+export const SaveWD = async (nwd : IWorkDay[], cwd : IWorkDay[], dwdID : number[]) => {
 
     let newWorkDays: IWorkDay[] = nwd;
-    let rowsAdded: WorkDay[] = [];
-    let rowsModified: number = 0;
-    let rowsDeleted: number = 0;
+    let changeWorkDays: IWorkDay[] = cwd;
+    let deletedWorkDaysID: number[] = dwdID
 
     /*
     Setto la proprietà wrkdID di tutti gli elementi della lista
@@ -247,12 +239,9 @@ export const AddNewWD = async (nwd : IWorkDay[], cwd : IWorkDay[], dwdID : numbe
         }; 
     }).toArray();
 
-    let changeWorkDays: IWorkDay[] = cwd;
-    let deletedWorkDaysID: number[] = dwdID
-
     /*
     Verifico se all'interno della lista degli id dei record cancellati c'è qualche record anche modificato. 
-    Se si rimuovo il record dagli elementi modificati per poi cancellarlo definitivamente
+    Se si, rimuovo il record dagli elementi modificati per poi cancellarlo definitivamente
     */
     let changeWorkDaysDef: IWorkDay[] = changeWorkDays.filter(x => deletedWorkDaysID.indexOf(x.wrkdID) === -1);
 
@@ -286,15 +275,21 @@ export const AddNewWD = async (nwd : IWorkDay[], cwd : IWorkDay[], dwdID : numbe
         let toJson = {
             errWar: err_war,
             wdToSave: wdToCheck,
-            rowsAffected: 0
+            addedRows: 0,
+            updatedRows: 0,
+            deletedRows: 0
         }
 
         return toJson;
 
     } else {
 
-        let affectedRecords : number = 0;
+        let addedRows : number = 0;
+        let updatedRows : number = 0;
+        let deletedRows : number = 0;
+
         let mWorkDayNew : IWorkDayModel[] = [];
+        let mWorkDayUpd : IWorkDayModel[] = [];
 
         newZeroIdWD.forEach( n => {
     
@@ -310,27 +305,73 @@ export const AddNewWD = async (nwd : IWorkDay[], cwd : IWorkDay[], dwdID : numbe
                 wrkdCdc: n.wrkdCdc
             });
         })
+
+        changeWorkDaysDef.forEach(u => {
+
+            mWorkDayUpd.push({
+                wrkdID: u.wrkdID,
+                wrkdDay: u.wrkdDay,
+                wrkdInfoID: u.wrkdInfoID,
+                wrkdUsrID: u.wrkdUsrID,
+                wrkdActivity: u.wrkdActivity,
+                wrkdActivityType: u.wrkdActivityType,
+                wrkdActivityHour: u.wrkdActivityHour,
+                wrkdSqdID: u.wrkdSqdID,
+                wrkdCdc: u.wrkdCdc
+            });
+        })
+
+        const t = await sequelize.transaction();
     
-        WorkDay.bulkCreate(mWorkDayNew) 
-            .then(createdWD => {
-                affectedRecords += createdWD.length;
-            })
-            .catch(error => {
-                throw new Error("Error trying adding new workDays");
-            })
+        try {
 
-        // if (changeWorkDaysDef.length > 0) {
-        //     rowsModified = await mrServices.AddNewWD(req.body.newZeroIdWD);
-        // }
+            //INSERT NUOVI WORKDAY
+            await WorkDay.bulkCreate(mWorkDayNew, {transaction : t})
+                .then(createdWD => {
+                    addedRows += createdWD.length;
+                })
+                .catch(error => {
+                    throw new Error("Error trying adding new workDays");
+                });
 
-        // if (deletedWorkDaysID.length > 0) {
-        //     rowsDeleted = await mrServices.AddNewWD(req.body.newZeroIdWD);
-        // }
+            //UPDATE WORKDAY
+            await WorkDay.bulkCreate(
+                mWorkDayUpd, 
+                {
+                    transaction: t,
+                    updateOnDuplicate: ["wrkdID"]
+                })
+                .then(updatedWD => {
+                    updatedRows += updatedWD.length;
+                })
+                .catch(error => {
+                    throw new Error("Error trying update WorkDay")
+                });
+            
+            //DELETE WORKDAY
+            await WorkDay.destroy({
+                where: {
+                    wrkdID : deletedWorkDaysID
+                },
+                transaction: t
+            })
+            .then( deletedWD => {
+                deletedRows += deletedWD
+            });
+            
+            t.commit();
+
+        } catch (err) {
+            
+            t.rollback();
+        }
 
         let toJson = {
             errWar: [],
             wdToSave: [],
-            rowsAffected: affectedRecords
+            addedRows: addedRows,
+            updatedRows: updatedRows,
+            deletedRows: deletedRows
         };
 
         return toJson;
