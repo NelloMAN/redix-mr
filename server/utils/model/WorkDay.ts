@@ -72,7 +72,8 @@ WorkDay.init({
 }, 
 {
     sequelize,
-    tableName: 'work_day'
+    tableName: 'work_day',
+    timestamps: false
 });
 
 WorkDay.belongsTo(Info, {foreignKey:'wrkdInfoID'})

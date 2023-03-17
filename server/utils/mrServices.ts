@@ -70,7 +70,8 @@ export const getUserWorkDay = async (usrID: Number, month: Number) : Promise<IDa
             'wrkdActivity',
             'wrkdActivityType',
             'wrkdActivityHour',
-            'wrkdSqdID'],
+            'wrkdSqdID',
+            'wrkdCdc'],
         include: [{
                 model: Info,
                 required: true,
@@ -204,7 +205,7 @@ export const getFirstWDIDAvailable = async (usrID: number) : Promise<number> => 
                 [Op.eq] : usrID
             }
         },
-        group: ['wrkdID']
+        group: ['wrkdUsrID']
     }).then( result => {
         firstWD_IDAvailable = 1 + parseInt(result[0].getDataValue("firstWDIDAvailable")!.toString())
     })
@@ -212,11 +213,13 @@ export const getFirstWDIDAvailable = async (usrID: number) : Promise<number> => 
     return firstWD_IDAvailable;
 };
 
-export const SaveWD = async (nwd : IWorkDay[], cwd : IWorkDay[], dwdID : number[]) => {
+export const saveWD = async (nwd : IWorkDay[], cwd : IWorkDay[], dwdID : number[]) => {
 
     let newWorkDays: IWorkDay[] = nwd;
     let changeWorkDays: IWorkDay[] = cwd;
     let deletedWorkDaysID: number[] = dwdID
+
+    let rtErr : string = "";
 
     /*
     Setto la proprietà wrkdID di tutti gli elementi della lista
@@ -273,6 +276,7 @@ export const SaveWD = async (nwd : IWorkDay[], cwd : IWorkDay[], dwdID : number[
     if (err_war.length > 0) {
 
         let toJson = {
+            runTimeError: rtErr,
             errWar: err_war,
             wdToSave: wdToCheck,
             addedRows: 0,
@@ -326,47 +330,71 @@ export const SaveWD = async (nwd : IWorkDay[], cwd : IWorkDay[], dwdID : number[
         try {
 
             //INSERT NUOVI WORKDAY
-            await WorkDay.bulkCreate(mWorkDayNew, {transaction : t})
-                .then(createdWD => {
-                    addedRows += createdWD.length;
-                })
-                .catch(error => {
-                    throw new Error("Error trying adding new workDays");
-                });
+            if (mWorkDayNew.length > 0) {
+
+                await WorkDay.bulkCreate(mWorkDayNew, {transaction : t})
+                    .then(createdWD => {
+                        addedRows += createdWD.length;
+                    })
+                    .catch(error => {
+                        throw new Error("Error trying adding new workDays: "+error.message);
+                    });
+            }
 
             //UPDATE WORKDAY
-            await WorkDay.bulkCreate(
-                mWorkDayUpd, 
-                {
-                    transaction: t,
-                    updateOnDuplicate: ["wrkdID"]
+            if (mWorkDayUpd.length > 0) {
+
+                mWorkDayUpd.forEach( mwd => {
+
+                    sequelize.query("UPDATE work_day SET wrkdDay = ? ,wrkdActivity = ? , wrkdActivityHour = ?, wrkdActivityType = ?, wrkdCdc = ?, wrkdInfoID = ?, wrkdSqdID = ?, wrkdUsrID = ? WHERE wrkdID = ? ;", {
+                        replacements: [
+                            mwd.wrkdDay, 
+                            mwd.wrkdActivity, 
+                            mwd.wrkdActivityHour, 
+                            mwd.wrkdActivityType, 
+                            mwd.wrkdCdc, 
+                            mwd.wrkdInfoID, 
+                            mwd.wrkdSqdID, 
+                            mwd.wrkdID
+                        ]
+                    })
+                    .then(updatedWD => {
+                        updatedRows += updatedWD.length;
+                    })
+                    .catch(error => {
+                        throw new Error("Error trying update WorkDay: "+error.message);
+                    });
                 })
-                .then(updatedWD => {
-                    updatedRows += updatedWD.length;
-                })
-                .catch(error => {
-                    throw new Error("Error trying update WorkDay")
-                });
+
+            }
             
             //DELETE WORKDAY
-            await WorkDay.destroy({
-                where: {
-                    wrkdID : deletedWorkDaysID
-                },
-                transaction: t
-            })
-            .then( deletedWD => {
-                deletedRows += deletedWD
-            });
+            if (deletedWorkDaysID.length > 0) {
+
+                await WorkDay.destroy({
+                    where: {
+                        wrkdID : deletedWorkDaysID
+                    },
+                    transaction: t
+                })
+                .then( deletedWD => {
+                    deletedRows += deletedWD
+                })
+                .catch(error => {
+                    throw new Error("Error trying delete WorkDay: "+error.message);
+                });
+            }
             
             t.commit();
 
         } catch (err) {
-            
+
+            rtErr = mrUtils.getErrorMessage(err)
             t.rollback();
         }
 
         let toJson = {
+            runTimeError: rtErr, 
             errWar: [],
             wdToSave: [],
             addedRows: addedRows,

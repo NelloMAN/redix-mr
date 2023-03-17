@@ -72,7 +72,10 @@ const LoginPanel: React.FunctionComponent<ILoginPanel> = (props) => {
 
             }else {
                 refDialog.current?.handleShow('Attenzione','Email o password errati');
-            }        
+            }   
+        })
+        .catch(err => {
+            refDialog.current?.handleShow('Attenzione','Problema nella comunicazione col server: \n'+err);
         });
     }
 

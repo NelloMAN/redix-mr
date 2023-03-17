@@ -9,7 +9,7 @@ export interface ISaveWDButtonProps {
 	nwd : IWorkDay [],
     changewd: IWorkDay [],
     deleteWdIDList: number [],
-    OnSaveWDButtonClick(a?: IAlert[], wd?: IWorkDay []) : any
+    OnSaveWDButtonClick(a?: IAlert[], wd?: IWorkDay [], error?:string) : any
 }
 
 const SaveWDButton: React.FC<ISaveWDButtonProps> = (props:ISaveWDButtonProps) => {
@@ -28,20 +28,27 @@ const SaveWDButton: React.FC<ISaveWDButtonProps> = (props:ISaveWDButtonProps) =>
                 deletedWorkDaysID
                 
             }).then((response) => {
-                
-                let alert : IAlert[] = response.data.errWar;
-    
-                //errWar è la lista contenente errori e warnings che il check lato server trova. Se è undefined allora non ce ne sono
-                if (alert !== undefined) {
 
-                    const wdToSave : IWorkDay [] = response.data.wdToSave;
-                    props.OnSaveWDButtonClick(alert, wdToSave);
+                if (response.data.runTimeError === "") {
 
+                    let alert : IAlert[] = response.data.errWar;
+        
+                    //errWar è la lista contenente errori e warnings che il check lato server trova. Se è undefined allora non ce ne sono
+                    if (alert !== undefined) {
+
+                        const wdToSave : IWorkDay [] = response.data.wdToSave;
+                        props.OnSaveWDButtonClick(alert, wdToSave);
+
+                    } else {
+                        props.OnSaveWDButtonClick();
+                    }       
                 } else {
-                    props.OnSaveWDButtonClick();
-                }       
-            }).catch(err => console.log(err)
-        )
+                    props.OnSaveWDButtonClick([], [], "Salvataggio non riuscito: "+response.data.runTimeError);
+                }
+            
+            }).catch(err => {
+                props.OnSaveWDButtonClick([], [], "Problema di connessione al server: "+err);
+            })
     }
 
     return (

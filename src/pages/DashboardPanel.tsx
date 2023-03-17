@@ -101,25 +101,34 @@ const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
         }
     }
 
-    function ManageSavedResult(ialert : IAlert [] = [], wdts : IWorkDay [] = []) {
+    function ManageSavedResult(ialert : IAlert [] = [], wdts : IWorkDay [] = [], error: string) {
         //TODO
         //Gestione dell'esito dopo il salvataggio
+        if (error === undefined || error === "") {
 
-        if (ialert.length > 0) {
+            if (ialert.length > 0) {
 
-            setWorkDayToSave(wdts);
-            refInfoDialog.current?.handleShow(ialert);
+                setWorkDayToSave(wdts);
+                refInfoDialog.current?.handleShow(ialert);
+            } else {
+                refDialog.current?.handleShow('Salvataggio dati','Salvataggio avvenuto con successo');
+            }
+
         } else {
-            refDialog.current?.handleShow('Salvataggio dati','Salvataggio avvenuto con successo');
+            refDialog.current?.handleShow('Salvataggio dati','Attenzione, è avvenuto un problema al momento del salvataggio \n'+error);
         }
     }
 
-    function onDialogHide() {
+    async function onDialogHide() {
 
-        axios.get('http://localhost:3001/getUsrWrkDay/' +usr.usrID +'/' + usr.selectedMonth)
+        await axios.get('http://localhost:3001/getUsrWrkDay/' +usr.usrID +'/' + usr.selectedMonth)
         .then(res => {
-            setDateWorkDays(res.data.dateWorkDay);
+            setDateWorkDays(res.data.dwd);
+            resetStati();
         });
+    }
+
+    function resetStati() {
 
         setNewWorkDays([]);
         setModifiedRecords([]);
@@ -179,7 +188,7 @@ const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
                                         nwd={nwd}
                                         changewd={changewd}
                                         deleteWdIDList={deleteWdID} 
-                                        OnSaveWDButtonClick={(ia : IAlert[], wd : IWorkDay []) => {ManageSavedResult(ia, wd)}}
+                                        OnSaveWDButtonClick={(ia : IAlert[], wd : IWorkDay [], error: string) => {ManageSavedResult(ia, wd, error)}}
                                     />
                                 </div>
                                 <div className='col-sm-1 d-flex justify-content-end'>

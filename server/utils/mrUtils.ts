@@ -367,3 +367,9 @@ export function toItaMonth(monthName: string): string {
     }
     return translatedMonth;
 }
+
+//Metodo per estrarre il messaggio di errore da un try/catch
+export function getErrorMessage(error: unknown) : string{
+    if (error instanceof Error) return error.message
+    return String(error)
+  }

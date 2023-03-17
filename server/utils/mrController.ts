@@ -86,7 +86,7 @@ export const saveWD: RequestHandler = async (req: Request, res: Response) => {
         let changeWorkDays: IWorkDay[] = req.body.changeWorkDays;
         let deletedWorkDaysID: number[] = req.body.deletedWorkDaysID
 
-        const saveResult = await mrServices.SaveWD(newWorkDays, changeWorkDays, deletedWorkDaysID);
+        const saveResult = await mrServices.saveWD(newWorkDays, changeWorkDays, deletedWorkDaysID);
 
         res.status(200).json(
             saveResult

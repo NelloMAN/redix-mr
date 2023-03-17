@@ -21,7 +21,7 @@ const AddSingleWDButton: React.FC<IAddSingleWDButtonProps> = (props:IAddSingleWD
 
         axios.get('http://localhost:3001/getFirstWDIDAvailable/' +props.usrID)
         .then(res => {
-            setFirstWDIDAvailable(parseInt(res.data[0].firstWDIDAvailable));
+            setFirstWDIDAvailable(parseInt(res.data));
         }); 
 
     },[]);
