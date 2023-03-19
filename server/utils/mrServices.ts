@@ -355,6 +355,7 @@ export const saveWD = async (nwd : IWorkDay[], cwd : IWorkDay[], dwdID : number[
                             mwd.wrkdCdc, 
                             mwd.wrkdInfoID, 
                             mwd.wrkdSqdID, 
+                            mwd.wrkdUsrID,
                             mwd.wrkdID
                         ]
                     })

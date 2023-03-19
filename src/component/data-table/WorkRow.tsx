@@ -6,7 +6,6 @@ import { Squad, IWorkDay } from '../../utils/interface/MRInterface';
 import { RowStateEnum } from '../../utils/MREnum';
 import DeleteCell from './cell/DeleteCell';
 import $ from 'jquery';
-import uniqid from 'uniqid';
 
 export interface IWorkRowProps {
 	rowState: string,		//stato della riga: nuova(new) o esistente(existed)
@@ -122,7 +121,6 @@ const WorkRow: React.FC<IWorkRowProps> = (props:IWorkRowProps) => {
 			if (name === 'specs') {
 
 				setSelectedInfo(value);
-
 				setFieldState(value);
 			}
 			//#endregion

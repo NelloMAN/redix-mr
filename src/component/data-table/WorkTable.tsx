@@ -3,7 +3,6 @@ import axios from "axios";
 import WorkRow from "./WorkRow";
 import "./css/WorkTable.css";
 import { IWorkDay, DateWorkDay, Squad } from "../../utils/interface/MRInterface";
-import uniqid from 'uniqid';
 
 export interface IWorkTableProps {
 	usrID : number, 
@@ -15,7 +14,7 @@ export interface IWorkTableProps {
 	UpdateDeleteRecords( dr : number) : any
 }
 
-const WorkTable: React.FC<IWorkTableProps> = (props:IWorkTableProps) => {
+const WorkTable: FC<IWorkTableProps> = (props:IWorkTableProps) => {
 
 	const [squadArray, setSquad] = useState<Squad []>([]);
 	//const [deleteWdIDList, setDeleteWdIDList] = useState<number []>([])
@@ -25,7 +24,7 @@ const WorkTable: React.FC<IWorkTableProps> = (props:IWorkTableProps) => {
 		axios.get('http://localhost:3001/getSquad')
 		.then(res => {
 			console.log(res.data.squad);
-		   setSquad(res.data.squad);
+			setSquad(res.data.squad);
 		});
 
 	}, [props.usrID]);

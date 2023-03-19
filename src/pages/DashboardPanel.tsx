@@ -14,6 +14,7 @@ import axios from "axios";
 import {IWorkDay, DateWorkDay, IUser, IAlert} from '../utils/interface/MRInterface';
 import DialogInfoBox, { IDialogInfoBox } from '../component/DialogInfoBox';
 import { DialogType } from '../utils/MREnum';
+import $ from 'jquery';
 
 
 export interface IDashboardPanel {}
@@ -133,6 +134,8 @@ const DashboardPanel: React.FC<IDashboardPanel> = (props) => {
         setNewWorkDays([]);
         setModifiedRecords([]);
         setDeleteWdIDList([]);
+
+		$('.work-row').removeClass('work-row-upd');
     }
 
     return (
